@@ -63,9 +63,6 @@ body {
 /* ------------------------------------------------------------------
    Jersey cards — trading-card spread
 ------------------------------------------------------------------- */
-.card-spread {
-  perspective: 1200px;
-}
 
 /* no rotation on text-bearing cards — rotated text rasterizes blurry.
    The collector-scatter feel comes from small vertical nudges instead. */
@@ -142,25 +139,17 @@ body {
   animation: deal-in 720ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* tap-to-flip: the card frame stays put, the content turns over */
+/* tap-to-flip: a 2D squeeze (scaleX to 0, swap, scale back) driven by
+   WAAPI in JerseyCard. Deliberately NOT a 3D flip — perspective +
+   backface-visibility force cards into composited layers that mobile
+   GPUs rasterize blurry. At rest the cards are plain DOM = crisp text. */
 .card-flip {
   position: relative;
-  transform-style: preserve-3d;
-  transition: transform 480ms cubic-bezier(0.4, 0.1, 0.2, 1);
-}
-
-.jersey-card.is-flipped .card-flip {
-  transform: rotateY(180deg);
-}
-
-.card-face {
-  backface-visibility: hidden;
 }
 
 .card-back {
   position: absolute;
   inset: 0;
-  transform: rotateY(180deg);
   overflow-y: auto;
   scrollbar-width: none;
 }
@@ -168,11 +157,12 @@ body {
 /* season-by-season mini table on the card back */
 .season-grid {
   display: grid;
-  grid-template-columns: 2.1rem 2.4rem 1fr;
+  /* year and record size to content; playoffs takes the rest */
+  grid-template-columns: auto auto 1fr;
   column-gap: 0.3rem;
   align-items: baseline;
   white-space: nowrap;
-  font-size: 0.58rem;
+  font-size: 0.55rem;
   line-height: 1.5;
   padding: 2px 0;
   font-variant-numeric: tabular-nums;

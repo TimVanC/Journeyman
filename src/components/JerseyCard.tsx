@@ -56,7 +56,39 @@ interface Props {
 
 export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, dealDelay = 0, cardRef }: Props) {
   const ref = useRef<HTMLElement | null>(null);
-  const [flipped, setFlipped] = useState(false);
+  const flipRef = useRef<HTMLDivElement | null>(null);
+  const animating = useRef(false);
+  const [showBack, setShowBack] = useState(false);
+
+  /** 2D squeeze flip — no 3D layers, so text stays crisp on mobile */
+  const toggleFlip = () => {
+    if (animating.current) return;
+    const el = flipRef.current;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!el || reduce) {
+      setShowBack((b) => !b);
+      return;
+    }
+    animating.current = true;
+    const squeeze = el.animate(
+      [{ transform: "scaleX(1)" }, { transform: "scaleX(0.04)" }],
+      { duration: 130, easing: "ease-in" }
+    );
+    squeeze.finished
+      .then(() => {
+        setShowBack((b) => !b);
+        return el.animate(
+          [{ transform: "scaleX(0.04)" }, { transform: "scaleX(1)" }],
+          { duration: 170, easing: "ease-out" }
+        ).finished;
+      })
+      .catch(() => {
+        setShowBack((b) => !b);
+      })
+      .finally(() => {
+        animating.current = false;
+      });
+  };
 
   // the flip is the moment of the game — make sure it happens on screen
   // (skip during the end-of-game cascade, where many cards land at once)
@@ -84,7 +116,7 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
         ref.current = el;
         cardRef?.(el);
       }}
-      className={`jersey-card w-full cursor-pointer px-1.5 pb-2 pt-1 md:w-36 ${isNewest && dealDelay > 0 ? "deal-in" : ""} ${flipped ? "is-flipped" : ""}`}
+      className={`jersey-card w-full cursor-pointer px-1.5 pb-2 pt-1 md:w-36 ${isNewest && dealDelay > 0 ? "deal-in" : ""}`}
       style={
         {
           "--nudge": `${NUDGES[spreadIndex % NUDGES.length]}px`,
@@ -92,18 +124,19 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
         } as React.CSSProperties
       }
       aria-label={`Jersey: ${formatStintYears(stint)}. Tap for details.`}
+      aria-pressed={showBack}
       tabIndex={0}
-      onClick={() => setFlipped((f) => !f)}
+      onClick={toggleFlip}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          setFlipped((f) => !f);
+          toggleFlip();
         }
       }}
     >
-      <div className="card-flip">
-        {/* front */}
-        <div className="card-face">
+      <div className="card-flip" ref={flipRef}>
+        {/* front — kept in flow (hidden) while flipped so the card holds its height */}
+        <div className="card-face" style={{ visibility: showBack ? "hidden" : "visible" }}>
           <p className="text-center font-display text-[0.85rem] leading-tight tracking-wide">
             {formatStintYears(stint)}
           </p>
@@ -146,6 +179,7 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
         </div>
 
         {/* back — the stop's hardware + season-by-season record */}
+        {showBack && (
         <div className="card-face card-back">
           <p className="border-b border-line pb-0.5 text-center font-display text-[0.85rem] leading-tight tracking-wide">
             {formatStintYears(stint)}
@@ -172,14 +206,14 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
             return (
               <div className="mt-1">
                 <div className="season-grid season-head">
-                  <span>Season</span>
-                  <span>W–L</span>
+                  <span>Yr</span>
+                  <span className="text-right">W–L</span>
                   <span className="text-right">Playoffs</span>
                 </div>
                 {seasons.map((s) => (
                   <div key={s.year} className="season-grid">
                     <span className="font-bold">{seasonLabel(s.year)}</span>
-                    <span>
+                    <span className="text-right">
                       {s.w}–{s.l}
                     </span>
                     <span
@@ -201,6 +235,7 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
             );
           })()}
         </div>
+        )}
       </div>
     </article>
   );
