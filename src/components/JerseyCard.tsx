@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import JerseyRenderer, { eraTricode, resolveColorway, type ColorwayDB } from "./JerseyRenderer";
 import colorwaysJson from "../data/colorways.json";
 import { getStintSeasons, seasonLabel } from "../data/teamSeasons";
@@ -112,15 +112,30 @@ interface Props {
   showLabel: boolean;
   /** staggers the deal-in during the end-of-game cascade (ms) */
   dealDelay?: number;
+  /** invisible while its GhostCard is still in flight from the deck — the
+   *  ghost is the only thing on screen until it lands here */
+  hidden?: boolean;
   /** lets the spread run FLIP slide animations on reorder */
   cardRef?: (el: HTMLElement | null) => void;
 }
 
-export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, dealDelay = 0, cardRef }: Props) {
+export default function JerseyCard({
+  stint,
+  spreadIndex,
+  isNewest,
+  showLabel,
+  dealDelay = 0,
+  hidden = false,
+  cardRef,
+}: Props) {
   const ref = useRef<HTMLElement | null>(null);
   const flipRef = useRef<HTMLDivElement | null>(null);
   const animating = useRef(false);
   const [showBack, setShowBack] = useState(false);
+  // a card that mounts hidden arrived via GhostCard, which already scrolled
+  // the deck into view at flip-start — scrolling again once it lands here
+  // would fight the ghost's own flight animation
+  const suppressScroll = useRef(hidden);
 
   /** 2D squeeze flip — no 3D layers, so text stays crisp on mobile */
   const toggleFlip = () => {
@@ -155,7 +170,7 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
   // the flip is the moment of the game — make sure it happens on screen
   // (skip during the end-of-game cascade, where many cards land at once)
   useEffect(() => {
-    if (!isNewest || dealDelay > 0) return;
+    if (!isNewest || dealDelay > 0 || suppressScroll.current) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     ref.current?.scrollIntoView({
       behavior: reduce ? "auto" : "smooth",
@@ -183,6 +198,7 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
         {
           "--nudge": `${NUDGES[spreadIndex % NUDGES.length]}px`,
           animationDelay: dealDelay > 0 ? `${dealDelay}ms` : undefined,
+          visibility: hidden ? "hidden" : undefined,
         } as React.CSSProperties
       }
       aria-label={`Jersey: ${formatStintYears(stint)}. Tap for details.`}
@@ -285,6 +301,74 @@ function Stat({ label, value }: { label: string; value: string | number }) {
       <dd className="font-display text-[0.78rem] leading-tight tabular-nums">
         {value}
       </dd>
+    </div>
+  );
+}
+
+/** Flies the just-flipped card from the deck to its landing slot in one
+ *  continuous motion. This is the ONLY thing that moves during a reveal —
+ *  the deck reverts to face-down and the real JerseyCard mounts (invisible,
+ *  via its `hidden` prop) the instant this starts, both hidden underneath
+ *  the ghost, so there's no hard cut between "flip" and "slide". */
+export function GhostCard({
+  stint,
+  from,
+  to,
+  onArrived,
+}: {
+  stint: Stint;
+  from: DOMRect;
+  to: DOMRect;
+  onArrived: () => void;
+}) {
+  const ref = useRef<HTMLDivElement | null>(null);
+  const era = resolveColorway(colorways, stint.franchise, stint.startYear, stint.endYear);
+
+  // useLayoutEffect (not useEffect): the flight must start on the very
+  // first paint, or the ghost would sit still at the deck for a frame
+  useLayoutEffect(() => {
+    const el = ref.current;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!el || reduce) {
+      onArrived();
+      return;
+    }
+    const dx = to.left - from.left;
+    const dy = to.top - from.top;
+    const sx = to.width / from.width;
+    const sy = to.height / from.height;
+    const anim = el.animate(
+      [
+        { transform: "translate(0px, 0px) scale(1, 1)" },
+        {
+          transform: `translate(${dx * 0.5}px, ${dy * 0.5 - 14}px) scale(${(1 + sx) / 2}, ${(1 + sy) / 2})`,
+          offset: 0.5,
+        },
+        { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
+      ],
+      { duration: 800, easing: "cubic-bezier(0.3, 0.8, 0.3, 1)", fill: "forwards" }
+    );
+    anim.finished.then(onArrived).catch(onArrived);
+    // fires once for this ghost's one-shot flight; from/to/onArrived are
+    // fixed for its lifetime (a fresh GhostCard mounts per reveal)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className="jersey-card w-full px-1.5 pb-2 pt-1"
+      style={{
+        position: "fixed",
+        left: from.left,
+        top: from.top,
+        width: from.width,
+        height: from.height,
+        zIndex: 60,
+        pointerEvents: "none",
+      }}
+    >
+      <CardFront stint={stint} era={era} showLabel size={70} />
     </div>
   );
 }

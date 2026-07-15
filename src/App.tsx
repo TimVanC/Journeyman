@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
 import Header from "./components/Header";
-import JerseyCard, { DeckCard } from "./components/JerseyCard";
+import JerseyCard, { DeckCard, GhostCard } from "./components/JerseyCard";
 import HintTray from "./components/HintTray";
 import GuessInput from "./components/GuessInput";
 import ResultModal from "./components/ResultModal";
@@ -9,6 +9,7 @@ import StartScreen from "./components/StartScreen";
 import Confetti from "./components/Confetti";
 import { puzzles } from "./data/puzzles";
 import { getPhase, initialState, reducer, HINT_COUNT } from "./game/state";
+import type { Stint } from "./game/types";
 import {
   currentDayNumber,
   displayStreak,
@@ -116,19 +117,45 @@ export default function App() {
     return () => clearTimeout(t);
   }, [over, day, state.status, state.revealed, testIndex]);
 
+  const DECK_KEY = -1;
+  const cardEls = useRef(new Map<number, HTMLElement>());
+  const prevRects = useRef(new Map<number, DOMRect>());
+
   // ---- flip-the-top-card reveal ----
   // Tapping the deck (or the reveal button) first flips the deck's top
-  // card face-up in place, showing the incoming jersey; after a beat the
-  // real card slides off the deck into its chronological slot.
+  // card face-up in place, showing the incoming jersey; after a beat a
+  // GhostCard flies that same card from the deck to its chronological
+  // slot in one continuous motion — the deck reverts to face-down and the
+  // real JerseyCard mounts (invisible until the ghost lands) at the exact
+  // same instant, both hidden underneath the ghost the whole flight.
   const FLIP_REVEAL_MS = 850; // squeeze flip (~350ms) + a beat to read it
   const [flipIdx, setFlipIdx] = useState<number | null>(null);
   const flipTimer = useRef<number | null>(null);
   const dealtFromFlip = useRef(false);
+  // the deck's on-screen rect at the instant the flip ends, and the stint
+  // it was showing — captured BEFORE the deck snaps back to face-down, so
+  // the ghost's flight starts from exactly where the flipped card was
+  const flipOriginRect = useRef<DOMRect | null>(null);
+  const pendingGhostStint = useRef<Stint | null>(null);
+  // the stint index currently mid-flip — a ref, not just the flipIdx state,
+  // because finishFlip is scheduled via setTimeout from the SAME render
+  // that calls setFlipIdx: its closure would otherwise see the stale
+  // pre-click flipIdx (null) instead of the value just set
+  const flipTargetIdx = useRef<number | null>(null);
+  const [ghost, setGhost] = useState<{
+    key: number;
+    stint: Stint;
+    from: DOMRect;
+    to: DOMRect;
+  } | null>(null);
 
   const finishFlip = () => {
     if (flipTimer.current === null) return;
     clearTimeout(flipTimer.current);
     flipTimer.current = null;
+    flipOriginRect.current = cardEls.current.get(DECK_KEY)?.getBoundingClientRect() ?? null;
+    pendingGhostStint.current =
+      flipTargetIdx.current !== null ? puzzle.stints[flipTargetIdx.current] : null;
     setFlipIdx(null);
     dealtFromFlip.current = true;
     dispatch({ type: "reveal", puzzle });
@@ -142,7 +169,9 @@ export default function App() {
       dispatch({ type: "reveal", puzzle });
       return;
     }
-    setFlipIdx(puzzle.revealOrder[state.revealed]);
+    const idx = puzzle.revealOrder[state.revealed];
+    flipTargetIdx.current = idx;
+    setFlipIdx(idx);
     flipTimer.current = window.setTimeout(finishFlip, FLIP_REVEAL_MS);
   };
 
@@ -174,40 +203,34 @@ export default function App() {
     }
   }
 
-  const DECK_KEY = -1;
-  const cardEls = useRef(new Map<number, HTMLElement>());
-  const prevRects = useRef(new Map<number, DOMRect>());
   useLayoutEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     cardEls.current.forEach((el, key) => {
       const now = el.getBoundingClientRect();
       const last = prevRects.current.get(key);
-      // brand-new in-game card: slide out from the deck
+      // brand-new in-game card
       if (!last && !reduce && !over && key === newestIdx && key !== DECK_KEY) {
-        const deckPrev = prevRects.current.get(DECK_KEY);
-        if (deckPrev) {
-          const dx = deckPrev.left - now.left;
-          const dy = deckPrev.top - now.top;
-          const clearZ = () => {
-            el.style.zIndex = "";
-          };
-          if (dealtFromFlip.current) {
-            // the card was just flipped face-up on the deck — it lifts OFF
-            // the top and arcs over its neighbors into its slot
-            el.style.zIndex = "6"; // above the deck (z 3) while traveling
-            el.animate(
-              [
-                { transform: `translate(${dx}px, ${dy}px) scale(1)` },
-                {
-                  transform: `translate(${dx * 0.5}px, ${dy * 0.5 - 14}px) scale(1.06)`,
-                  offset: 0.5,
-                },
-                { transform: "translate(0, 0) scale(1)" },
-              ],
-              { duration: 800, easing: "cubic-bezier(0.3, 0.8, 0.3, 1)", fill: "backwards" }
-            ).finished.then(clearZ, clearZ);
-          } else {
-            // penalty reveal (wrong guess): dealt from under the deck
+        if (dealtFromFlip.current) {
+          // the GhostCard flies from the deck to exactly this spot; this
+          // real card stays invisible (see its `hidden` prop) until it
+          // lands, so nothing here animates on its own
+          if (flipOriginRect.current && pendingGhostStint.current) {
+            setGhost({
+              key: newestIdx,
+              stint: pendingGhostStint.current,
+              from: flipOriginRect.current,
+              to: now,
+            });
+          }
+        } else {
+          // penalty reveal (wrong guess): dealt from under the deck
+          const deckPrev = prevRects.current.get(DECK_KEY);
+          if (deckPrev) {
+            const dx = deckPrev.left - now.left;
+            const dy = deckPrev.top - now.top;
+            const clearZ = () => {
+              el.style.zIndex = "";
+            };
             el.style.zIndex = "1"; // beneath the deck (z 3) while emerging
             el.animate(
               [
@@ -254,6 +277,8 @@ export default function App() {
       prevRects.current.set(key, now);
     });
     dealtFromFlip.current = false;
+    flipOriginRect.current = null;
+    pendingGhostStint.current = null;
   }, [state.revealed, newestIdx, over]);
 
   const remaining = total - state.revealed;
@@ -347,6 +372,7 @@ export default function App() {
                 }
                 showLabel
                 dealDelay={cascadeDelays.get(stintIdx) ?? 0}
+                hidden={ghost?.key === stintIdx}
                 cardRef={(el) => {
                   if (el) cardEls.current.set(stintIdx, el);
                   else cardEls.current.delete(stintIdx);
@@ -421,6 +447,16 @@ export default function App() {
           </p>
         )}
       </div>
+
+      {ghost && (
+        <GhostCard
+          key={ghost.key}
+          stint={ghost.stint}
+          from={ghost.from}
+          to={ghost.to}
+          onArrived={() => setGhost(null)}
+        />
+      )}
 
       {celebrate && <Confetti />}
 
