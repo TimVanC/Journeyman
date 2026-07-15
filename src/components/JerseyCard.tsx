@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import JerseyRenderer, { eraTricode, resolveColorway, type ColorwayDB } from "./JerseyRenderer";
 import colorwaysJson from "../data/colorways.json";
+import { getStintSeasons, seasonLabel } from "../data/teamSeasons";
 import type { AccoladeType, Stint, StintAccolade } from "../game/types";
 import {
   AllNbaIcon,
@@ -141,32 +142,49 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
           </dl>
         </div>
 
-        {/* back — the stop's hardware, written out */}
+        {/* back — the stop's hardware + season-by-season record */}
         <div className="card-face card-back">
           <p className="text-center font-display text-[0.85rem] leading-tight tracking-wide">
             {formatStintYears(stint)}
           </p>
-          <ul className="mt-1.5 space-y-1">
-            {accolades.length > 0 ? (
-              accolades.map((a) => {
+
+          {accolades.length > 0 && (
+            <ul className="mt-1 space-y-0.5 border-b border-line pb-1">
+              {accolades.map((a) => {
                 const meta = ACCOLADE_META[a.type];
                 return (
-                  <li key={a.type} className="flex items-center gap-1.5 text-[0.66rem] font-semibold leading-tight">
-                    <meta.Icon size={13} className="shrink-0 text-wood-deep" />
+                  <li key={a.type} className="flex items-center gap-1.5 text-[0.62rem] font-semibold leading-tight">
+                    <meta.Icon size={12} className="shrink-0 text-wood-deep" />
                     {a.count > 1 ? `${a.count}× ` : ""}
                     {meta.label}
                   </li>
                 );
-              })
-            ) : (
-              <li className="pt-2 text-center text-[0.66rem] font-medium text-ink-soft">
-                No hardware at this stop.
+              })}
+            </ul>
+          )}
+
+          <ul className="mt-1">
+            {getStintSeasons(stint.franchise, stint.startYear, stint.endYear).map((s) => (
+              <li
+                key={s.year}
+                className="flex items-baseline justify-between gap-1 py-px text-[0.6rem] leading-tight tabular-nums"
+              >
+                <span className="font-bold">{seasonLabel(s.year)}</span>
+                <span>{s.w}–{s.l}</span>
+                <span
+                  className={`w-[3.6rem] truncate text-right ${
+                    s.po === ""
+                      ? "text-ink-soft"
+                      : s.po.startsWith("Won")
+                        ? "font-bold"
+                        : ""
+                  }`}
+                >
+                  {s.po === "" ? "Missed" : s.po}
+                </span>
               </li>
-            )}
+            ))}
           </ul>
-          <p className="absolute inset-x-0 bottom-1.5 text-center text-[0.52rem] font-bold uppercase tracking-[0.14em] text-ink-soft">
-            Tap to flip back
-          </p>
         </div>
       </div>
     </article>

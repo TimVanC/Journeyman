@@ -36,6 +36,7 @@ npm run dev
 | `src/game/state.ts` | Reducer: jerseys → hint ladder → final guess |
 | `src/game/storage.ts` | ET day number, per-day save, streak/history profile |
 | `src/game/share.ts` | Emoji trail + clipboard share text |
+| `src/data/teamSeasons.json` + `.ts` | Per-season W-L + playoff results (BR franchise pages, 2026-07-16) for the card backs |
 
 ## Before this data ships (Phase 2 QA)
 

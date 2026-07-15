@@ -160,7 +160,12 @@ body {
   position: absolute;
   inset: 0;
   transform: rotateY(180deg);
-  overflow: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.card-back::-webkit-scrollbar {
+  display: none;
 }
 
 /* face-down deck card (the reveal button) */
