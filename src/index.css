@@ -164,6 +164,32 @@ body {
   scrollbar-width: none;
 }
 
+/* season-by-season mini table on the card back */
+.season-grid {
+  display: grid;
+  grid-template-columns: 2.1rem 2.4rem 1fr;
+  column-gap: 0.3rem;
+  align-items: baseline;
+  white-space: nowrap;
+  font-size: 0.58rem;
+  line-height: 1.55;
+  font-variant-numeric: tabular-nums;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent);
+}
+
+.season-grid:last-child {
+  border-bottom: none;
+}
+
+.season-head {
+  font-size: 0.48rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-ink-soft);
+  border-bottom: 1px solid var(--color-line);
+}
+
 .card-back::-webkit-scrollbar {
   display: none;
 }

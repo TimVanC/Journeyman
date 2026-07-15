@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import JerseyRenderer, { eraTricode, resolveColorway, type ColorwayDB } from "./JerseyRenderer";
 import colorwaysJson from "../data/colorways.json";
-import { getStintSeasons, seasonLabel } from "../data/teamSeasons";
+import { getStintSeasons, playoffShort, seasonLabel } from "../data/teamSeasons";
 import type { AccoladeType, Stint, StintAccolade } from "../game/types";
 import {
   AllNbaIcon,
@@ -163,28 +163,41 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
             </ul>
           )}
 
-          <ul className="mt-1">
-            {getStintSeasons(stint.franchise, stint.startYear, stint.endYear).map((s) => (
-              <li
-                key={s.year}
-                className="flex items-baseline justify-between gap-1 py-px text-[0.6rem] leading-tight tabular-nums"
-              >
-                <span className="font-bold">{seasonLabel(s.year)}</span>
-                <span>{s.w}–{s.l}</span>
-                <span
-                  className={`w-[3.6rem] truncate text-right ${
-                    s.po === ""
-                      ? "text-ink-soft"
-                      : s.po.startsWith("Won")
-                        ? "font-bold"
-                        : ""
-                  }`}
-                >
-                  {s.po === "" ? "Missed" : s.po}
-                </span>
-              </li>
-            ))}
-          </ul>
+          {(() => {
+            const seasons = getStintSeasons(stint.franchise, stint.startYear, stint.endYear);
+            if (seasons.length === 0) return null;
+            return (
+              <div className="mt-1">
+                <div className="season-grid season-head">
+                  <span>Season</span>
+                  <span>W–L</span>
+                  <span className="text-right">Playoffs</span>
+                </div>
+                {seasons.map((s) => {
+                  const po = playoffShort(s.po);
+                  return (
+                    <div key={s.year} className="season-grid">
+                      <span className="font-bold">{seasonLabel(s.year)}</span>
+                      <span>
+                        {s.w}–{s.l}
+                      </span>
+                      <span
+                        className={`text-right ${
+                          po === "—"
+                            ? "text-ink-soft"
+                            : po === "Title"
+                              ? "font-bold text-wood-deep"
+                              : ""
+                        }`}
+                      >
+                        {po}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })()}
         </div>
       </div>
     </article>

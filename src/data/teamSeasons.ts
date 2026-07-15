@@ -31,6 +31,28 @@ export function getStintSeasons(
   return out;
 }
 
-/** 2003 → '03–04 */
+/** 2003 → 03-04 */
 export const seasonLabel = (y: number) =>
-  `'${String(y).slice(2)}–${String((y + 1) % 100).padStart(2, "0")}`;
+  `${String(y).slice(2)}-${String((y + 1) % 100).padStart(2, "0")}`;
+
+/** compact playoff column value; "" (missed) → "—" */
+export function playoffShort(po: string): string {
+  switch (po) {
+    case "":
+      return "—";
+    case "Lost 1st round":
+      return "R1";
+    case "Lost conf semis":
+      return "Semis";
+    case "Lost conf finals":
+      return "Conf F";
+    case "Lost Finals":
+      return "Lost F";
+    case "Won Finals":
+      return "Title";
+    case "Lost play-in":
+      return "Play-in";
+    default:
+      return po;
+  }
+}
