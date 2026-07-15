@@ -1,3 +1,20 @@
+/** Accolades earned during a specific stint, rendered as icons on the
+ *  card and written out on the card's flip side. all_nba = First Team only. */
+export type AccoladeType =
+  | "all_star"
+  | "champion"
+  | "mvp"
+  | "dpoy"
+  | "sixth_man"
+  | "roy"
+  | "all_nba"
+  | "olympic_gold";
+
+export interface StintAccolade {
+  type: AccoladeType;
+  count: number;
+}
+
 export interface Stint {
   /** Modern franchise tricode — key into colorways.json */
   franchise: string;
@@ -12,6 +29,8 @@ export interface Stint {
   rpg: number;
   apg: number;
   jerseyNumber: number;
+  /** hardware earned at this stop (icons on the card front, text on the back) */
+  accolades?: StintAccolade[];
 }
 
 export interface PuzzleHints {

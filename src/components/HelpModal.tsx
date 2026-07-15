@@ -47,6 +47,10 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
               jersey for you.
             </li>
             <li>
+              Tap any jersey to turn it over and see the hardware he won at
+              that stop.
+            </li>
+            <li>
               Out of jerseys? Wrong guesses open his player profile line by
               line: position → height → draft year → draft pick → college.
               Then one last guess.

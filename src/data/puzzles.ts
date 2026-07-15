@@ -48,6 +48,7 @@ export const puzzles: Puzzle[] = [
         rpg: 8.8,
         apg: 2.9,
         jerseyNumber: 3,
+        accolades: [{ type: "all_star", count: 1 }],
       },
       {
         franchise: "POR",
@@ -138,6 +139,7 @@ export const puzzles: Puzzle[] = [
         rpg: 10.2,
         apg: 2.0,
         jerseyNumber: 50,
+        accolades: [{ type: "all_star", count: 2 }],
       },
       {
         franchise: "SAC",
@@ -192,6 +194,7 @@ export const puzzles: Puzzle[] = [
         rpg: 6.3,
         apg: 0.9,
         jerseyNumber: 33,
+        accolades: [{ type: "sixth_man", count: 1 }],
       },
       {
         franchise: "WAS",
@@ -204,6 +207,7 @@ export const puzzles: Puzzle[] = [
         rpg: 8.9,
         apg: 1.8,
         jerseyNumber: 4,
+        accolades: [{ type: "all_star", count: 2 }],
       },
       {
         franchise: "CLE",
@@ -294,6 +298,7 @@ export const puzzles: Puzzle[] = [
         rpg: 1.9,
         apg: 2.1,
         jerseyNumber: 23,
+        accolades: [{ type: "sixth_man", count: 1 }],
       },
       {
         franchise: "LAL",
@@ -330,6 +335,7 @@ export const puzzles: Puzzle[] = [
         rpg: 2.7,
         apg: 5.1,
         jerseyNumber: 23,
+        accolades: [{ type: "sixth_man", count: 2 }],
       },
       {
         franchise: "ATL",
@@ -396,6 +402,7 @@ export const puzzles: Puzzle[] = [
         rpg: 11.1,
         apg: 2.5,
         jerseyNumber: 23,
+        accolades: [{ type: "dpoy", count: 1 }],
       },
       {
         franchise: "LAC",
@@ -469,8 +476,8 @@ export const puzzles: Puzzle[] = [
     answer: "Vince Carter",
     accolades: ["8× All-Star", "Rookie of the Year (1999)", "2000 Dunk Contest champion"],
     stints: [
-      { franchise: "TOR", displayTeam: "Toronto Raptors", startYear: 1998, endYear: 2004, gp: 403, mpg: 38.0, ppg: 23.4, rpg: 5.2, apg: 3.9, jerseyNumber: 15 },
-      { franchise: "BKN", displayTeam: "New Jersey Nets", startYear: 2004, endYear: 2008, gp: 374, mpg: 37.0, ppg: 23.6, rpg: 5.8, apg: 4.4, jerseyNumber: 15 },
+      { franchise: "TOR", displayTeam: "Toronto Raptors", startYear: 1998, endYear: 2004, gp: 403, mpg: 38.0, ppg: 23.4, rpg: 5.2, apg: 3.9, jerseyNumber: 15, accolades: [{ type: "roy", count: 1 }, { type: "all_star", count: 5 }] },
+      { franchise: "BKN", displayTeam: "New Jersey Nets", startYear: 2004, endYear: 2008, gp: 374, mpg: 37.0, ppg: 23.6, rpg: 5.8, apg: 4.4, jerseyNumber: 15, accolades: [{ type: "all_star", count: 3 }] },
       { franchise: "ORL", displayTeam: "Orlando Magic", startYear: 2009, endYear: 2009, gp: 75, mpg: 30.8, ppg: 16.6, rpg: 3.9, apg: 3.1, jerseyNumber: 15 },
       { franchise: "PHX", displayTeam: "Phoenix Suns", startYear: 2010, endYear: 2010, gp: 51, mpg: 27.2, ppg: 13.5, rpg: 3.6, apg: 1.6, jerseyNumber: 25 },
       { franchise: "DAL", displayTeam: "Dallas Mavericks", startYear: 2011, endYear: 2013, gp: 243, mpg: 25.0, ppg: 11.8, rpg: 3.9, apg: 2.4, jerseyNumber: 25 },
@@ -495,10 +502,10 @@ export const puzzles: Puzzle[] = [
     answer: "LeBron James",
     accolades: ["4× NBA champion", "4× MVP", "All-time scoring leader"],
     stints: [
-      { franchise: "CLE", displayTeam: "Cleveland Cavaliers", startYear: 2003, endYear: 2009, gp: 548, mpg: 40.2, ppg: 27.8, rpg: 7.0, apg: 7.0, jerseyNumber: 23 },
-      { franchise: "MIA", displayTeam: "Miami Heat", startYear: 2010, endYear: 2013, gp: 294, mpg: 38.0, ppg: 26.9, rpg: 7.6, apg: 6.7, jerseyNumber: 6 },
-      { franchise: "CLE", displayTeam: "Cleveland Cavaliers", startYear: 2014, endYear: 2017, gp: 301, mpg: 37.6, ppg: 26.1, rpg: 7.5, apg: 7.6, jerseyNumber: 23 },
-      { franchise: "LAL", displayTeam: "Los Angeles Lakers", startYear: 2018, endYear: 2025, gp: 454, mpg: 35.3, ppg: 26.3, rpg: 7.8, apg: 8.1, jerseyNumber: 23 },
+      { franchise: "CLE", displayTeam: "Cleveland Cavaliers", startYear: 2003, endYear: 2009, gp: 548, mpg: 40.2, ppg: 27.8, rpg: 7.0, apg: 7.0, jerseyNumber: 23, accolades: [{ type: "roy", count: 1 }, { type: "mvp", count: 2 }, { type: "all_star", count: 6 }, { type: "olympic_gold", count: 1 }] },
+      { franchise: "MIA", displayTeam: "Miami Heat", startYear: 2010, endYear: 2013, gp: 294, mpg: 38.0, ppg: 26.9, rpg: 7.6, apg: 6.7, jerseyNumber: 6, accolades: [{ type: "champion", count: 2 }, { type: "mvp", count: 2 }, { type: "all_star", count: 4 }, { type: "olympic_gold", count: 1 }] },
+      { franchise: "CLE", displayTeam: "Cleveland Cavaliers", startYear: 2014, endYear: 2017, gp: 301, mpg: 37.6, ppg: 26.1, rpg: 7.5, apg: 7.6, jerseyNumber: 23, accolades: [{ type: "champion", count: 1 }, { type: "all_star", count: 4 }, { type: "all_nba", count: 4 }] },
+      { franchise: "LAL", displayTeam: "Los Angeles Lakers", startYear: 2018, endYear: 2025, gp: 454, mpg: 35.3, ppg: 26.3, rpg: 7.8, apg: 8.1, jerseyNumber: 23, accolades: [{ type: "champion", count: 1 }, { type: "all_star", count: 7 }, { type: "olympic_gold", count: 1 }] },
     ],
     revealOrder: [1, 3, 2, 0], // MIA → LAL → CLE(2nd) → CLE(draft)
     hints: {
@@ -520,7 +527,7 @@ export const puzzles: Puzzle[] = [
     answer: "Manu Ginóbili",
     accolades: ["4× NBA champion", "Sixth Man of the Year (2008)", "2× All-Star", "Olympic gold (2004)"],
     stints: [
-      { franchise: "SAS", displayTeam: "San Antonio Spurs", startYear: 2002, endYear: 2017, gp: 1057, mpg: 25.4, ppg: 13.3, rpg: 3.5, apg: 3.8, jerseyNumber: 20 },
+      { franchise: "SAS", displayTeam: "San Antonio Spurs", startYear: 2002, endYear: 2017, gp: 1057, mpg: 25.4, ppg: 13.3, rpg: 3.5, apg: 3.8, jerseyNumber: 20, accolades: [{ type: "champion", count: 4 }, { type: "all_star", count: 2 }, { type: "sixth_man", count: 1 }, { type: "olympic_gold", count: 1 }] },
     ],
     revealOrder: [0],
     hints: {
@@ -539,8 +546,8 @@ export const puzzles: Puzzle[] = [
     answer: "Kobe Bryant",
     accolades: ["5× NBA champion", "MVP (2008)", "18× All-Star"],
     stints: [
-      { franchise: "LAL", displayTeam: "Los Angeles Lakers", startYear: 1996, endYear: 2005, gp: 707, mpg: 36.0, ppg: 23.9, rpg: 5.1, apg: 4.5, jerseyNumber: 8 },
-      { franchise: "LAL", displayTeam: "Los Angeles Lakers", startYear: 2006, endYear: 2015, gp: 639, mpg: 36.1, ppg: 26.4, rpg: 5.5, apg: 4.9, jerseyNumber: 24 },
+      { franchise: "LAL", displayTeam: "Los Angeles Lakers", startYear: 1996, endYear: 2005, gp: 707, mpg: 36.0, ppg: 23.9, rpg: 5.1, apg: 4.5, jerseyNumber: 8, accolades: [{ type: "champion", count: 3 }, { type: "all_star", count: 8 }, { type: "all_nba", count: 2 }] },
+      { franchise: "LAL", displayTeam: "Los Angeles Lakers", startYear: 2006, endYear: 2015, gp: 639, mpg: 36.1, ppg: 26.4, rpg: 5.5, apg: 4.9, jerseyNumber: 24, accolades: [{ type: "champion", count: 2 }, { type: "mvp", count: 1 }, { type: "all_star", count: 10 }, { type: "all_nba", count: 6 }, { type: "olympic_gold", count: 2 }] },
     ],
     revealOrder: [1, 0], // #24 era → #8 era (draft era last)
     hints: {

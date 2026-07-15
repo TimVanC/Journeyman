@@ -1,12 +1,36 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import JerseyRenderer, { eraTricode, resolveColorway, type ColorwayDB } from "./JerseyRenderer";
 import colorwaysJson from "../data/colorways.json";
-import type { Stint } from "../game/types";
+import type { AccoladeType, Stint, StintAccolade } from "../game/types";
+import {
+  AllNbaIcon,
+  CrownIcon,
+  MedalIcon,
+  RoyIcon,
+  ShieldIcon,
+  SixthManIcon,
+  StarIcon,
+  TrophyIcon,
+} from "./Icons";
 
 const colorways = colorwaysJson as unknown as ColorwayDB;
 
 /** deterministic collector-spread tilt per position */
 const TILTS = [-2.2, 1.6, -1.3, 2.1, -1.8, 1.4, -2.4, 1.9];
+
+const ACCOLADE_META: Record<
+  AccoladeType,
+  { Icon: (p: { size?: number; className?: string }) => React.ReactNode; label: string }
+> = {
+  all_star: { Icon: StarIcon, label: "NBA All-Star" },
+  champion: { Icon: TrophyIcon, label: "NBA champion" },
+  mvp: { Icon: CrownIcon, label: "League MVP" },
+  dpoy: { Icon: ShieldIcon, label: "Defensive Player of the Year" },
+  sixth_man: { Icon: SixthManIcon, label: "Sixth Man of the Year" },
+  roy: { Icon: RoyIcon, label: "Rookie of the Year" },
+  all_nba: { Icon: AllNbaIcon, label: "All-NBA First Team" },
+  olympic_gold: { Icon: MedalIcon, label: "Olympic gold" },
+};
 
 export function formatStintYears(s: Stint): string {
   return `${s.startYear}–${s.endYear + 1}`;
@@ -28,6 +52,7 @@ interface Props {
 
 export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, dealDelay = 0, cardRef }: Props) {
   const ref = useRef<HTMLElement | null>(null);
+  const [flipped, setFlipped] = useState(false);
 
   // the flip is the moment of the game — make sure it happens on screen
   // (skip during the end-of-game cascade, where many cards land at once)
@@ -47,6 +72,7 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
     stint.startYear,
     stint.endYear
   );
+  const accolades = stint.accolades ?? [];
 
   return (
     <article
@@ -54,49 +80,107 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
         ref.current = el;
         cardRef?.(el);
       }}
-      className={`jersey-card w-full px-1.5 pb-2 pt-1 md:w-36 ${isNewest ? "deal-in" : ""}`}
+      className={`jersey-card w-full cursor-pointer px-1.5 pb-2 pt-1 md:w-36 ${isNewest ? "deal-in" : ""} ${flipped ? "is-flipped" : ""}`}
       style={
         {
           "--tilt": `${TILTS[spreadIndex % TILTS.length]}deg`,
           animationDelay: dealDelay > 0 ? `${dealDelay}ms` : undefined,
         } as React.CSSProperties
       }
-      aria-label={`Jersey: ${formatStintYears(stint)}`}
+      aria-label={`Jersey: ${formatStintYears(stint)}. Tap for details.`}
+      tabIndex={0}
+      onClick={() => setFlipped((f) => !f)}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          setFlipped((f) => !f);
+        }
+      }}
     >
-      <p className="text-center font-display text-[0.85rem] leading-tight tracking-wide">
-        {formatStintYears(stint)}
-      </p>
+      <div className="card-flip">
+        {/* front */}
+        <div className="card-face">
+          <p className="text-center font-display text-[0.85rem] leading-tight tracking-wide">
+            {formatStintYears(stint)}
+          </p>
 
-      <div className="mt-0.5 mb-1 flex justify-center">
-        {era ? (
-          <JerseyRenderer
-            primary={era.primary}
-            secondary={era.secondary}
-            trim={era.trim}
-            number={stint.jerseyNumber}
-            eraStyle={era.eraStyle}
-            size={70}
-            label={showLabel ? eraTricode(era, stint.franchise) : null}
-          />
-        ) : (
-          <div className="flex h-32 items-center justify-center text-ink-soft">
-            ?
+          <div className="mt-0.5 mb-1 flex justify-center">
+            {era ? (
+              <JerseyRenderer
+                primary={era.primary}
+                secondary={era.secondary}
+                trim={era.trim}
+                number={stint.jerseyNumber}
+                eraStyle={era.eraStyle}
+                size={70}
+                label={showLabel ? eraTricode(era, stint.franchise) : null}
+              />
+            ) : (
+              <div className="flex h-24 items-center justify-center text-ink-soft">?</div>
+            )}
           </div>
-        )}
-      </div>
 
-      <dl className="border-t border-line pt-1">
-        <div className="grid grid-cols-3 gap-0.5 text-center">
-          <Stat label="GP" value={stint.gp} />
-          <Stat label="MPG" value={stint.mpg.toFixed(1)} />
-          <Stat label="PPG" value={stint.ppg.toFixed(1)} />
+          {accolades.length > 0 && (
+            <p className="mb-0.5 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-[0.6rem] font-bold text-ink-soft">
+              {accolades.map((a) => (
+                <AccoladeChip key={a.type} accolade={a} />
+              ))}
+            </p>
+          )}
+
+          <dl className="border-t border-line pt-1">
+            <div className="grid grid-cols-3 gap-0.5 text-center">
+              <Stat label="GP" value={stint.gp} />
+              <Stat label="MPG" value={stint.mpg.toFixed(1)} />
+              <Stat label="PPG" value={stint.ppg.toFixed(1)} />
+            </div>
+            <div className="mt-0.5 flex justify-center gap-4 text-center">
+              <Stat label="RPG" value={stint.rpg.toFixed(1)} />
+              <Stat label="APG" value={stint.apg.toFixed(1)} />
+            </div>
+          </dl>
         </div>
-        <div className="mt-0.5 flex justify-center gap-4 text-center">
-          <Stat label="RPG" value={stint.rpg.toFixed(1)} />
-          <Stat label="APG" value={stint.apg.toFixed(1)} />
+
+        {/* back — the stop's hardware, written out */}
+        <div className="card-face card-back">
+          <p className="text-center font-display text-[0.85rem] leading-tight tracking-wide">
+            {formatStintYears(stint)}
+          </p>
+          <ul className="mt-1.5 space-y-1">
+            {accolades.length > 0 ? (
+              accolades.map((a) => {
+                const meta = ACCOLADE_META[a.type];
+                return (
+                  <li key={a.type} className="flex items-center gap-1.5 text-[0.66rem] font-semibold leading-tight">
+                    <meta.Icon size={13} className="shrink-0 text-wood-deep" />
+                    {a.count > 1 ? `${a.count}× ` : ""}
+                    {meta.label}
+                  </li>
+                );
+              })
+            ) : (
+              <li className="pt-2 text-center text-[0.66rem] font-medium text-ink-soft">
+                No hardware at this stop.
+              </li>
+            )}
+          </ul>
+          <p className="absolute inset-x-0 bottom-1.5 text-center text-[0.52rem] font-bold uppercase tracking-[0.14em] text-ink-soft">
+            Tap to flip back
+          </p>
         </div>
-      </dl>
+      </div>
     </article>
+  );
+}
+
+function AccoladeChip({ accolade }: { accolade: StintAccolade }) {
+  const meta = ACCOLADE_META[accolade.type];
+  return (
+    <span className="inline-flex items-center gap-0.5" title={meta.label}>
+      <meta.Icon size={12} className="text-wood-deep" />
+      {accolade.count > 1 && <span className="tabular-nums">×{accolade.count}</span>}
+      <span className="sr-only">{meta.label}</span>
+    </span>
   );
 }
 
@@ -113,7 +197,7 @@ function Stat({ label, value }: { label: string; value: string | number }) {
   );
 }
 
-/** Face-down card on top of the deck — doubles as the reveal button. */
+/** Face-down mystery jersey on top of the deck — the reveal button. */
 export function DeckCard({
   remaining,
   onReveal,
@@ -126,13 +210,20 @@ export function DeckCard({
   return (
     <button
       type="button"
-      className="deck-card flex w-full flex-col items-center justify-center gap-1.5 px-2 py-4 md:w-36"
+      className="deck-card flex w-full flex-col items-center justify-center gap-1 px-2 py-3 md:w-36"
       style={{ "--tilt": `${TILTS[tiltIndex % TILTS.length]}deg` } as React.CSSProperties}
       onClick={onReveal}
     >
-      <span className="font-display text-3xl leading-none">+1</span>
-      <span className="text-[0.58rem] font-bold uppercase tracking-[0.12em]">
-        Flip next jersey
+      <JerseyRenderer
+        primary="#f2e7d2"
+        secondary="#8a5f3c"
+        trim="#3a2c1c"
+        number={null}
+        eraStyle="nineties"
+        size={62}
+      />
+      <span className="text-[0.62rem] font-bold uppercase tracking-[0.14em]">
+        Flip next
       </span>
       <span className="text-[0.56rem] opacity-80">
         {remaining} left in the bag

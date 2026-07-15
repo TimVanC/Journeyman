@@ -131,7 +131,6 @@ export default function JerseyRenderer({
           sized like a chest wordmark, just under the number's scale */}
       {label && (
         <text
-          className="jersey-tag"
           x={CX}
           y={CY + 3}
           textAnchor="middle"

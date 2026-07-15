@@ -148,16 +148,32 @@ export default function App() {
         const dx = last.left - now.left;
         const dy = last.top - now.top;
         if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
-          // slow enough to actually watch the career re-order itself
-          el.animate(
-            [{ transform: `translate(${dx}px, ${dy}px)` }, { transform: "translate(0, 0)" }],
+          // slow enough to actually watch the career re-order itself;
+          // the card lifts above its neighbors while it travels
+          el.style.zIndex = "5";
+          const slide = el.animate(
+            [
+              { transform: `translate(${dx}px, ${dy}px) scale(1)` },
+              {
+                transform: `translate(${dx * 0.5}px, ${dy * 0.5 - 12}px) scale(1.05)`,
+                offset: 0.5,
+              },
+              { transform: "translate(0, 0) scale(1)" },
+            ],
             {
-              duration: 1250,
-              delay: 120,
+              duration: 1150,
+              delay: 100,
               fill: "backwards",
-              easing: "cubic-bezier(0.3, 0.9, 0.35, 1)",
+              easing: "cubic-bezier(0.3, 0.8, 0.3, 1)",
             }
           );
+          slide.finished
+            .then(() => {
+              el.style.zIndex = "";
+            })
+            .catch(() => {
+              el.style.zIndex = "";
+            });
         }
       }
       prevRects.current.set(key, now);

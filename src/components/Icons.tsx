@@ -89,3 +89,81 @@ export function GraveIcon(p: IconProps) {
     </Base>
   );
 }
+
+/* ---------------- accolade icons ---------------- */
+
+/** All-Star */
+export function StarIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
+    </Base>
+  );
+}
+
+/** championship */
+export function TrophyIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
+      <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+      <path d="M4 22h16" />
+      <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
+      <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
+      <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" />
+    </Base>
+  );
+}
+
+/** MVP */
+export function CrownIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <path d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.735H5.81a1 1 0 0 1-.957-.735L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z" />
+      <path d="M5 21h14" />
+    </Base>
+  );
+}
+
+/** Defensive Player of the Year */
+export function ShieldIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+    </Base>
+  );
+}
+
+/** Olympic gold */
+export function MedalIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <path d="M8 3h8l-3 7h-2z" />
+      <circle cx="12" cy="15" r="5.5" />
+    </Base>
+  );
+}
+
+/** letter/number badge — 6MOY, ROY, All-NBA First Team */
+function BadgeIcon({ glyph, ...p }: IconProps & { glyph: string }) {
+  return (
+    <Base {...p}>
+      <circle cx="12" cy="12" r="9.5" />
+      <text
+        x="12"
+        y="16.4"
+        textAnchor="middle"
+        fontSize="12"
+        fontFamily="'Archivo Black','Arial Black',sans-serif"
+        fill="currentColor"
+        stroke="none"
+      >
+        {glyph}
+      </text>
+    </Base>
+  );
+}
+
+export const SixthManIcon = (p: IconProps) => <BadgeIcon glyph="6" {...p} />;
+export const RoyIcon = (p: IconProps) => <BadgeIcon glyph="R" {...p} />;
+export const AllNbaIcon = (p: IconProps) => <BadgeIcon glyph="1" {...p} />;
