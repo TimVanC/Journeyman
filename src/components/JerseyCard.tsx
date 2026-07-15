@@ -40,6 +40,68 @@ export function formatStintYears(s: Stint): string {
   return `${s.startYear}–${s.endYear + 1}`;
 }
 
+type Era = NonNullable<ReturnType<typeof resolveColorway>>;
+
+/** The card front — jersey art + stat block. Shared by JerseyCard (the
+ *  spread) and DeckCard's mid-flip state, so the "whole card" the deck
+ *  flips to is pixel-identical to what lands in the spread a beat later. */
+function CardFront({
+  stint,
+  era,
+  showLabel,
+  size = 70,
+}: {
+  stint: Stint;
+  era: Era | null;
+  showLabel: boolean;
+  size?: number;
+}) {
+  const accolades = stint.accolades ?? [];
+  return (
+    <>
+      <p className="text-center font-display text-[0.85rem] leading-tight tracking-wide">
+        {formatStintYears(stint)}
+      </p>
+
+      <div className="mt-0.5 mb-1 flex justify-center">
+        {era ? (
+          <JerseyRenderer
+            primary={era.primary}
+            secondary={era.secondary}
+            trim={era.trim}
+            number={stint.jerseyNumber}
+            eraStyle={era.eraStyle}
+            size={size}
+            label={showLabel ? eraTricode(era, stint.franchise) : null}
+          />
+        ) : (
+          <div className="flex h-24 items-center justify-center text-ink-soft">?</div>
+        )}
+      </div>
+
+      {accolades.length > 0 && (
+        <p className="mb-0.5 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-[0.6rem] font-bold text-ink-soft">
+          {accolades.map((a) => (
+            <AccoladeChip key={a.type} accolade={a} />
+          ))}
+        </p>
+      )}
+
+      <dl className="border-t border-line pt-1">
+        <div className="grid grid-cols-3 gap-0.5 text-center">
+          <Stat label="GP" value={stint.gp} />
+          <Stat label="MPG" value={stint.mpg.toFixed(1)} />
+          <Stat label="PPG" value={stint.ppg.toFixed(1)} />
+        </div>
+        <div className="mt-0.5 flex justify-center gap-4 text-center">
+          <Stat label="RPG" value={stint.rpg.toFixed(1)} />
+          <Stat label="APG" value={stint.apg.toFixed(1)} />
+        </div>
+      </dl>
+    </>
+  );
+}
+
 interface Props {
   stint: Stint;
   /** position in the (chronologically sorted) spread — drives the tilt */
@@ -137,45 +199,7 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
       <div className="card-flip" ref={flipRef}>
         {/* front — kept in flow (hidden) while flipped so the card holds its height */}
         <div className="card-face" style={{ visibility: showBack ? "hidden" : "visible" }}>
-          <p className="text-center font-display text-[0.85rem] leading-tight tracking-wide">
-            {formatStintYears(stint)}
-          </p>
-
-          <div className="mt-0.5 mb-1 flex justify-center">
-            {era ? (
-              <JerseyRenderer
-                primary={era.primary}
-                secondary={era.secondary}
-                trim={era.trim}
-                number={stint.jerseyNumber}
-                eraStyle={era.eraStyle}
-                size={70}
-                label={showLabel ? eraTricode(era, stint.franchise) : null}
-              />
-            ) : (
-              <div className="flex h-24 items-center justify-center text-ink-soft">?</div>
-            )}
-          </div>
-
-          {accolades.length > 0 && (
-            <p className="mb-0.5 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-[0.6rem] font-bold text-ink-soft">
-              {accolades.map((a) => (
-                <AccoladeChip key={a.type} accolade={a} />
-              ))}
-            </p>
-          )}
-
-          <dl className="border-t border-line pt-1">
-            <div className="grid grid-cols-3 gap-0.5 text-center">
-              <Stat label="GP" value={stint.gp} />
-              <Stat label="MPG" value={stint.mpg.toFixed(1)} />
-              <Stat label="PPG" value={stint.ppg.toFixed(1)} />
-            </div>
-            <div className="mt-0.5 flex justify-center gap-4 text-center">
-              <Stat label="RPG" value={stint.rpg.toFixed(1)} />
-              <Stat label="APG" value={stint.apg.toFixed(1)} />
-            </div>
-          </dl>
+          <CardFront stint={stint} era={era} showLabel={showLabel} />
         </div>
 
         {/* back — the stop's hardware + season-by-season record */}
@@ -337,32 +361,15 @@ export function DeckCard({
         btnRef.current = el;
         cardRef?.(el);
       }}
-      className={`deck-card flex w-full flex-col items-center justify-center gap-1 px-2 py-3 md:w-36 ${showFace ? "is-face" : ""}`}
+      className={`deck-card flex w-full flex-col items-center justify-center px-2 py-3 md:w-36 ${showFace ? "is-face px-1.5 pb-2 pt-1" : "gap-1"}`}
       style={{ "--nudge": `${NUDGES[tiltIndex % NUDGES.length]}px` } as React.CSSProperties}
       onClick={onReveal}
     >
-      <div className="flex w-full flex-col items-center gap-1" ref={flipRef}>
+      <div className="w-full" ref={flipRef}>
         {showFace && flipStint ? (
-          <>
-            <span className="font-display text-[0.85rem] leading-tight tracking-wide">
-              {formatStintYears(flipStint)}
-            </span>
-            {era ? (
-              <JerseyRenderer
-                primary={era.primary}
-                secondary={era.secondary}
-                trim={era.trim}
-                number={flipStint.jerseyNumber}
-                eraStyle={era.eraStyle}
-                size={62}
-                label={eraTricode(era, flipStint.franchise)}
-              />
-            ) : (
-              <span className="flex h-24 items-center justify-center">?</span>
-            )}
-          </>
+          <CardFront stint={flipStint} era={era} showLabel size={70} />
         ) : (
-          <>
+          <div className="flex flex-col items-center gap-1">
             <JerseyRenderer
               primary="#f2e7d2"
               secondary="#8a5f3c"
@@ -377,7 +384,7 @@ export function DeckCard({
             <span className="text-[0.56rem] opacity-80">
               {remaining} left in the bag
             </span>
-          </>
+          </div>
         )}
       </div>
     </button>
