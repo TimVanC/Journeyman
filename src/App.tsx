@@ -48,6 +48,23 @@ function resetTestSlots() {
   for (let i = 1; i <= puzzles.length; i++) {
     localStorage.removeItem(`journeyman:game:v1:${9000 + i}`);
   }
+  // scrub any test-day records left in the profile by older builds
+  try {
+    const raw = localStorage.getItem("journeyman:profile:v1");
+    if (raw) {
+      const prof = JSON.parse(raw);
+      for (const k of Object.keys(prof.history ?? {})) {
+        if (Number(k) >= 9000) delete prof.history[k];
+      }
+      if ((prof.lastSolvedDay ?? 0) >= 9000) {
+        prof.lastSolvedDay = null;
+        prof.streak = 0;
+      }
+      localStorage.setItem("journeyman:profile:v1", JSON.stringify(prof));
+    }
+  } catch {
+    /* fine */
+  }
   location.reload();
 }
 
@@ -55,11 +72,13 @@ export default function App() {
   const { day, puzzle, testIndex } = resolveGame();
   const total = puzzle.stints.length;
 
-  const [state, dispatch] = useReducer(
-    reducer,
-    day,
-    (d) => loadGameState(d) ?? initialState(d)
-  );
+  const [state, dispatch] = useReducer(reducer, day, (d) => {
+    const saved = loadGameState(d);
+    // test puzzles replay forever: resume mid-game, but a finished
+    // slot starts fresh on the next visit
+    if (testIndex !== null && saved?.status !== "playing") return initialState(d);
+    return saved ?? initialState(d);
+  });
   const [profile, setProfile] = useState(loadProfile);
   // test mode goes straight to the board — no start screen between puzzles
   const [showStart, setShowStart] = useState(testIndex === null);
@@ -82,17 +101,20 @@ export default function App() {
     prevStatus.current = state.status;
   }, [state.status]);
 
-  // record win/loss exactly once, then pop the result card
+  // record win/loss exactly once, then pop the result card.
+  // test games never touch the real streak/history.
   const recorded = useRef(false);
   useEffect(() => {
     if (!over || recorded.current) return;
     recorded.current = true;
-    setProfile(
-      recordResult(day, state.status === "won" ? state.revealed : "DNF")
-    );
+    if (testIndex === null) {
+      setProfile(
+        recordResult(day, state.status === "won" ? state.revealed : "DNF")
+      );
+    }
     const t = setTimeout(() => setShowResult(true), state.status === "won" ? 1100 : 1400);
     return () => clearTimeout(t);
-  }, [over, day, state.status, state.revealed]);
+  }, [over, day, state.status, state.revealed, testIndex]);
 
   // ---- chronological spread with FLIP slide-into-place ----
   // once the game ends, every remaining stint cascades onto the board
@@ -320,6 +342,14 @@ export default function App() {
             testIndex !== null
               ? () => {
                   location.href = `?p=${(testIndex % puzzles.length) + 1}`;
+                }
+              : undefined
+          }
+          onReplay={
+            testIndex !== null
+              ? () => {
+                  localStorage.removeItem(`journeyman:game:v1:${day}`);
+                  location.reload();
                 }
               : undefined
           }

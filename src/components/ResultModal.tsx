@@ -29,9 +29,11 @@ interface Props {
   onClose: () => void;
   /** test mode only: jump to the next puzzle */
   onNext?: () => void;
+  /** test mode only: wipe this slot and play it again */
+  onReplay?: () => void;
 }
 
-export default function ResultModal({ puzzle, state, streak, onClose, onNext }: Props) {
+export default function ResultModal({ puzzle, state, streak, onClose, onNext, onReplay }: Props) {
   const [copied, setCopied] = useState(false);
   const won = state.status === "won";
   const total = puzzle.stints.length;
@@ -167,10 +169,19 @@ export default function ResultModal({ puzzle, state, streak, onClose, onNext }: 
         >
           {copied ? "Copied to clipboard!" : "Share result"}
         </button>
-        {onNext && (
-          <button type="button" className="btn mt-2 w-full" onClick={onNext}>
-            Next puzzle →
-          </button>
+        {(onNext || onReplay) && (
+          <div className="mt-2 flex gap-2">
+            {onReplay && (
+              <button type="button" className="btn flex-1" onClick={onReplay}>
+                Replay
+              </button>
+            )}
+            {onNext && (
+              <button type="button" className="btn flex-1" onClick={onNext}>
+                Next puzzle →
+              </button>
+            )}
+          </div>
         )}
         <p className="mt-3 text-center text-xs text-ink-soft">
           New jersey drops at midnight ET.
