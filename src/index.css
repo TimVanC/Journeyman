@@ -157,13 +157,13 @@ body {
 /* season-by-season mini table on the card back */
 .season-grid {
   display: grid;
-  /* year and record size to content; playoffs takes the rest */
-  grid-template-columns: auto auto 1fr;
-  column-gap: 0.3rem;
+  /* fixed columns so every row lines up; playoffs takes the rest */
+  grid-template-columns: 1.45rem 1.7rem 1fr;
+  column-gap: 0.2rem;
   align-items: baseline;
   white-space: nowrap;
-  font-size: 0.55rem;
-  line-height: 1.5;
+  font-size: 0.53rem;
+  line-height: 1.55;
   padding: 2px 0;
   font-variant-numeric: tabular-nums;
   border-bottom: 1px solid var(--color-line);
@@ -174,10 +174,10 @@ body {
 }
 
 .season-head {
-  font-size: 0.48rem;
+  font-size: 0.46rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.03em;
   color: var(--color-ink-soft);
   border-bottom: 1px solid var(--color-line);
 }
