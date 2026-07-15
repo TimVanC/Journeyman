@@ -218,6 +218,15 @@ body {
   translate: 0 var(--nudge, 0px);
 }
 
+/* mid-reveal: the deck's top card is face-up — paper card face on top of
+   the wood stack (the stacked-deck edge shadows stay: it's still on the
+   deck until it slides off to its slot) */
+.deck-card.is-face {
+  background: linear-gradient(168deg, #fdfaf3 0%, var(--color-card) 55%, #f1ead9 100%);
+  border-color: var(--color-line);
+  color: var(--color-ink);
+}
+
 /* ------------------------------------------------------------------
    Buttons, chips, inputs
 ------------------------------------------------------------------- */

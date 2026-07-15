@@ -265,41 +265,121 @@ function Stat({ label, value }: { label: string; value: string | number }) {
   );
 }
 
-/** Face-down mystery jersey on top of the deck — the reveal button. */
+/** Face-down mystery jersey on top of the deck — the reveal button.
+ *  When `flipStint` is set, the top card flips face-up in place (same 2D
+ *  squeeze as the jersey cards) to show the incoming jersey before the
+ *  real card slides off to its chronological slot. */
 export function DeckCard({
   remaining,
   onReveal,
   tiltIndex,
+  flipStint = null,
   cardRef,
 }: {
   remaining: number;
   onReveal: () => void;
   tiltIndex: number;
+  /** mid-reveal: the stint currently being flipped face-up on the deck */
+  flipStint?: Stint | null;
   /** registered with the spread so new jerseys can animate out from here */
   cardRef?: (el: HTMLElement | null) => void;
 }) {
+  const btnRef = useRef<HTMLButtonElement | null>(null);
+  const flipRef = useRef<HTMLDivElement | null>(null);
+  const [faceUp, setFaceUp] = useState(false);
+
+  // flip the top card: squeeze shut face-down, swap, open face-up.
+  // When flipStint clears, snap back instantly — the flipped card has
+  // slid away and the next face-down card is simply what's underneath.
+  useEffect(() => {
+    if (!flipStint) {
+      setFaceUp(false);
+      return;
+    }
+    const el = flipRef.current;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // the flip is the payoff — make sure the deck is on screen for it
+    btnRef.current?.scrollIntoView({
+      behavior: reduce ? "auto" : "smooth",
+      inline: "center",
+      block: "nearest",
+    });
+    if (!el || reduce) {
+      setFaceUp(true);
+      return;
+    }
+    const squeeze = el.animate(
+      [{ transform: "scaleX(1)" }, { transform: "scaleX(0.04)" }],
+      { duration: 150, easing: "ease-in" }
+    );
+    squeeze.finished
+      .then(() => {
+        setFaceUp(true);
+        return el.animate(
+          [{ transform: "scaleX(0.04)" }, { transform: "scaleX(1)" }],
+          { duration: 200, easing: "ease-out" }
+        ).finished;
+      })
+      .catch(() => {
+        setFaceUp(true);
+      });
+  }, [flipStint]);
+
+  const era = flipStint
+    ? resolveColorway(colorways, flipStint.franchise, flipStint.startYear, flipStint.endYear)
+    : null;
+  const showFace = faceUp && flipStint !== null;
+
   return (
     <button
       type="button"
-      ref={cardRef}
-      className="deck-card flex w-full flex-col items-center justify-center gap-1 px-2 py-3 md:w-36"
+      ref={(el) => {
+        btnRef.current = el;
+        cardRef?.(el);
+      }}
+      className={`deck-card flex w-full flex-col items-center justify-center gap-1 px-2 py-3 md:w-36 ${showFace ? "is-face" : ""}`}
       style={{ "--nudge": `${NUDGES[tiltIndex % NUDGES.length]}px` } as React.CSSProperties}
       onClick={onReveal}
     >
-      <JerseyRenderer
-        primary="#f2e7d2"
-        secondary="#8a5f3c"
-        trim="#3a2c1c"
-        number={null}
-        eraStyle="nineties"
-        size={62}
-      />
-      <span className="text-[0.62rem] font-bold uppercase tracking-[0.14em]">
-        Flip next
-      </span>
-      <span className="text-[0.56rem] opacity-80">
-        {remaining} left in the bag
-      </span>
+      <div className="flex w-full flex-col items-center gap-1" ref={flipRef}>
+        {showFace && flipStint ? (
+          <>
+            <span className="font-display text-[0.85rem] leading-tight tracking-wide">
+              {formatStintYears(flipStint)}
+            </span>
+            {era ? (
+              <JerseyRenderer
+                primary={era.primary}
+                secondary={era.secondary}
+                trim={era.trim}
+                number={flipStint.jerseyNumber}
+                eraStyle={era.eraStyle}
+                size={62}
+                label={eraTricode(era, flipStint.franchise)}
+              />
+            ) : (
+              <span className="flex h-24 items-center justify-center">?</span>
+            )}
+          </>
+        ) : (
+          <>
+            <JerseyRenderer
+              primary="#f2e7d2"
+              secondary="#8a5f3c"
+              trim="#3a2c1c"
+              number={null}
+              eraStyle="nineties"
+              size={62}
+            />
+            <span className="text-[0.62rem] font-bold uppercase tracking-[0.14em]">
+              Flip next
+            </span>
+            <span className="text-[0.56rem] opacity-80">
+              {remaining} left in the bag
+            </span>
+          </>
+        )}
+      </div>
     </button>
   );
 }

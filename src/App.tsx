@@ -116,6 +116,43 @@ export default function App() {
     return () => clearTimeout(t);
   }, [over, day, state.status, state.revealed, testIndex]);
 
+  // ---- flip-the-top-card reveal ----
+  // Tapping the deck (or the reveal button) first flips the deck's top
+  // card face-up in place, showing the incoming jersey; after a beat the
+  // real card slides off the deck into its chronological slot.
+  const FLIP_REVEAL_MS = 850; // squeeze flip (~350ms) + a beat to read it
+  const [flipIdx, setFlipIdx] = useState<number | null>(null);
+  const flipTimer = useRef<number | null>(null);
+  const dealtFromFlip = useRef(false);
+
+  const finishFlip = () => {
+    if (flipTimer.current === null) return;
+    clearTimeout(flipTimer.current);
+    flipTimer.current = null;
+    setFlipIdx(null);
+    dealtFromFlip.current = true;
+    dispatch({ type: "reveal", puzzle });
+  };
+
+  const revealNext = () => {
+    if (over || flipTimer.current !== null) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // hints and reduced-motion reveals stay instant — only jersey flips stage
+    if (phase !== "jerseys" || reduce) {
+      dispatch({ type: "reveal", puzzle });
+      return;
+    }
+    setFlipIdx(puzzle.revealOrder[state.revealed]);
+    flipTimer.current = window.setTimeout(finishFlip, FLIP_REVEAL_MS);
+  };
+
+  useEffect(
+    () => () => {
+      if (flipTimer.current !== null) clearTimeout(flipTimer.current);
+    },
+    []
+  );
+
   // ---- chronological spread with FLIP slide-into-place ----
   // once the game ends, every remaining stint cascades onto the board
   const revealedSet = new Set(puzzle.revealOrder.slice(0, state.revealed));
@@ -145,27 +182,41 @@ export default function App() {
     cardEls.current.forEach((el, key) => {
       const now = el.getBoundingClientRect();
       const last = prevRects.current.get(key);
-      // brand-new in-game card: slide out from under the deck
+      // brand-new in-game card: slide out from the deck
       if (!last && !reduce && !over && key === newestIdx && key !== DECK_KEY) {
         const deckPrev = prevRects.current.get(DECK_KEY);
         if (deckPrev) {
           const dx = deckPrev.left - now.left;
           const dy = deckPrev.top - now.top;
-          el.style.zIndex = "1"; // beneath the deck (z 3) while emerging
-          const deal = el.animate(
-            [
-              { transform: `translate(${dx}px, ${dy}px) scale(0.9)`, opacity: 0.9 },
-              { transform: "translate(0, 0) scale(1)", opacity: 1 },
-            ],
-            { duration: 750, easing: "cubic-bezier(0.25, 0.9, 0.3, 1)", fill: "backwards" }
-          );
-          deal.finished
-            .then(() => {
-              el.style.zIndex = "";
-            })
-            .catch(() => {
-              el.style.zIndex = "";
-            });
+          const clearZ = () => {
+            el.style.zIndex = "";
+          };
+          if (dealtFromFlip.current) {
+            // the card was just flipped face-up on the deck — it lifts OFF
+            // the top and arcs over its neighbors into its slot
+            el.style.zIndex = "6"; // above the deck (z 3) while traveling
+            el.animate(
+              [
+                { transform: `translate(${dx}px, ${dy}px) scale(1)` },
+                {
+                  transform: `translate(${dx * 0.5}px, ${dy * 0.5 - 14}px) scale(1.06)`,
+                  offset: 0.5,
+                },
+                { transform: "translate(0, 0) scale(1)" },
+              ],
+              { duration: 800, easing: "cubic-bezier(0.3, 0.8, 0.3, 1)", fill: "backwards" }
+            ).finished.then(clearZ, clearZ);
+          } else {
+            // penalty reveal (wrong guess): dealt from under the deck
+            el.style.zIndex = "1"; // beneath the deck (z 3) while emerging
+            el.animate(
+              [
+                { transform: `translate(${dx}px, ${dy}px) scale(0.9)`, opacity: 0.9 },
+                { transform: "translate(0, 0) scale(1)", opacity: 1 },
+              ],
+              { duration: 750, easing: "cubic-bezier(0.25, 0.9, 0.3, 1)", fill: "backwards" }
+            ).finished.then(clearZ, clearZ);
+          }
         }
       }
       if (last && !reduce && key !== newestIdx) {
@@ -202,6 +253,7 @@ export default function App() {
       }
       prevRects.current.set(key, now);
     });
+    dealtFromFlip.current = false;
   }, [state.revealed, newestIdx, over]);
 
   const remaining = total - state.revealed;
@@ -305,7 +357,8 @@ export default function App() {
               <DeckCard
                 remaining={remaining}
                 tiltIndex={state.revealed}
-                onReveal={() => dispatch({ type: "reveal", puzzle })}
+                flipStint={flipIdx !== null ? puzzle.stints[flipIdx] : null}
+                onReveal={revealNext}
                 cardRef={(el) => {
                   if (el) cardEls.current.set(-1, el);
                   else cardEls.current.delete(-1);
@@ -348,15 +401,16 @@ export default function App() {
           <GuessInput
             disabled={over}
             alreadyGuessed={state.wrongGuesses}
-            onGuess={(name) => dispatch({ type: "guess", puzzle, name })}
+            onGuess={(name) => {
+              finishFlip(); // a guess mid-flip settles the pending reveal first
+              dispatch({ type: "guess", puzzle, name });
+            }}
           />
           <button
             type="button"
             className="btn shrink-0"
             disabled={!over && phase === "final"}
-            onClick={() =>
-              over ? setShowResult(true) : dispatch({ type: "reveal", puzzle })
-            }
+            onClick={() => (over ? setShowResult(true) : revealNext())}
           >
             {revealLabel}
           </button>
