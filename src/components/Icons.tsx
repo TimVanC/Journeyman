@@ -167,3 +167,4 @@ function BadgeIcon({ glyph, ...p }: IconProps & { glyph: string }) {
 export const SixthManIcon = (p: IconProps) => <BadgeIcon glyph="6" {...p} />;
 export const RoyIcon = (p: IconProps) => <BadgeIcon glyph="R" {...p} />;
 export const AllNbaIcon = (p: IconProps) => <BadgeIcon glyph="1" {...p} />;
+export const FmvpIcon = (p: IconProps) => <BadgeIcon glyph="F" {...p} />;

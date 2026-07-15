@@ -169,7 +169,7 @@ export const puzzles: Puzzle[] = [
     id: 3,
     pathType: "team",
     answer: "Antawn Jamison",
-    accolades: ["2× All-Star", "Sixth Man of the Year (2004)"],
+    accolades: ["2× All-Star", "6th Man of the Year (2004)"],
     stints: [
       {
         franchise: "GSW",
@@ -187,7 +187,7 @@ export const puzzles: Puzzle[] = [
         franchise: "DAL",
         displayTeam: "Dallas Mavericks",
         startYear: 2003,
-        endYear: 2003, // one season, Sixth Man of the Year
+        endYear: 2003, // one season, 6th Man of the Year
         gp: 82,
         mpg: 29.0,
         ppg: 14.8,
@@ -257,11 +257,11 @@ export const puzzles: Puzzle[] = [
   },
   {
     // Puzzle 4 — Lou Williams: 6 franchises / 7 stints (ATL twice).
-    // Three-time Sixth Man of the Year, never really a starter.
+    // Three-time 6th Man of the Year, never really a starter.
     id: 4,
     pathType: "team",
     answer: "Lou Williams",
-    accolades: ["3× Sixth Man of the Year"],
+    accolades: ["3× 6th Man of the Year"],
     stints: [
       {
         franchise: "PHI",
@@ -291,7 +291,7 @@ export const puzzles: Puzzle[] = [
         franchise: "TOR",
         displayTeam: "Toronto Raptors",
         startYear: 2014,
-        endYear: 2014, // Sixth Man of the Year
+        endYear: 2014, // 6th Man of the Year
         gp: 80,
         mpg: 25.2,
         ppg: 15.5,
@@ -503,9 +503,9 @@ export const puzzles: Puzzle[] = [
     accolades: ["4× NBA champion", "4× MVP", "All-time scoring leader"],
     stints: [
       { franchise: "CLE", displayTeam: "Cleveland Cavaliers", startYear: 2003, endYear: 2009, gp: 548, mpg: 40.2, ppg: 27.8, rpg: 7.0, apg: 7.0, jerseyNumber: 23, accolades: [{ type: "roy", count: 1 }, { type: "mvp", count: 2 }, { type: "all_star", count: 6 }, { type: "olympic_gold", count: 1 }] },
-      { franchise: "MIA", displayTeam: "Miami Heat", startYear: 2010, endYear: 2013, gp: 294, mpg: 38.0, ppg: 26.9, rpg: 7.6, apg: 6.7, jerseyNumber: 6, accolades: [{ type: "champion", count: 2 }, { type: "mvp", count: 2 }, { type: "all_star", count: 4 }, { type: "olympic_gold", count: 1 }] },
-      { franchise: "CLE", displayTeam: "Cleveland Cavaliers", startYear: 2014, endYear: 2017, gp: 301, mpg: 37.6, ppg: 26.1, rpg: 7.5, apg: 7.6, jerseyNumber: 23, accolades: [{ type: "champion", count: 1 }, { type: "all_star", count: 4 }, { type: "all_nba", count: 4 }] },
-      { franchise: "LAL", displayTeam: "Los Angeles Lakers", startYear: 2018, endYear: 2025, gp: 454, mpg: 35.3, ppg: 26.3, rpg: 7.8, apg: 8.1, jerseyNumber: 23, accolades: [{ type: "champion", count: 1 }, { type: "all_star", count: 7 }, { type: "olympic_gold", count: 1 }] },
+      { franchise: "MIA", displayTeam: "Miami Heat", startYear: 2010, endYear: 2013, gp: 294, mpg: 38.0, ppg: 26.9, rpg: 7.6, apg: 6.7, jerseyNumber: 6, accolades: [{ type: "champion", count: 2 }, { type: "fmvp", count: 2 }, { type: "mvp", count: 2 }, { type: "all_star", count: 4 }, { type: "olympic_gold", count: 1 }] },
+      { franchise: "CLE", displayTeam: "Cleveland Cavaliers", startYear: 2014, endYear: 2017, gp: 301, mpg: 37.6, ppg: 26.1, rpg: 7.5, apg: 7.6, jerseyNumber: 23, accolades: [{ type: "champion", count: 1 }, { type: "fmvp", count: 1 }, { type: "all_star", count: 4 }, { type: "all_nba", count: 4 }] },
+      { franchise: "LAL", displayTeam: "Los Angeles Lakers", startYear: 2018, endYear: 2025, gp: 454, mpg: 35.3, ppg: 26.3, rpg: 7.8, apg: 8.1, jerseyNumber: 23, accolades: [{ type: "champion", count: 1 }, { type: "fmvp", count: 1 }, { type: "all_star", count: 7 }, { type: "olympic_gold", count: 1 }] },
     ],
     revealOrder: [1, 3, 2, 0], // MIA → LAL → CLE(2nd) → CLE(draft)
     hints: {
@@ -525,7 +525,7 @@ export const puzzles: Puzzle[] = [
     id: 8,
     pathType: "team",
     answer: "Manu Ginóbili",
-    accolades: ["4× NBA champion", "Sixth Man of the Year (2008)", "2× All-Star", "Olympic gold (2004)"],
+    accolades: ["4× NBA champion", "6th Man of the Year (2008)", "2× All-Star", "Olympic gold (2004)"],
     stints: [
       { franchise: "SAS", displayTeam: "San Antonio Spurs", startYear: 2002, endYear: 2017, gp: 1057, mpg: 25.4, ppg: 13.3, rpg: 3.5, apg: 3.8, jerseyNumber: 20, accolades: [{ type: "champion", count: 4 }, { type: "all_star", count: 2 }, { type: "sixth_man", count: 1 }, { type: "olympic_gold", count: 1 }] },
     ],
@@ -547,7 +547,7 @@ export const puzzles: Puzzle[] = [
     accolades: ["5× NBA champion", "MVP (2008)", "18× All-Star"],
     stints: [
       { franchise: "LAL", displayTeam: "Los Angeles Lakers", startYear: 1996, endYear: 2005, gp: 707, mpg: 36.0, ppg: 23.9, rpg: 5.1, apg: 4.5, jerseyNumber: 8, accolades: [{ type: "champion", count: 3 }, { type: "all_star", count: 8 }, { type: "all_nba", count: 2 }] },
-      { franchise: "LAL", displayTeam: "Los Angeles Lakers", startYear: 2006, endYear: 2015, gp: 639, mpg: 36.1, ppg: 26.4, rpg: 5.5, apg: 4.9, jerseyNumber: 24, accolades: [{ type: "champion", count: 2 }, { type: "mvp", count: 1 }, { type: "all_star", count: 10 }, { type: "all_nba", count: 6 }, { type: "olympic_gold", count: 2 }] },
+      { franchise: "LAL", displayTeam: "Los Angeles Lakers", startYear: 2006, endYear: 2015, gp: 639, mpg: 36.1, ppg: 26.4, rpg: 5.5, apg: 4.9, jerseyNumber: 24, accolades: [{ type: "champion", count: 2 }, { type: "fmvp", count: 2 }, { type: "mvp", count: 1 }, { type: "all_star", count: 10 }, { type: "all_nba", count: 6 }, { type: "olympic_gold", count: 2 }] },
     ],
     revealOrder: [1, 0], // #24 era → #8 era (draft era last)
     hints: {

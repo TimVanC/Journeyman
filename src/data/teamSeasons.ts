@@ -10,11 +10,17 @@ export interface SeasonLine {
   year: number;
   w: number;
   l: number;
-  /** shortened playoff result; "" = missed the playoffs */
+  /** compact playoff result ("R1", "R2", "ECF", "WCF", "Finals 4-2");
+   *  "" = missed the playoffs */
   po: string;
+  /** set on Finals seasons: 1 = won the title, 0 = lost the Finals */
+  fw?: 0 | 1;
 }
 
-const db = raw as Record<string, Record<string, { w: number; l: number; po: string }>>;
+const db = raw as Record<
+  string,
+  Record<string, { w: number; l: number; po: string; fw?: 0 | 1 }>
+>;
 
 export function getStintSeasons(
   franchise: string,
@@ -35,24 +41,3 @@ export function getStintSeasons(
 export const seasonLabel = (y: number) =>
   `${String(y).slice(2)}-${String((y + 1) % 100).padStart(2, "0")}`;
 
-/** compact playoff column value; "" (missed) → "—" */
-export function playoffShort(po: string): string {
-  switch (po) {
-    case "":
-      return "—";
-    case "Lost 1st round":
-      return "R1";
-    case "Lost conf semis":
-      return "Semis";
-    case "Lost conf finals":
-      return "Conf F";
-    case "Lost Finals":
-      return "Lost F";
-    case "Won Finals":
-      return "Title";
-    case "Lost play-in":
-      return "Play-in";
-    default:
-      return po;
-  }
-}

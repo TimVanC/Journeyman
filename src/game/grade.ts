@@ -60,7 +60,7 @@ export function computeGrade(state: GameState, puzzle: Puzzle): Grade {
     };
   }
   return {
-    label: "Sixth Man",
+    label: "6th Man",
     detail: `Needed the full rack — all ${total} jerseys${missNote}.`,
   };
 }

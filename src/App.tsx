@@ -137,6 +137,7 @@ export default function App() {
     }
   }
 
+  const DECK_KEY = -1;
   const cardEls = useRef(new Map<number, HTMLElement>());
   const prevRects = useRef(new Map<number, DOMRect>());
   useLayoutEffect(() => {
@@ -144,6 +145,29 @@ export default function App() {
     cardEls.current.forEach((el, key) => {
       const now = el.getBoundingClientRect();
       const last = prevRects.current.get(key);
+      // brand-new in-game card: slide out from under the deck
+      if (!last && !reduce && !over && key === newestIdx && key !== DECK_KEY) {
+        const deckPrev = prevRects.current.get(DECK_KEY);
+        if (deckPrev) {
+          const dx = deckPrev.left - now.left;
+          const dy = deckPrev.top - now.top;
+          el.style.zIndex = "1"; // beneath the deck (z 3) while emerging
+          const deal = el.animate(
+            [
+              { transform: `translate(${dx}px, ${dy}px) scale(0.9)`, opacity: 0.9 },
+              { transform: "translate(0, 0) scale(1)", opacity: 1 },
+            ],
+            { duration: 750, easing: "cubic-bezier(0.25, 0.9, 0.3, 1)", fill: "backwards" }
+          );
+          deal.finished
+            .then(() => {
+              el.style.zIndex = "";
+            })
+            .catch(() => {
+              el.style.zIndex = "";
+            });
+        }
+      }
       if (last && !reduce && key !== newestIdx) {
         const dx = last.left - now.left;
         const dy = last.top - now.top;
@@ -282,6 +306,10 @@ export default function App() {
                 remaining={remaining}
                 tiltIndex={state.revealed}
                 onReveal={() => dispatch({ type: "reveal", puzzle })}
+                cardRef={(el) => {
+                  if (el) cardEls.current.set(-1, el);
+                  else cardEls.current.delete(-1);
+                }}
               />
             )}
             {showProfile && profileInGrid && (

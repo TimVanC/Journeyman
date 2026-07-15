@@ -4,6 +4,7 @@ export type AccoladeType =
   | "all_star"
   | "champion"
   | "mvp"
+  | "fmvp"
   | "dpoy"
   | "sixth_man"
   | "roy"

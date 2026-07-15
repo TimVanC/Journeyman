@@ -67,6 +67,8 @@ body {
   perspective: 1200px;
 }
 
+/* no rotation on text-bearing cards — rotated text rasterizes blurry.
+   The collector-scatter feel comes from small vertical nudges instead. */
 .jersey-card {
   position: relative;
   background:
@@ -77,14 +79,13 @@ body {
   box-shadow:
     0 1px 2px rgba(60, 45, 20, 0.18),
     0 8px 18px -8px rgba(60, 45, 20, 0.35);
-  rotate: var(--tilt, 0deg);
-  transition: rotate 180ms ease, box-shadow 180ms ease, translate 180ms ease;
+  translate: 0 var(--nudge, 0px);
+  transition: box-shadow 180ms ease, translate 180ms ease;
 }
 
 @media (hover: hover) {
   .jersey-card:hover {
-    rotate: 0deg;
-    translate: 0 -4px;
+    translate: 0 calc(var(--nudge, 0px) - 4px);
     box-shadow:
       0 2px 3px rgba(60, 45, 20, 0.16),
       0 16px 28px -10px rgba(60, 45, 20, 0.4);
@@ -172,9 +173,10 @@ body {
   align-items: baseline;
   white-space: nowrap;
   font-size: 0.58rem;
-  line-height: 1.55;
+  line-height: 1.5;
+  padding: 2px 0;
   font-variant-numeric: tabular-nums;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-line) 55%, transparent);
+  border-bottom: 1px solid var(--color-line);
 }
 
 .season-grid:last-child {
@@ -196,6 +198,8 @@ body {
 
 /* face-down deck card (the reveal button) */
 .deck-card {
+  position: relative;
+  z-index: 3; /* new jerseys slide out from UNDER the deck */
   background:
     repeating-linear-gradient(
       -45deg,
@@ -211,18 +215,17 @@ body {
     3px 4px 0 -1px var(--color-court),
     6px 8px 0 -2px color-mix(in srgb, var(--color-court) 70%, black),
     0 10px 20px -8px rgba(60, 45, 20, 0.5);
-  transition: translate 160ms ease, box-shadow 160ms ease, rotate 160ms ease;
-  rotate: var(--tilt, 0deg);
+  transition: translate 160ms ease, box-shadow 160ms ease;
+  translate: 0 var(--nudge, 0px);
 }
 
 .deck-card:hover:not(:disabled),
 .deck-card:focus-visible {
-  translate: 0 -4px;
-  rotate: 0deg;
+  translate: 0 calc(var(--nudge, 0px) - 4px);
 }
 
 .deck-card:active:not(:disabled) {
-  translate: 0 0;
+  translate: 0 var(--nudge, 0px);
 }
 
 /* ------------------------------------------------------------------
@@ -598,7 +601,6 @@ body {
   box-shadow:
     0 1px 2px rgba(60, 45, 20, 0.16),
     0 6px 14px -8px rgba(60, 45, 20, 0.3);
-  rotate: 1.2deg;
   padding: 0.5rem 0.6rem 0.45rem;
   align-self: start;
 }

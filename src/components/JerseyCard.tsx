@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import JerseyRenderer, { eraTricode, resolveColorway, type ColorwayDB } from "./JerseyRenderer";
 import colorwaysJson from "../data/colorways.json";
-import { getStintSeasons, playoffShort, seasonLabel } from "../data/teamSeasons";
+import { getStintSeasons, seasonLabel } from "../data/teamSeasons";
 import type { AccoladeType, Stint, StintAccolade } from "../game/types";
 import {
   AllNbaIcon,
   CrownIcon,
+  FmvpIcon,
   MedalIcon,
   RoyIcon,
   ShieldIcon,
@@ -16,20 +17,22 @@ import {
 
 const colorways = colorwaysJson as unknown as ColorwayDB;
 
-/** deterministic collector-spread tilt per position */
-const TILTS = [-2.2, 1.6, -1.3, 2.1, -1.8, 1.4, -2.4, 1.9];
+/** deterministic collector-spread nudge per position (px). Rotation is
+ *  deliberately avoided — rotated text renders blurry. */
+const NUDGES = [0, 4, -3, 2, -4, 3, -2, 5];
 
 const ACCOLADE_META: Record<
   AccoladeType,
   { Icon: (p: { size?: number; className?: string }) => React.ReactNode; label: string }
 > = {
-  all_star: { Icon: StarIcon, label: "NBA All-Star" },
-  champion: { Icon: TrophyIcon, label: "NBA champion" },
-  mvp: { Icon: CrownIcon, label: "League MVP" },
-  dpoy: { Icon: ShieldIcon, label: "Defensive Player of the Year" },
-  sixth_man: { Icon: SixthManIcon, label: "Sixth Man of the Year" },
-  roy: { Icon: RoyIcon, label: "Rookie of the Year" },
-  all_nba: { Icon: AllNbaIcon, label: "All-NBA First Team" },
+  all_star: { Icon: StarIcon, label: "All-Star" },
+  champion: { Icon: TrophyIcon, label: "Champion" },
+  mvp: { Icon: CrownIcon, label: "MVP" },
+  fmvp: { Icon: FmvpIcon, label: "Finals MVP" },
+  dpoy: { Icon: ShieldIcon, label: "DPOY" },
+  sixth_man: { Icon: SixthManIcon, label: "6MOY" },
+  roy: { Icon: RoyIcon, label: "ROY" },
+  all_nba: { Icon: AllNbaIcon, label: "All-NBA" },
   olympic_gold: { Icon: MedalIcon, label: "Olympic gold" },
 };
 
@@ -81,10 +84,10 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
         ref.current = el;
         cardRef?.(el);
       }}
-      className={`jersey-card w-full cursor-pointer px-1.5 pb-2 pt-1 md:w-36 ${isNewest ? "deal-in" : ""} ${flipped ? "is-flipped" : ""}`}
+      className={`jersey-card w-full cursor-pointer px-1.5 pb-2 pt-1 md:w-36 ${isNewest && dealDelay > 0 ? "deal-in" : ""} ${flipped ? "is-flipped" : ""}`}
       style={
         {
-          "--tilt": `${TILTS[spreadIndex % TILTS.length]}deg`,
+          "--nudge": `${NUDGES[spreadIndex % NUDGES.length]}px`,
           animationDelay: dealDelay > 0 ? `${dealDelay}ms` : undefined,
         } as React.CSSProperties
       }
@@ -144,16 +147,16 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
 
         {/* back — the stop's hardware + season-by-season record */}
         <div className="card-face card-back">
-          <p className="text-center font-display text-[0.85rem] leading-tight tracking-wide">
+          <p className="border-b border-line pb-0.5 text-center font-display text-[0.85rem] leading-tight tracking-wide">
             {formatStintYears(stint)}
           </p>
 
           {accolades.length > 0 && (
-            <ul className="mt-1 space-y-0.5 border-b border-line pb-1">
+            <ul className="mt-1 flex flex-wrap justify-center gap-x-2 gap-y-0.5 border-b border-line pb-1.5">
               {accolades.map((a) => {
                 const meta = ACCOLADE_META[a.type];
                 return (
-                  <li key={a.type} className="flex items-center gap-1.5 text-[0.62rem] font-semibold leading-tight">
+                  <li key={a.type} className="flex items-center gap-1 text-[0.62rem] font-bold leading-tight">
                     <meta.Icon size={12} className="shrink-0 text-wood-deep" />
                     {a.count > 1 ? `${a.count}× ` : ""}
                     {meta.label}
@@ -173,28 +176,27 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
                   <span>W–L</span>
                   <span className="text-right">Playoffs</span>
                 </div>
-                {seasons.map((s) => {
-                  const po = playoffShort(s.po);
-                  return (
-                    <div key={s.year} className="season-grid">
-                      <span className="font-bold">{seasonLabel(s.year)}</span>
-                      <span>
-                        {s.w}–{s.l}
-                      </span>
-                      <span
-                        className={`text-right ${
-                          po === "—"
-                            ? "text-ink-soft"
-                            : po === "Title"
-                              ? "font-bold text-wood-deep"
+                {seasons.map((s) => (
+                  <div key={s.year} className="season-grid">
+                    <span className="font-bold">{seasonLabel(s.year)}</span>
+                    <span>
+                      {s.w}–{s.l}
+                    </span>
+                    <span
+                      className={`text-right ${
+                        s.po === ""
+                          ? "text-ink-soft"
+                          : s.fw === 1
+                            ? "font-bold text-[#2e7d43]"
+                            : s.fw === 0
+                              ? "font-bold text-[#b3362a]"
                               : ""
-                        }`}
-                      >
-                        {po}
-                      </span>
-                    </div>
-                  );
-                })}
+                      }`}
+                    >
+                      {s.po === "" ? "—" : s.po}
+                    </span>
+                  </div>
+                ))}
               </div>
             );
           })()}
@@ -233,16 +235,20 @@ export function DeckCard({
   remaining,
   onReveal,
   tiltIndex,
+  cardRef,
 }: {
   remaining: number;
   onReveal: () => void;
   tiltIndex: number;
+  /** registered with the spread so new jerseys can animate out from here */
+  cardRef?: (el: HTMLElement | null) => void;
 }) {
   return (
     <button
       type="button"
+      ref={cardRef}
       className="deck-card flex w-full flex-col items-center justify-center gap-1 px-2 py-3 md:w-36"
-      style={{ "--tilt": `${TILTS[tiltIndex % TILTS.length]}deg` } as React.CSSProperties}
+      style={{ "--nudge": `${NUDGES[tiltIndex % NUDGES.length]}px` } as React.CSSProperties}
       onClick={onReveal}
     >
       <JerseyRenderer
