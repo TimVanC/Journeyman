@@ -207,13 +207,13 @@ export default function JerseyCard({ stint, spreadIndex, isNewest, showLabel, de
               <div className="mt-1">
                 <div className="season-grid season-head">
                   <span>Yr</span>
-                  <span className="text-right">W–L</span>
+                  <span className="text-center">W–L</span>
                   <span className="text-right">Playoffs</span>
                 </div>
                 {seasons.map((s) => (
                   <div key={s.year} className="season-grid">
                     <span className="font-bold">{seasonLabel(s.year)}</span>
-                    <span className="text-right">
+                    <span className="text-center">
                       {s.w}–{s.l}
                     </span>
                     <span
