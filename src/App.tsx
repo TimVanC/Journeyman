@@ -199,9 +199,17 @@ export default function App() {
       <div className="court-arc" aria-hidden="true" />
       <Header streak={streak} onHelp={() => setShowHelp(true)} />
 
-      {testIndex !== null && (
+      {/* dev builds always show the picker; production only via ?p / ?test */}
+      {(testIndex !== null || import.meta.env.DEV) && (
         <div className="test-bar" role="navigation" aria-label="Test mode puzzle picker">
           <span className="test-bar-tag">Test</span>
+          <a
+            href={location.pathname}
+            className={`test-bar-slot ${testIndex === null ? "is-active" : ""}`}
+            aria-current={testIndex === null ? "page" : undefined}
+          >
+            daily
+          </a>
           {puzzles.map((pz, i) => (
             <a
               key={pz.id}
