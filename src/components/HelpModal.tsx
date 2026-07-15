@@ -1,0 +1,71 @@
+import { useEffect } from "react";
+import { CheckIcon, FlameIcon, GraveIcon, JerseyIcon, XIcon } from "./Icons";
+
+export default function HelpModal({ onClose }: { onClose: () => void }) {
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="modal-backdrop"
+      onClick={(e) => e.target === e.currentTarget && onClose()}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="How to play"
+        className="modal-panel p-5"
+      >
+        <div className="flex items-start justify-between gap-4">
+          <h2 className="font-display text-2xl">How to play</h2>
+          <button type="button" className="chip cursor-pointer" onClick={onClose} aria-label="Close">
+            ✕
+          </button>
+        </div>
+
+        <div className="mt-3 space-y-3 text-sm leading-relaxed">
+          <p>
+            A mystery NBA <strong>journeyman</strong> — a guy who suited up for
+            4+ franchises — is hidden behind his jerseys. No logos, no team
+            names: just era-accurate <strong>colorways</strong>, his{" "}
+            <strong>number</strong>, and his <strong>per-stop stats</strong>.
+          </p>
+          <p>
+            You start with his <em>least</em> famous stop. Guess the player, or
+            flip the next jersey from the deck. Solve him in as few jerseys as
+            possible — golf rules, lower is better.
+          </p>
+          <ul className="list-disc space-y-1 pl-5">
+            <li>
+              Flipping a jersey is free — the cost is your score.
+            </li>
+            <li>
+              A <strong>wrong guess is never free</strong>: it flips the next
+              jersey for you.
+            </li>
+            <li>
+              Out of jerseys? Wrong guesses open his player profile line by
+              line: position → height → draft year → draft pick → college.
+              Then one last guess.
+            </li>
+          </ul>
+          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-line pt-3 text-xs text-ink-soft">
+            <span className="flex items-center gap-1"><JerseyIcon size={14} /> jersey flipped</span>·
+            <span className="flex items-center gap-1"><XIcon size={14} className="text-[#b3362a]" /> wrong guess</span>·
+            <span className="flex items-center gap-1"><CheckIcon size={14} className="text-[#2e7d43]" /> solved</span>·
+            <span className="flex items-center gap-1"><GraveIcon size={14} /> DNF</span>
+          </p>
+          <p className="text-xs text-ink-soft">
+            Solve daily to build your <FlameIcon size={13} className="text-wood-deep" /> streak.
+            New puzzle at midnight ET.
+            <br />
+            Not affiliated with the NBA.
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}

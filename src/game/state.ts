@@ -1,0 +1,71 @@
+import type { GamePhase, GameState, Puzzle } from "./types";
+
+export const HINT_COUNT = 5;
+
+export function initialState(day: number): GameState {
+  return {
+    day,
+    revealed: 1, // the least-identifying jersey is on the table at load
+    hintsRevealed: 0,
+    wrongGuesses: [],
+    trail: ["jersey"],
+    status: "playing",
+  };
+}
+
+export function getPhase(state: GameState, puzzle: Puzzle): GamePhase {
+  if (state.status !== "playing") return "over";
+  if (state.revealed < puzzle.stints.length) return "jerseys";
+  if (state.hintsRevealed < HINT_COUNT) return "hints";
+  return "final";
+}
+
+export type GameAction =
+  | { type: "reveal"; puzzle: Puzzle }
+  | { type: "guess"; puzzle: Puzzle; name: string };
+
+/** "reveal" = flip the next jersey (or, once jerseys are out, take a hint). */
+export function reducer(state: GameState, action: GameAction): GameState {
+  if (state.status !== "playing") return state;
+  const phase = getPhase(state, action.puzzle);
+
+  if (action.type === "reveal") {
+    if (phase === "jerseys") {
+      return {
+        ...state,
+        revealed: state.revealed + 1,
+        trail: [...state.trail, "jersey"],
+      };
+    }
+    if (phase === "hints") {
+      return { ...state, hintsRevealed: state.hintsRevealed + 1 };
+    }
+    return state; // final: nothing left to reveal — guess or bust
+  }
+
+  // ---- guess ----
+  const correct =
+    action.name.toLowerCase() === action.puzzle.answer.toLowerCase();
+  if (correct) {
+    return { ...state, status: "won", trail: [...state.trail, "solve"] };
+  }
+
+  const missed: GameState = {
+    ...state,
+    wrongGuesses: [...state.wrongGuesses, action.name],
+    trail: [...state.trail, "miss"],
+  };
+  // a wrong guess is never free: it auto-reveals the next jersey, then
+  // walks the hint ladder, then ends the game
+  if (phase === "jerseys") {
+    return {
+      ...missed,
+      revealed: missed.revealed + 1,
+      trail: [...missed.trail, "jersey"],
+    };
+  }
+  if (phase === "hints") {
+    return { ...missed, hintsRevealed: missed.hintsRevealed + 1 };
+  }
+  return { ...missed, status: "lost", trail: [...missed.trail, "dnf"] };
+}
