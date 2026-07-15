@@ -51,6 +51,10 @@ export default function StartScreen({ day, cta, dateLabel, streak, onPlay, onRul
         <button type="button" className="btn mt-2.5 w-full" onClick={onRules}>
           How to play
         </button>
+        {/* pre-launch: jump into the replayable test puzzles (?p=1..9) */}
+        <a className="btn mt-2.5 w-full" href="?p=1">
+          Run tests
+        </a>
 
         <p className="mt-8 text-[0.65rem] text-ink-soft">
           New puzzle at midnight ET · Not affiliated with the NBA
