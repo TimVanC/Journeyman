@@ -205,6 +205,13 @@ export default function App() {
 
   useLayoutEffect(() => {
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // a reorder changes every card's --nudge, and the CSS translate
+    // transition would wobble the cards during the slide's delay. Suppress
+    // it for this frame so each card snaps to its final nudge before we
+    // measure — the delta then rides along inside the slide instead.
+    cardEls.current.forEach((el) => {
+      el.style.transition = "none";
+    });
     cardEls.current.forEach((el, key) => {
       const now = el.getBoundingClientRect();
       const last = prevRects.current.get(key);
@@ -279,6 +286,11 @@ export default function App() {
     dealtFromFlip.current = false;
     flipOriginRect.current = null;
     pendingGhostStint.current = null;
+    // safe to restore immediately: the nudge has already snapped, so no
+    // transition retriggers, and hover lifts keep animating afterwards
+    cardEls.current.forEach((el) => {
+      el.style.transition = "";
+    });
   }, [state.revealed, newestIdx, over]);
 
   const remaining = total - state.revealed;
