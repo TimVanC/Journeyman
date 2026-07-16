@@ -458,7 +458,9 @@ body {
 .card-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.5rem;
+  /* row gap absorbs the collector-scatter nudges (±5px each way) so
+     stacked rows — deck included — never touch */
+  gap: 0.9rem 0.5rem;
   padding: 0.9rem 0.6rem 1.3rem;
   max-width: 26rem;
   margin-inline: auto;

@@ -79,13 +79,14 @@ function CardFront({
         )}
       </div>
 
-      {accolades.length > 0 && (
-        <p className="mb-0.5 flex flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-[0.6rem] font-bold text-ink-soft">
-          {accolades.map((a) => (
-            <AccoladeChip key={a.type} accolade={a} />
-          ))}
-        </p>
-      )}
+      {/* always rendered (min-height reserves the row) so every card is the
+          same size whether or not the stint has accolades — otherwise cards
+          visibly grow the moment an accolade jersey lands in their row */}
+      <p className="mb-0.5 flex min-h-[0.85rem] flex-wrap items-center justify-center gap-x-1.5 gap-y-0.5 text-[0.6rem] font-bold text-ink-soft">
+        {accolades.map((a) => (
+          <AccoladeChip key={a.type} accolade={a} />
+        ))}
+      </p>
 
       <dl className="border-t border-line pt-1">
         <div className="grid grid-cols-3 gap-0.5 text-center">
@@ -502,7 +503,7 @@ export function DeckCard({
                 Flip next
               </span>
               <span className="text-[0.56rem] opacity-80">
-                {remaining} left in the bag
+                {remaining} left in the deck
               </span>
             </div>
           </div>

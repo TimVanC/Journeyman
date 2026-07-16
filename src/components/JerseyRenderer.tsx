@@ -62,8 +62,9 @@ export default function JerseyRenderer({
 }: JerseyProps) {
   const uid = useId();
   const e = ERA[eraStyle];
-  const numText = number === null ? "?" : String(number);
-  const numFontSize = numText.length > 1 ? 60 : 70;
+  // unknown number → big double "?" reading like a mystery jersey number
+  const numText = number === null ? "??" : String(number);
+  const numFontSize = number === null ? 92 : numText.length > 1 ? 60 : 70;
   const clipId = `jbody-${uid}`;
   const shadeId = `jshade-${uid}`;
 
