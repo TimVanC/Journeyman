@@ -22,11 +22,18 @@ export function getPhase(state: GameState, puzzle: Puzzle): GamePhase {
 
 export type GameAction =
   | { type: "reveal"; puzzle: Puzzle }
-  | { type: "guess"; puzzle: Puzzle; name: string };
+  | { type: "guess"; puzzle: Puzzle; name: string }
+  | { type: "give_up" };
 
 /** "reveal" = flip the next jersey (or, once jerseys are out, take a hint). */
 export function reducer(state: GameState, action: GameAction): GameState {
   if (state.status !== "playing") return state;
+
+  // waving the white flag on the final guess — same DNF as a last miss
+  if (action.type === "give_up") {
+    return { ...state, status: "lost", trail: [...state.trail, "dnf"] };
+  }
+
   const phase = getPhase(state, action.puzzle);
 
   if (action.type === "reveal") {

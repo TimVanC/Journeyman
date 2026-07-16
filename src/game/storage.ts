@@ -86,6 +86,22 @@ export function displayStreak(profile: Profile, today: number): number {
 }
 
 /* ------------------------------------------------------------------
+   Difficulty preference. Hard mode: no flipping cards over for the
+   season-by-season record, and no accolade hardware anywhere.
+------------------------------------------------------------------- */
+
+export type GameMode = "normal" | "hard";
+const MODE_KEY = "journeyman:mode:v1";
+
+export function loadMode(): GameMode {
+  return read<GameMode>(MODE_KEY) === "hard" ? "hard" : "normal";
+}
+
+export function saveMode(mode: GameMode) {
+  write(MODE_KEY, mode);
+}
+
+/* ------------------------------------------------------------------
    Archive plays (signed-in feature) — kept OUT of the daily profile
    so replaying past puzzles never touches the live streak.
 ------------------------------------------------------------------- */

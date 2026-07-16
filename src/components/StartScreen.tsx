@@ -1,5 +1,6 @@
 import JerseyRenderer from "./JerseyRenderer";
 import { FlameIcon } from "./Icons";
+import type { GameMode } from "../game/storage";
 
 interface Props {
   day: number;
@@ -7,6 +8,8 @@ interface Props {
   cta: "Play" | "Continue" | "See result";
   dateLabel: string;
   streak: number;
+  mode: GameMode;
+  onMode: (m: GameMode) => void;
   onPlay: () => void;
   onRules: () => void;
   onArchive: () => void;
@@ -19,6 +22,8 @@ export default function StartScreen({
   cta,
   dateLabel,
   streak,
+  mode,
+  onMode,
   onPlay,
   onRules,
   onArchive,
@@ -58,7 +63,33 @@ export default function StartScreen({
           )}
         </p>
 
-        <button type="button" className="btn btn-primary mt-4 w-full py-3.5 text-sm" onClick={onPlay}>
+        <div className="mt-4 flex w-full gap-1.5" role="radiogroup" aria-label="Difficulty">
+          <button
+            type="button"
+            role="radio"
+            aria-checked={mode === "normal"}
+            className={`btn flex-1 py-2 ${mode === "normal" ? "btn-primary" : ""}`}
+            onClick={() => onMode("normal")}
+          >
+            Normal
+          </button>
+          <button
+            type="button"
+            role="radio"
+            aria-checked={mode === "hard"}
+            className={`btn flex-1 py-2 ${mode === "hard" ? "btn-primary" : ""}`}
+            onClick={() => onMode("hard")}
+          >
+            Hard
+          </button>
+        </div>
+        <p className="mt-1.5 min-h-[1rem] text-[0.65rem] text-ink-soft">
+          {mode === "hard"
+            ? "Hard: no accolades, and cards don't flip for season records."
+            : "Normal: tap cards for season records and accolades."}
+        </p>
+
+        <button type="button" className="btn btn-primary mt-3 w-full py-3.5 text-sm" onClick={onPlay}>
           {cta}
         </button>
         <button type="button" className="btn mt-2.5 w-full" onClick={onRules}>

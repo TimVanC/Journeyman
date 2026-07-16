@@ -50,13 +50,16 @@ function CardFront({
   era,
   showLabel,
   size = 70,
+  hideAccolades = false,
 }: {
   stint: Stint;
   era: Era | null;
   showLabel: boolean;
   size?: number;
+  /** hard mode strips the hardware — the row stays (uniform card size) */
+  hideAccolades?: boolean;
 }) {
-  const accolades = stint.accolades ?? [];
+  const accolades = hideAccolades ? [] : stint.accolades ?? [];
   return (
     <>
       <p className="text-center font-display text-[0.85rem] leading-tight tracking-wide">
@@ -116,6 +119,8 @@ interface Props {
   /** invisible while its GhostCard is still in flight from the deck — the
    *  ghost is the only thing on screen until it lands here */
   hidden?: boolean;
+  /** hard mode: no flipping for the season record, no accolade hardware */
+  hard?: boolean;
   /** lets the spread run FLIP slide animations on reorder */
   cardRef?: (el: HTMLElement | null) => void;
 }
@@ -127,6 +132,7 @@ export default function JerseyCard({
   showLabel,
   dealDelay = 0,
   hidden = false,
+  hard = false,
   cardRef,
 }: Props) {
   const ref = useRef<HTMLElement | null>(null);
@@ -140,6 +146,7 @@ export default function JerseyCard({
 
   /** 2D squeeze flip — no 3D layers, so text stays crisp on mobile */
   const toggleFlip = () => {
+    if (hard) return; // hard mode: the season record stays face-down
     if (animating.current) return;
     const el = flipRef.current;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -200,7 +207,7 @@ export default function JerseyCard({
         ref.current = el;
         cardRef?.(el);
       }}
-      className={`jersey-card w-full cursor-pointer px-1.5 pb-2 pt-1 md:w-36 ${isNewest && dealDelay > 0 ? "deal-in" : ""}`}
+      className={`jersey-card w-full px-1.5 pb-2 pt-1 md:w-36 ${hard ? "" : "cursor-pointer"} ${isNewest && dealDelay > 0 ? "deal-in" : ""}`}
       style={
         {
           "--nudge": `${NUDGES[spreadIndex % NUDGES.length]}px`,
@@ -208,9 +215,13 @@ export default function JerseyCard({
           visibility: hidden ? "hidden" : undefined,
         } as React.CSSProperties
       }
-      aria-label={`Jersey: ${formatStintYears(stint)}. Tap for details.`}
-      aria-pressed={showBack}
-      tabIndex={0}
+      aria-label={
+        hard
+          ? `Jersey: ${formatStintYears(stint)}.`
+          : `Jersey: ${formatStintYears(stint)}. Tap for details.`
+      }
+      aria-pressed={hard ? undefined : showBack}
+      tabIndex={hard ? -1 : 0}
       onClick={toggleFlip}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
@@ -226,7 +237,7 @@ export default function JerseyCard({
             hidden, which made the card paint at its slot while its GhostCard
             was still mid-flight from the deck (the "duplicate jersey" bug). */}
         <div className="card-face" style={{ visibility: showBack ? "hidden" : undefined }}>
-          <CardFront stint={stint} era={era} showLabel={showLabel} />
+          <CardFront stint={stint} era={era} showLabel={showLabel} hideAccolades={hard} />
         </div>
 
         {/* back — the stop's hardware + season-by-season record */}
@@ -337,11 +348,13 @@ export function GhostCard({
   stint,
   from,
   to,
+  hard = false,
   onArrived,
 }: {
   stint: Stint;
   from: CardRect;
   to: CardRect;
+  hard?: boolean;
   onArrived: () => void;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -398,7 +411,7 @@ export function GhostCard({
         pointerEvents: "none",
       }}
     >
-      <CardFront stint={stint} era={era} showLabel size={70} />
+      <CardFront stint={stint} era={era} showLabel size={70} hideAccolades={hard} />
     </div>
   );
 }
@@ -413,6 +426,7 @@ export function DeckCard({
   tiltIndex,
   flipStint = null,
   sizerStint = null,
+  hard = false,
   cardRef,
 }: {
   remaining: number;
@@ -420,6 +434,8 @@ export function DeckCard({
   tiltIndex: number;
   /** mid-reveal: the stint currently being flipped face-up on the deck */
   flipStint?: Stint | null;
+  /** hard mode: the flipped-up card hides its accolade hardware */
+  hard?: boolean;
   /** an already-revealed stint rendered invisibly inside the face-down deck
    *  so the deck is always the exact size of a real jersey card — otherwise
    *  the flip visibly expands the card and the ghost overflows the deck */
@@ -496,7 +512,7 @@ export function DeckCard({
     >
       <div className="w-full" ref={flipRef}>
         {showFace && flipStint ? (
-          <CardFront stint={flipStint} era={era} showLabel size={70} />
+          <CardFront stint={flipStint} era={era} showLabel size={70} hideAccolades={hard} />
         ) : (
           <div className="grid w-full">
             {/* invisible card front reserving a real card's exact footprint */}

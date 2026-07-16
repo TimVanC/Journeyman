@@ -21,11 +21,14 @@ import {
   currentDayNumber,
   displayStreak,
   loadGameState,
+  loadMode,
   loadProfile,
   recordArchiveResult,
   recordResult,
   saveGameState,
+  saveMode,
   todayET,
+  type GameMode,
 } from "./game/storage";
 
 /** Only the BR-verified puzzles rotate daily; 6+ are archetype test
@@ -123,6 +126,9 @@ export default function App() {
     return saved ?? initialState(d);
   });
   const [profile, setProfile] = useState(loadProfile);
+  // difficulty: hard = no card backs, no accolade hardware anywhere
+  const [mode, setMode] = useState<GameMode>(loadMode);
+  const hard = mode === "hard";
   // test mode and archive replays go straight to the board — no start screen
   const [showStart, setShowStart] = useState(testIndex === null && archiveDay === null);
   const [showResult, setShowResult] = useState(false);
@@ -379,7 +385,7 @@ export default function App() {
       : phase === "hints"
         ? "Take a hint"
         : phase === "final"
-          ? "Last guess!"
+          ? "Give up"
           : "See result";
 
   // the archive is a free-account perk — anonymous visitors get today's
@@ -500,6 +506,7 @@ export default function App() {
                 showLabel
                 dealDelay={cascadeDelays.get(stintIdx) ?? 0}
                 hidden={ghost?.key === stintIdx || flightIdx === stintIdx}
+                hard={hard}
                 cardRef={(el) => {
                   if (el) cardEls.current.set(stintIdx, el);
                   else cardEls.current.delete(stintIdx);
@@ -512,6 +519,7 @@ export default function App() {
                 tiltIndex={state.revealed}
                 flipStint={flipIdx !== null ? puzzle.stints[flipIdx] : null}
                 sizerStint={puzzle.stints[puzzle.revealOrder[0]]}
+                hard={hard}
                 onReveal={revealNext}
                 cardRef={(el) => {
                   if (el) cardEls.current.set(-1, el);
@@ -563,8 +571,13 @@ export default function App() {
           <button
             type="button"
             className="btn shrink-0"
-            disabled={!over && phase === "final"}
-            onClick={() => (over ? setShowResult(true) : revealNext())}
+            onClick={() =>
+              over
+                ? setShowResult(true)
+                : phase === "final"
+                  ? dispatch({ type: "give_up" })
+                  : revealNext()
+            }
           >
             {revealLabel}
           </button>
@@ -582,6 +595,7 @@ export default function App() {
           stint={ghost.stint}
           from={ghost.from}
           to={ghost.to}
+          hard={hard}
           onArrived={() => {
             setGhost(null);
             setFlightIdx(null);
@@ -597,6 +611,11 @@ export default function App() {
           cta={startCta}
           dateLabel={dateLabel}
           streak={streak}
+          mode={mode}
+          onMode={(m) => {
+            setMode(m);
+            saveMode(m);
+          }}
           onPlay={() => {
             setShowStart(false);
             if (over) setShowResult(true);
