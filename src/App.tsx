@@ -408,6 +408,7 @@ export default function App() {
                 remaining={remaining}
                 tiltIndex={state.revealed}
                 flipStint={flipIdx !== null ? puzzle.stints[flipIdx] : null}
+                sizerStint={puzzle.stints[puzzle.revealOrder[0]]}
                 onReveal={revealNext}
                 cardRef={(el) => {
                   if (el) cardEls.current.set(-1, el);

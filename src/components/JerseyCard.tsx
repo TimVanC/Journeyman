@@ -219,8 +219,12 @@ export default function JerseyCard({
       }}
     >
       <div className="card-flip" ref={flipRef}>
-        {/* front — kept in flow (hidden) while flipped so the card holds its height */}
-        <div className="card-face" style={{ visibility: showBack ? "hidden" : "visible" }}>
+        {/* front — kept in flow (hidden) while flipped so the card holds its
+            height. NOTE: "visible" must be undefined (inherit), never explicit:
+            an explicit visibility:visible on a child overrides an ancestor's
+            hidden, which made the card paint at its slot while its GhostCard
+            was still mid-flight from the deck (the "duplicate jersey" bug). */}
+        <div className="card-face" style={{ visibility: showBack ? "hidden" : undefined }}>
           <CardFront stint={stint} era={era} showLabel={showLabel} />
         </div>
 
@@ -392,6 +396,7 @@ export function DeckCard({
   onReveal,
   tiltIndex,
   flipStint = null,
+  sizerStint = null,
   cardRef,
 }: {
   remaining: number;
@@ -399,6 +404,10 @@ export function DeckCard({
   tiltIndex: number;
   /** mid-reveal: the stint currently being flipped face-up on the deck */
   flipStint?: Stint | null;
+  /** an already-revealed stint rendered invisibly inside the face-down deck
+   *  so the deck is always the exact size of a real jersey card — otherwise
+   *  the flip visibly expands the card and the ghost overflows the deck */
+  sizerStint?: Stint | null;
   /** registered with the spread so new jerseys can animate out from here */
   cardRef?: (el: HTMLElement | null) => void;
 }) {
@@ -452,6 +461,9 @@ export function DeckCard({
   const era = flipStint
     ? resolveColorway(colorways, flipStint.franchise, flipStint.startYear, flipStint.endYear)
     : null;
+  const sizerEra = sizerStint
+    ? resolveColorway(colorways, sizerStint.franchise, sizerStint.startYear, sizerStint.endYear)
+    : null;
   const showFace = faceUp && flipStint !== null;
 
   return (
@@ -461,7 +473,8 @@ export function DeckCard({
         btnRef.current = el;
         cardRef?.(el);
       }}
-      className={`deck-card flex w-full flex-col items-center px-2 md:w-36 ${showFace ? "is-face justify-start px-1.5 pb-2 pt-1" : "justify-center gap-1 py-3"}`}
+      // same padding in both states so the box never changes size at the flip
+      className={`deck-card flex w-full flex-col items-center justify-start px-1.5 pb-2 pt-1 md:w-36 ${showFace ? "is-face" : ""}`}
       style={{ "--nudge": `${NUDGES[tiltIndex % NUDGES.length]}px` } as React.CSSProperties}
       onClick={onReveal}
     >
@@ -469,21 +482,29 @@ export function DeckCard({
         {showFace && flipStint ? (
           <CardFront stint={flipStint} era={era} showLabel size={70} />
         ) : (
-          <div className="flex flex-col items-center gap-1">
-            <JerseyRenderer
-              primary="#f2e7d2"
-              secondary="#8a5f3c"
-              trim="#3a2c1c"
-              number={null}
-              eraStyle="nineties"
-              size={62}
-            />
-            <span className="text-[0.62rem] font-bold uppercase tracking-[0.14em]">
-              Flip next
-            </span>
-            <span className="text-[0.56rem] opacity-80">
-              {remaining} left in the bag
-            </span>
+          <div className="grid w-full">
+            {/* invisible card front reserving a real card's exact footprint */}
+            {sizerStint && (
+              <div className="invisible col-start-1 row-start-1" aria-hidden="true">
+                <CardFront stint={sizerStint} era={sizerEra} showLabel={false} size={70} />
+              </div>
+            )}
+            <div className="col-start-1 row-start-1 flex flex-col items-center justify-center gap-1">
+              <JerseyRenderer
+                primary="#f2e7d2"
+                secondary="#8a5f3c"
+                trim="#3a2c1c"
+                number={null}
+                eraStyle="nineties"
+                size={62}
+              />
+              <span className="text-[0.62rem] font-bold uppercase tracking-[0.14em]">
+                Flip next
+              </span>
+              <span className="text-[0.56rem] opacity-80">
+                {remaining} left in the bag
+              </span>
+            </div>
           </div>
         )}
       </div>
