@@ -9,6 +9,7 @@ interface Props {
   onPlay: () => void;
   onRules: () => void;
   onSettings: () => void;
+  onArchive: () => void;
   onAccount: () => void;
   signedIn: boolean;
 }
@@ -20,6 +21,7 @@ export default function StartScreen({
   onPlay,
   onRules,
   onSettings,
+  onArchive,
   onAccount,
   signedIn,
 }: Props) {
@@ -68,12 +70,15 @@ export default function StartScreen({
         </p>
 
         <p className="mt-5 text-base font-semibold">{dateLabel}</p>
-        <p className="mt-0.5 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-ink-soft">
+        <p className="mt-0.5 text-[0.95rem] font-bold uppercase tracking-[0.2em] text-ink">
           No. {day}
         </p>
 
         <button type="button" className="btn btn-primary mt-4 w-full py-3.5 text-sm" onClick={onPlay}>
           {cta}
+        </button>
+        <button type="button" className="btn mt-2.5 w-full" onClick={onArchive}>
+          Archive
         </button>
         {/* pre-launch: jump into the replayable test puzzles (?p=1..9) */}
         <a className="btn mt-2.5 w-full" href="?p=1">

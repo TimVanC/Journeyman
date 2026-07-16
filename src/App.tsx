@@ -643,6 +643,7 @@ export default function App() {
           }}
           onRules={() => setShowHelp(true)}
           onSettings={() => setShowSettings(true)}
+          onArchive={() => setShowArchive(true)}
           onAccount={() => setShowAccount(true)}
           signedIn={!!session}
         />
