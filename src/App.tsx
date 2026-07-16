@@ -259,8 +259,11 @@ export default function App() {
         const dx = last.left - now.left;
         const dy = last.top - now.top;
         if (Math.abs(dx) > 2 || Math.abs(dy) > 2) {
-          // slow enough to actually watch the career re-order itself;
-          // the card lifts above its neighbors while it travels
+          // NO delay: the displaced cards start clearing the insertion slot
+          // immediately so it's empty before the ghost flies in (which is
+          // itself held back ~140ms). Otherwise the old occupant sits in the
+          // new card's slot and crosses the incoming ghost. Still slow enough
+          // to watch the career re-order; the card lifts as it travels.
           el.style.zIndex = "5";
           const slide = el.animate(
             [
@@ -272,8 +275,7 @@ export default function App() {
               { transform: "translate(0, 0) scale(1)" },
             ],
             {
-              duration: 1150,
-              delay: 100,
+              duration: 900,
               fill: "backwards",
               easing: "cubic-bezier(0.3, 0.8, 0.3, 1)",
             }

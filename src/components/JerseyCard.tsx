@@ -153,14 +153,14 @@ export default function JerseyCard({
     // we cancel the held squeeze so it no longer pins the transform.
     const squeeze = el.animate(
       [{ transform: "scaleX(1)" }, { transform: "scaleX(0.04)" }],
-      { duration: 130, easing: "ease-in", fill: "forwards" }
+      { duration: 190, easing: "ease-in", fill: "forwards" }
     );
     squeeze.finished
       .then(() => {
         setShowBack((b) => !b);
         const open = el.animate(
           [{ transform: "scaleX(0.04)" }, { transform: "scaleX(1)" }],
-          { duration: 170, easing: "ease-out" }
+          { duration: 250, easing: "ease-out" }
         );
         squeeze.cancel(); // `open` now owns the transform; drop the held frame
         return open.finished;
@@ -352,7 +352,11 @@ export function GhostCard({
         },
         { transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
       ],
-      { duration: 800, easing: "cubic-bezier(0.3, 0.8, 0.3, 1)", fill: "forwards" }
+      // a short delay lets the displaced cards open a gap first (they start
+      // sliding with no delay), so the ghost drops into an already-empty slot
+      // instead of crossing the old occupant on its way in. It holds on the
+      // deck during the delay (the div is positioned at `from`).
+      { duration: 800, delay: 140, easing: "cubic-bezier(0.3, 0.8, 0.3, 1)", fill: "both" }
     );
     anim.finished.then(onArrived).catch(onArrived);
     // fires once for this ghost's one-shot flight; from/to/onArrived are
@@ -428,14 +432,14 @@ export function DeckCard({
     // see it happen. The opening half then owns the transform.
     const squeeze = el.animate(
       [{ transform: "scaleX(1)" }, { transform: "scaleX(0.04)" }],
-      { duration: 150, easing: "ease-in", fill: "forwards" }
+      { duration: 210, easing: "ease-in", fill: "forwards" }
     );
     squeeze.finished
       .then(() => {
         setFaceUp(true);
         const open = el.animate(
           [{ transform: "scaleX(0.04)" }, { transform: "scaleX(1)" }],
-          { duration: 200, easing: "ease-out" }
+          { duration: 280, easing: "ease-out" }
         );
         squeeze.cancel(); // `open` now owns the transform; drop the held frame
         return open.finished;
@@ -457,7 +461,7 @@ export function DeckCard({
         btnRef.current = el;
         cardRef?.(el);
       }}
-      className={`deck-card flex w-full flex-col items-center justify-center px-2 py-3 md:w-36 ${showFace ? "is-face px-1.5 pb-2 pt-1" : "gap-1"}`}
+      className={`deck-card flex w-full flex-col items-center px-2 md:w-36 ${showFace ? "is-face justify-start px-1.5 pb-2 pt-1" : "justify-center gap-1 py-3"}`}
       style={{ "--nudge": `${NUDGES[tiltIndex % NUDGES.length]}px` } as React.CSSProperties}
       onClick={onReveal}
     >
