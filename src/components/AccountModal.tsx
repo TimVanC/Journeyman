@@ -48,6 +48,47 @@ export default function AccountModal({ session, today, onClose }: Props) {
 /* ------------------------------------------------------------------ */
 
 function AuthForm() {
+  const [method, setMethod] = useState<"email" | "phone">("email");
+
+  return (
+    <div className="mt-3 space-y-3 text-sm">
+      <p className="leading-relaxed">
+        <strong>100% free.</strong> An account saves your streak and stats
+        across devices and unlocks the <strong>Archive</strong> — every past
+        puzzle, playable any time.
+      </p>
+
+      <div className="flex gap-1.5" role="tablist" aria-label="Sign in method">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={method === "email"}
+          className={`btn flex-1 py-2 ${method === "email" ? "btn-primary" : ""}`}
+          onClick={() => setMethod("email")}
+        >
+          Email
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={method === "phone"}
+          className={`btn flex-1 py-2 ${method === "phone" ? "btn-primary" : ""}`}
+          onClick={() => setMethod("phone")}
+        >
+          Phone
+        </button>
+      </div>
+
+      {method === "email" ? <EmailAuth /> : <PhoneAuth />}
+
+      <p className="text-xs leading-relaxed text-ink-soft">
+        Free forever — no card, no spam. Just your streaks, safe.
+      </p>
+    </div>
+  );
+}
+
+function EmailAuth() {
   const [mode, setMode] = useState<"signup" | "signin">("signup");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -92,13 +133,7 @@ function AuthForm() {
   };
 
   return (
-    <div className="mt-3 space-y-3 text-sm">
-      <p className="leading-relaxed">
-        <strong>100% free.</strong> An account saves your streak and stats
-        across devices and unlocks the <strong>Archive</strong> — every past
-        puzzle, playable any time.
-      </p>
-
+    <div className="space-y-3">
       <div className="flex gap-1.5" role="tablist" aria-label="Sign up or sign in">
         <button
           type="button"
@@ -155,11 +190,115 @@ function AuthForm() {
 
       {message && <p className="font-bold text-[#2e7d43]">{message}</p>}
       {error && <p className="font-bold text-[#b3362a]">{error}</p>}
-
-      <p className="text-xs leading-relaxed text-ink-soft">
-        Free forever — no card, no spam. Just your streaks, safe.
-      </p>
     </div>
+  );
+}
+
+/** US-biased formatter: bare 10-digit input becomes +1XXXXXXXXXX (E.164).
+ *  A number already starting with + is left as the user typed it. */
+function toE164(raw: string): string {
+  const trimmed = raw.trim();
+  if (trimmed.startsWith("+")) return `+${trimmed.slice(1).replace(/\D/g, "")}`;
+  const digits = trimmed.replace(/\D/g, "");
+  return digits.length === 10 ? `+1${digits}` : `+${digits}`;
+}
+
+/** Phone sign-in: one continuous flow (send code, then confirm it) — Twilio
+ *  Verify + Supabase treat phone OTP as sign-up-or-sign-in, no mode toggle
+ *  needed the way email/password requires one. */
+function PhoneAuth() {
+  const [step, setStep] = useState<"enter" | "code">("enter");
+  const [phone, setPhone] = useState("");
+  const [code, setCode] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const sendCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+    try {
+      const { error } = await supabase.auth.signInWithOtp({ phone: toE164(phone) });
+      if (error) throw error;
+      setStep("code");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't send that code");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const confirmCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    setError(null);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        phone: toE164(phone),
+        token: code,
+        type: "sms",
+      });
+      if (error) throw error;
+      // on success, useSession's onAuthStateChange picks up the new session
+      // and the modal re-renders into the signed-in view automatically
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "That code didn't match");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (step === "code") {
+    return (
+      <form onSubmit={confirmCode} className="space-y-2">
+        <p className="text-xs text-ink-soft">
+          Code sent to {toE164(phone)}.{" "}
+          <button
+            type="button"
+            className="underline"
+            onClick={() => {
+              setStep("enter");
+              setError(null);
+            }}
+          >
+            Wrong number?
+          </button>
+        </p>
+        <input
+          type="text"
+          inputMode="numeric"
+          autoComplete="one-time-code"
+          required
+          placeholder="6-digit code"
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          className="w-full rounded-lg border-2 border-ink bg-card px-3 py-2.5 tracking-[0.3em]"
+        />
+        <button type="submit" className="btn btn-primary w-full py-2.5" disabled={busy}>
+          {busy ? "…" : "Confirm code"}
+        </button>
+        {error && <p className="font-bold text-[#b3362a]">{error}</p>}
+      </form>
+    );
+  }
+
+  return (
+    <form onSubmit={sendCode} className="space-y-2">
+      <input
+        type="tel"
+        autoComplete="tel"
+        required
+        placeholder="Phone number"
+        value={phone}
+        onChange={(e) => setPhone(e.target.value)}
+        className="w-full rounded-lg border-2 border-ink bg-card px-3 py-2.5"
+      />
+      <button type="submit" className="btn btn-primary w-full py-2.5" disabled={busy}>
+        {busy ? "…" : "Send code"}
+      </button>
+      {error && <p className="font-bold text-[#b3362a]">{error}</p>}
+      <p className="text-xs text-ink-soft">Standard SMS rates may apply.</p>
+    </form>
   );
 }
 
@@ -179,7 +318,7 @@ function SignedIn({ session, today }: { session: Session; today: number }) {
 
   return (
     <div className="mt-3 space-y-4 text-sm">
-      <p className="text-xs text-ink-soft">{session.user.email}</p>
+      <p className="text-xs text-ink-soft">{session.user.email ?? session.user.phone}</p>
 
       {stats === null ? (
         <p className="text-ink-soft">Loading stats…</p>
