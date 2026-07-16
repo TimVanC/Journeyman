@@ -58,7 +58,10 @@ export default function AccountModal({ session, today, onClose }: Props) {
  *  so repeat logins cost nothing. */
 function parseIdentifier(raw: string): { email: string } | { phone: string } | null {
   const t = raw.trim();
-  if (t.includes("@")) return { email: t };
+  // lowercase the email so "Tim@x.com" and "tim@x.com" can't look like two
+  // different accounts (Supabase also normalizes server-side, but this keeps
+  // the client consistent)
+  if (t.includes("@")) return { email: t.toLowerCase() };
   const digits = t.replace(/\D/g, "");
   if (digits.length === 10) return { phone: `+1${digits}` };
   if (digits.length >= 11 && digits.length <= 15) return { phone: `+${digits}` };
@@ -74,6 +77,7 @@ function AuthForm({
 }) {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
+  const [showPw, setShowPw] = useState(false);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -100,8 +104,16 @@ function AuthForm({
             options: { emailRedirectTo: location.origin },
           });
           if (error) throw error;
-          if (data.session) setMessage("Account created — you're in!");
-          else setMessage("Check your email for a confirmation link, then sign in.");
+          // Supabase returns an empty identities array when the email already
+          // has an account (it won't create a duplicate) — send them to sign in
+          if (data.user && data.user.identities?.length === 0) {
+            onSwitchView("signin");
+            setError("That email already has an account — sign in instead.");
+          } else if (data.session) {
+            setMessage("Account created — you're in!");
+          } else {
+            setMessage("Check your email to confirm your account, then sign in.");
+          }
         } else {
           const { data, error } = await supabase.auth.signUp({ phone: id.phone, password });
           if (error) throw error;
@@ -137,6 +149,22 @@ function AuthForm({
       // verified = signed in; onAuthStateChange re-renders into "Your locker"
     } catch (err) {
       setError(err instanceof Error ? err.message : "That code didn't match");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const resendCode = async () => {
+    if (!confirmPhone) return;
+    setBusy(true);
+    setError(null);
+    setMessage(null);
+    try {
+      const { error } = await supabase.auth.resend({ type: "sms", phone: confirmPhone });
+      if (error) throw error;
+      setMessage("New code sent.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Couldn't resend the code");
     } finally {
       setBusy(false);
     }
@@ -182,6 +210,13 @@ function AuthForm({
         <button type="submit" className="btn btn-primary w-full py-2.5" disabled={busy}>
           {busy ? "…" : "Confirm code"}
         </button>
+        <p className="text-center text-xs text-ink-soft">
+          Didn't get it?{" "}
+          <button type="button" className="underline" onClick={resendCode} disabled={busy}>
+            Resend code
+          </button>
+        </p>
+        {message && <p className="font-bold text-[#2e7d43]">{message}</p>}
         {error && <p className="font-bold text-[#b3362a]">{error}</p>}
       </form>
     );
@@ -207,16 +242,28 @@ function AuthForm({
           onChange={(e) => setIdentifier(e.target.value)}
           className="w-full rounded-lg border-2 border-ink bg-card px-3 py-2.5"
         />
-        <input
-          type="password"
-          required
-          minLength={6}
-          autoComplete={view === "signup" ? "new-password" : "current-password"}
-          placeholder={view === "signup" ? "Password (6+ characters)" : "Password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg border-2 border-ink bg-card px-3 py-2.5"
-        />
+        <div className="relative">
+          <input
+            type={showPw ? "text" : "password"}
+            required
+            // only enforce length when CREATING a password; at sign-in let the
+            // server judge so a valid existing password is never client-blocked
+            minLength={view === "signup" ? 6 : undefined}
+            autoComplete={view === "signup" ? "new-password" : "current-password"}
+            placeholder={view === "signup" ? "Password (6+ characters)" : "Password"}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full rounded-lg border-2 border-ink bg-card px-3 py-2.5 pr-14"
+          />
+          <button
+            type="button"
+            className="absolute inset-y-0 right-0 px-3 text-xs font-bold uppercase tracking-wide text-ink-soft"
+            onClick={() => setShowPw((s) => !s)}
+            aria-label={showPw ? "Hide password" : "Show password"}
+          >
+            {showPw ? "Hide" : "Show"}
+          </button>
+        </div>
         <button type="submit" className="btn btn-primary w-full py-2.5" disabled={busy}>
           {busy ? "…" : view === "signup" ? "Create free account" : "Sign in"}
         </button>
