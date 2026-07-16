@@ -71,6 +71,53 @@ export async function syncUp(): Promise<void> {
   }
 }
 
+/** Log a finished game into the anonymous play pool (everyone, signed in or
+ *  not) — this is what powers "better than X% of today's players". Write-only
+ *  on the client; aggregates come back through the day_score_stats RPC. */
+export async function logPlay(p: {
+  day: number;
+  won: boolean;
+  revealed: number | null;
+  score: number;
+  hard: boolean;
+  isArchive: boolean;
+}): Promise<void> {
+  if (p.day >= 9000) return; // test slots stay off the books
+  await supabase.from("plays").insert({
+    day: p.day,
+    won: p.won,
+    revealed: p.revealed,
+    score: p.score,
+    hard: p.hard,
+    is_archive: p.isArchive,
+  });
+}
+
+export interface DayStanding {
+  /** other players who finished this day's puzzle (you excluded) */
+  others: number;
+  /** how many of them you outscored */
+  beaten: number;
+}
+
+/** Where a score lands against everyone who played this day. */
+export async function fetchDayStanding(
+  day: number,
+  score: number
+): Promise<DayStanding | null> {
+  const { data, error } = await supabase.rpc("day_score_stats", {
+    p_day: day,
+    p_score: score,
+  });
+  if (error || !data) return null;
+  const row = Array.isArray(data) ? data[0] : data;
+  if (!row) return null;
+  const total = Number(row.total);
+  const lower = Number(row.lower_scores);
+  // own play is in the pool by the time this runs — compare against the rest
+  return { others: Math.max(0, total - 1), beaten: lower };
+}
+
 /** All of the signed-in user's results, for stats + the archive grid. */
 export async function fetchResults(): Promise<CloudResult[]> {
   const { data, error } = await supabase

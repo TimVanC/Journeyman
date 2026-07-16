@@ -11,7 +11,8 @@ import AccountModal from "./components/AccountModal";
 import ArchiveModal from "./components/ArchiveModal";
 import { LockIcon } from "./components/Icons";
 import { useSession } from "./lib/useAuth";
-import { pushResult } from "./lib/cloud";
+import { logPlay, pushResult } from "./lib/cloud";
+import { computeScore } from "./game/score";
 import { puzzles } from "./data/puzzles";
 import { warnRelocationSpans } from "./data/validatePuzzles";
 import { eggFor } from "./game/easterEggs";
@@ -165,9 +166,22 @@ export default function App() {
       setProfile(recordResult(day, result));
       void pushResult(day, result, false);
     }
+    // anonymous play pool — powers "better than X% of today's players"
+    if (testIndex === null) {
+      void logPlay({
+        day,
+        won: state.status === "won",
+        revealed: state.status === "won" ? state.revealed : null,
+        score: computeScore(state, hard),
+        hard,
+        isArchive: archiveDay !== null,
+      });
+    }
     const t = setTimeout(() => setShowResult(true), state.status === "won" ? 1100 : 1400);
     return () => clearTimeout(t);
-  }, [over, day, state.status, state.revealed, testIndex, archiveDay]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- fires once via the
+    // `recorded` ref the moment `over` flips; state is frozen from then on
+  }, [over, day, state.status, state.revealed, testIndex, archiveDay, hard]);
 
   const DECK_KEY = -1;
   const cardEls = useRef(new Map<number, HTMLElement>());
@@ -650,6 +664,8 @@ export default function App() {
           puzzle={puzzle}
           state={state}
           streak={profile.streak}
+          hard={hard}
+          canRank={testIndex === null && archiveDay === null}
           onClose={() => setShowResult(false)}
           onNext={
             testIndex !== null

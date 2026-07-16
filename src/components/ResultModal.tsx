@@ -4,28 +4,23 @@ import colorwaysJson from "../data/colorways.json";
 import { formatStintYears } from "./JerseyCard";
 import { buildShareText, copyToClipboard } from "../game/share";
 import { computeGrade } from "../game/grade";
-import type { GameState, Puzzle, TrailEvent } from "../game/types";
-import { CheckIcon, FlameIcon, GraveIcon, JerseyIcon, XIcon } from "./Icons";
+import { computeScore } from "../game/score";
+import { fetchDayStanding, type DayStanding } from "../lib/cloud";
+import type { GameState, Puzzle } from "../game/types";
+import { FlameIcon } from "./Icons";
 
 const colorways = colorwaysJson as unknown as ColorwayDB;
 
-function TrailIcon({ event }: { event: TrailEvent }) {
-  switch (event) {
-    case "jersey":
-      return <JerseyIcon size={17} className="text-ink" />;
-    case "miss":
-      return <XIcon size={17} className="text-[#b3362a]" />;
-    case "solve":
-      return <CheckIcon size={17} className="text-[#2e7d43]" />;
-    case "dnf":
-      return <GraveIcon size={17} className="text-ink-soft" />;
-  }
-}
+/** only claim a percentile once there's a real crowd to compare against */
+const MIN_CROWD = 5;
 
 interface Props {
   puzzle: Puzzle;
   state: GameState;
   streak: number;
+  hard: boolean;
+  /** daily game (not test, not archive) — eligible for today's leaderboard pool */
+  canRank: boolean;
   onClose: () => void;
   /** test mode only: jump to the next puzzle */
   onNext?: () => void;
@@ -33,11 +28,21 @@ interface Props {
   onReplay?: () => void;
 }
 
-export default function ResultModal({ puzzle, state, streak, onClose, onNext, onReplay }: Props) {
+export default function ResultModal({
+  puzzle,
+  state,
+  streak,
+  hard,
+  canRank,
+  onClose,
+  onNext,
+  onReplay,
+}: Props) {
   const [copied, setCopied] = useState(false);
+  const [standing, setStanding] = useState<DayStanding | null>(null);
   const won = state.status === "won";
   const total = puzzle.stints.length;
-  const score = won ? state.revealed : null;
+  const score = computeScore(state, hard);
   const grade = computeGrade(state, puzzle);
 
   useEffect(() => {
@@ -46,15 +51,30 @@ export default function ResultModal({ puzzle, state, streak, onClose, onNext, on
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
+  // where today's crowd landed (wins only — no percentile pats for a DNF)
+  useEffect(() => {
+    if (!canRank || !won) return;
+    fetchDayStanding(state.day, score).then(setStanding);
+  }, [canRank, won, state.day, score]);
+
+  const beatenPct =
+    standing && standing.others >= MIN_CROWD
+      ? Math.round((standing.beaten / standing.others) * 100)
+      : null;
+
   const share = async () => {
     const text = buildShareText({
       day: state.day,
-      trail: state.trail,
-      score,
-      total,
-      streak,
-      hints: state.hintsRevealed,
       grade: grade.label,
+      score,
+      won,
+      revealed: state.revealed,
+      total,
+      hints: state.hintsRevealed,
+      misses: state.wrongGuesses.length,
+      streak,
+      hard,
+      beatenPct,
     });
     // native share sheet on mobile, clipboard everywhere else
     if (navigator.share) {
@@ -84,6 +104,7 @@ export default function ResultModal({ puzzle, state, streak, onClose, onNext, on
         <div className="flex items-start justify-between gap-4">
           <p className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-ink-soft">
             Journeyman #{state.day}
+            {hard && " · Hard"}
           </p>
           <button type="button" className="chip cursor-pointer" onClick={onClose} aria-label="Close">
             ✕
@@ -107,18 +128,19 @@ export default function ResultModal({ puzzle, state, streak, onClose, onNext, on
           </ul>
         )}
 
-        {/* the ticket — mirrors the shared emoji grid */}
-        <div className="result-ticket mt-3" aria-label="Result grid">
-          <span className="flex flex-wrap items-center gap-1">
-            {state.trail.map((e, i) => (
-              <TrailIcon key={i} event={e} />
-            ))}
+        {/* the scorecard — same facts the share text carries */}
+        <div className="result-ticket mt-3" aria-label="Scorecard">
+          <span className="font-display text-3xl leading-none tabular-nums">
+            {score}
+            <span className="ml-1 text-xs font-bold uppercase tracking-widest text-ink-soft">
+              pts
+            </span>
           </span>
           <span className="text-sm font-bold tabular-nums text-ink-soft">
-            ({score ?? "X"}/{total}
-            {state.hintsRevealed > 0 &&
-              ` + ${state.hintsRevealed} hint${state.hintsRevealed > 1 ? "s" : ""}`}
-            )
+            {won ? state.revealed : "X"}/{total} jerseys
+            {state.hintsRevealed > 0 && ` · ${state.hintsRevealed} hint${state.hintsRevealed > 1 ? "s" : ""}`}
+            {state.wrongGuesses.length > 0 &&
+              ` · ${state.wrongGuesses.length} miss${state.wrongGuesses.length > 1 ? "es" : ""}`}
           </span>
           {streak > 0 && (
             <span className="ml-auto flex items-center gap-1 text-sm font-bold tabular-nums">
@@ -126,6 +148,11 @@ export default function ResultModal({ puzzle, state, streak, onClose, onNext, on
             </span>
           )}
         </div>
+        {beatenPct !== null && (
+          <p className="mt-2 text-sm font-bold text-[#2e7d43]">
+            Better than {beatenPct}% of today's players.
+          </p>
+        )}
 
         {/* full career, chronological, team names finally shown */}
         <ol className="mt-4">

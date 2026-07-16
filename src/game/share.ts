@@ -1,33 +1,50 @@
-import type { TrailEvent } from "./types";
-
-const EMOJI: Record<TrailEvent, string> = {
-  jersey: "👕",
-  miss: "❌",
-  solve: "✅",
-  dnf: "🪦",
-};
-
-export function trailToEmoji(trail: TrailEvent[]): string {
-  return trail.map((e) => EMOJI[e]).join("");
-}
-
+/** Share text. One idea per line, score on top:
+ *
+ *    Journeyman #12 · All-NBA · 85 pts
+ *    🟨🟨🟩 3/7 jerseys · 1 miss
+ *    🔥 4 · Better than 94% today
+ *    journeymanjersey.com
+ *
+ *  The squares are just your walk through the deck: one 🟨 per jersey it
+ *  took, 🟩 the one you solved on (🟥 if he walked). Hints and misses are
+ *  written out as words — nobody should need a legend to read a score. */
 export function buildShareText(opts: {
   day: number;
-  trail: TrailEvent[];
-  score: number | null; // jerseys visible at solve; null = DNF
+  grade: string;
+  score: number;
+  won: boolean;
+  /** jerseys on the table when it ended */
+  revealed: number;
   total: number;
+  hints: number;
+  misses: number;
   streak: number;
-  hints: number; // scouting hints burned
-  grade: string; // rank label from computeGrade
+  hard: boolean;
+  /** % of today's other players outscored; null = not enough data */
+  beatenPct: number | null;
 }): string {
-  const { day, trail, score, total, streak, hints, grade } = opts;
-  const hintNote = hints > 0 ? ` + ${hints} hint${hints > 1 ? "s" : ""}` : "";
+  const { day, grade, score, won, revealed, total, hints, misses, streak, hard, beatenPct } = opts;
+
+  const squares = won
+    ? "🟨".repeat(revealed - 1) + "🟩"
+    : "🟨".repeat(revealed) + "🟥";
+  const runFacts = [
+    `${won ? revealed : "X"}/${total} jerseys`,
+    hints > 0 ? `${hints} hint${hints > 1 ? "s" : ""}` : null,
+    misses > 0 ? `${misses} miss${misses > 1 ? "es" : ""}` : null,
+  ].filter(Boolean);
+
+  const flexes = [
+    streak > 0 ? `🔥 ${streak}` : null,
+    beatenPct !== null ? `Better than ${beatenPct}% today` : null,
+  ].filter(Boolean);
+
   const lines = [
-    `JOURNEYMAN #${day} · ${grade}`,
-    `${trailToEmoji(trail)} (${score ?? "X"}/${total}${hintNote})`,
+    `Journeyman #${day} · ${grade} · ${score} pts${hard ? " · HARD" : ""}`,
+    `${squares} ${runFacts.join(" · ")}`,
   ];
-  if (streak > 0) lines.push(`🔥 streak: ${streak}`);
-  lines.push("journeymangame.com");
+  if (flexes.length > 0) lines.push(flexes.join(" · "));
+  lines.push("journeymanjersey.com");
   return lines.join("\n");
 }
 
