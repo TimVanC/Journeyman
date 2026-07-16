@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
-import { computeStats, fetchResults, type Stats } from "../lib/cloud";
-import { FlameIcon } from "./Icons";
+import { computeStats, fetchResults, SCORE_BUCKETS, type Stats } from "../lib/cloud";
 
 interface Props {
   session: Session | null;
@@ -272,10 +271,8 @@ function SignedIn({ session, today }: { session: Session; today: number }) {
     fetchResults().then((rows) => setStats(computeStats(rows, today)));
   }, [today]);
 
-  const maxDist = stats ? Math.max(1, ...Object.values(stats.distribution)) : 1;
-  const distKeys = stats
-    ? Object.keys(stats.distribution).map(Number).sort((a, b) => a - b)
-    : [];
+  // one shared scale so the bars compare honestly, DNF included
+  const maxBar = stats ? Math.max(1, ...stats.scoreDist, stats.dnf) : 1;
 
   return (
     <div className="mt-3 space-y-4 text-sm">
@@ -285,42 +282,28 @@ function SignedIn({ session, today }: { session: Session; today: number }) {
         <p className="text-ink-soft">Loading stats…</p>
       ) : (
         <>
-          <div className="grid grid-cols-4 gap-1.5 text-center">
-            <StatBox label="Played" value={stats.played} />
-            <StatBox label="Win %" value={stats.winPct} />
-            <StatBox
-              label="Streak"
-              value={
-                <>
-                  <FlameIcon size={14} className="text-wood-deep" /> {stats.currentStreak}
-                </>
-              }
-            />
-            <StatBox label="Best" value={stats.maxStreak} />
+          <div className="grid grid-cols-4 border-y border-line py-3 text-center">
+            <StatCell label="Played" value={stats.played} />
+            <StatCell label="Win %" value={stats.winPct} />
+            <StatCell label="Current Streak" value={stats.currentStreak} />
+            <StatCell label="Max Streak" value={stats.maxStreak} />
+          </div>
+          <div className="-mt-4 grid grid-cols-2 border-b border-line py-3 text-center">
+            <StatCell label="Perfect Games" value={stats.perfect} />
+            <StatCell label="Avg Score" value={stats.avgScore ?? "—"} />
           </div>
 
-          {distKeys.length > 0 && (
-            <div>
-              <p className="mb-1 text-[0.65rem] font-bold uppercase tracking-widest text-ink-soft">
-                Solved at N jerseys
-              </p>
-              <div className="space-y-1">
-                {distKeys.map((k) => (
-                  <div key={k} className="flex items-center gap-2 text-xs tabular-nums">
-                    <span className="w-3 text-right font-bold">{k}</span>
-                    <div className="h-4 flex-1 rounded-sm bg-line/40">
-                      <div
-                        className="flex h-full items-center justify-end rounded-sm bg-wood px-1 text-[0.6rem] font-bold text-paper"
-                        style={{ width: `${(stats.distribution[k] / maxDist) * 100}%`, minWidth: "1.1rem" }}
-                      >
-                        {stats.distribution[k]}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+          <div>
+            <p className="mb-1.5 text-[0.68rem] font-bold uppercase tracking-widest">
+              Score distribution
+            </p>
+            <div className="space-y-1">
+              {SCORE_BUCKETS.map((b, i) => (
+                <DistBar key={b.label} label={b.label} count={stats.scoreDist[i]} max={maxBar} />
+              ))}
+              <DistBar label="DNF" count={stats.dnf} max={maxBar} muted />
             </div>
-          )}
+          </div>
 
           {stats.archivePlayed > 0 && (
             <p className="text-xs text-ink-soft">
@@ -341,14 +324,40 @@ function SignedIn({ session, today }: { session: Session; today: number }) {
   );
 }
 
-function StatBox({ label, value }: { label: string; value: React.ReactNode }) {
+function StatCell({ label, value }: { label: string; value: React.ReactNode }) {
   return (
-    <div className="rounded-lg border border-line bg-card px-1 py-2">
-      <div className="flex items-center justify-center gap-0.5 font-display text-xl leading-none tabular-nums">
-        {value}
-      </div>
-      <div className="mt-1 text-[0.55rem] font-bold uppercase tracking-widest text-ink-soft">
+    <div className="px-1">
+      <div className="font-display text-3xl leading-none tabular-nums">{value}</div>
+      <div className="mt-1 text-[0.58rem] font-medium uppercase tracking-wide text-ink-soft">
         {label}
+      </div>
+    </div>
+  );
+}
+
+function DistBar({
+  label,
+  count,
+  max,
+  muted = false,
+}: {
+  label: string;
+  count: number;
+  max: number;
+  muted?: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-2 text-xs tabular-nums">
+      <span className="w-9 shrink-0 text-right font-bold">{label}</span>
+      <div className="h-5 flex-1">
+        <div
+          className={`flex h-full items-center justify-end rounded-sm px-1.5 text-[0.65rem] font-bold text-[#faf6ec] ${
+            muted ? "bg-ink-soft" : "bg-wood-deep"
+          }`}
+          style={{ width: count > 0 ? `${(count / max) * 100}%` : "1.4rem", minWidth: "1.4rem" }}
+        >
+          {count}
+        </div>
       </div>
     </div>
   );

@@ -7,6 +7,8 @@ export interface CloudResult {
   won: boolean;
   /** jerseys flipped when solved; null on a DNF */
   revealed: number | null;
+  /** 0-1000 points; null on rows recorded before scoring existed */
+  score: number | null;
   is_archive: boolean;
 }
 
@@ -16,7 +18,8 @@ export interface CloudResult {
 export async function pushResult(
   day: number,
   result: number | "DNF",
-  isArchive: boolean
+  isArchive: boolean,
+  score: number
 ): Promise<void> {
   const { data } = await supabase.auth.getSession();
   const userId = data.session?.user.id;
@@ -27,6 +30,7 @@ export async function pushResult(
       day,
       won: result !== "DNF",
       revealed: result === "DNF" ? null : result,
+      score,
       is_archive: isArchive,
     },
     { onConflict: "user_id,day", ignoreDuplicates: true }
@@ -122,11 +126,21 @@ export async function fetchDayStanding(
 export async function fetchResults(): Promise<CloudResult[]> {
   const { data, error } = await supabase
     .from("results")
-    .select("day, won, revealed, is_archive")
+    .select("day, won, revealed, score, is_archive")
     .order("day");
   if (error || !data) return [];
   return data as CloudResult[];
 }
+
+/** Fixed score buckets — every puzzle lands on the same 0-1000 scale no
+ *  matter how many jerseys its career has, so the chart shape is stable. */
+export const SCORE_BUCKETS = [
+  { label: "1000", test: (s: number) => s === 1000 },
+  { label: "800+", test: (s: number) => s >= 800 && s < 1000 },
+  { label: "600+", test: (s: number) => s >= 600 && s < 800 },
+  { label: "400+", test: (s: number) => s >= 400 && s < 600 },
+  { label: "<400", test: (s: number) => s < 400 },
+] as const;
 
 export interface Stats {
   played: number;
@@ -135,8 +149,13 @@ export interface Stats {
   /** live daily streak (archive games don't count) */
   currentStreak: number;
   maxStreak: number;
-  /** wins by jerseys flipped: distribution[k] = wins solved at k jerseys */
-  distribution: Record<number, number>;
+  /** wins with a perfect 1000 */
+  perfect: number;
+  /** mean score across scored wins; null until there is one */
+  avgScore: number | null;
+  /** win counts per SCORE_BUCKETS entry, plus the DNF total at the end */
+  scoreDist: number[];
+  dnf: number;
   archivePlayed: number;
   archiveWins: number;
 }
@@ -147,12 +166,15 @@ export function computeStats(results: CloudResult[], today: number): Stats {
   const arch = results.filter((r) => r.is_archive);
 
   const wins = daily.filter((r) => r.won).length;
-  const distribution: Record<number, number> = {};
-  for (const r of daily) {
-    if (r.won && r.revealed != null) {
-      distribution[r.revealed] = (distribution[r.revealed] ?? 0) + 1;
-    }
-  }
+  const scored = daily.filter((r) => r.won && r.score != null) as Array<
+    CloudResult & { score: number }
+  >;
+  const scoreDist = SCORE_BUCKETS.map((b) => scored.filter((r) => b.test(r.score)).length);
+  const perfect = scored.filter((r) => r.score === 1000).length;
+  const avgScore =
+    scored.length > 0
+      ? Math.round(scored.reduce((sum, r) => sum + r.score, 0) / scored.length)
+      : null;
 
   // streaks over consecutive daily-day wins
   const wonDays = new Set(daily.filter((r) => r.won).map((r) => r.day));
@@ -177,7 +199,10 @@ export function computeStats(results: CloudResult[], today: number): Stats {
     winPct: daily.length > 0 ? Math.round((wins / daily.length) * 100) : 0,
     currentStreak,
     maxStreak,
-    distribution,
+    perfect,
+    avgScore,
+    scoreDist,
+    dnf: daily.length - wins,
     archivePlayed: arch.length,
     archiveWins: arch.filter((r) => r.won).length,
   };

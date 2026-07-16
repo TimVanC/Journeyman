@@ -162,6 +162,7 @@ export default function App() {
     if (!over || recorded.current) return;
     recorded.current = true;
     const result = state.status === "won" ? state.revealed : "DNF";
+    const score = computeScore(state, hard);
     // reloading a finished game re-runs this effect — the local record is the
     // "already counted" source of truth, checked BEFORE we write it, so cloud
     // pushes (especially the append-only plays log) fire exactly once ever
@@ -171,10 +172,10 @@ export default function App() {
         : loadProfile().history[day] === undefined;
     if (archiveDay !== null) {
       recordArchiveResult(day, result);
-      if (firstRecording) void pushResult(day, result, true);
+      if (firstRecording) void pushResult(day, result, true, score);
     } else if (testIndex === null) {
       setProfile(recordResult(day, result));
-      if (firstRecording) void pushResult(day, result, false);
+      if (firstRecording) void pushResult(day, result, false, score);
     }
     // anonymous play pool — powers "better than X% of today's players"
     if (testIndex === null && firstRecording) {
@@ -182,7 +183,7 @@ export default function App() {
         day,
         won: state.status === "won",
         revealed: state.status === "won" ? state.revealed : null,
-        score: computeScore(state, hard),
+        score,
         hard,
         isArchive: archiveDay !== null,
       });
