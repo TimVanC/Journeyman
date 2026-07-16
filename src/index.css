@@ -22,6 +22,10 @@
 
 html {
   background: var(--color-paper);
+  /* the page never legitimately scrolls sideways — clip (not hidden) also
+     forbids programmatic horizontal scrolling, e.g. scrollIntoView
+     inline:center yanking the board offscreen mid-reveal */
+  overflow-x: clip;
 }
 
 body {

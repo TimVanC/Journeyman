@@ -316,6 +316,18 @@ function Stat({ label, value }: { label: string; value: string | number }) {
   );
 }
 
+/** Element rect in DOCUMENT coordinates. All reveal-animation geometry uses
+ *  these instead of viewport rects: the deck's smooth scrollIntoView is often
+ *  still in flight when a reveal commits, and viewport rects taken before vs
+ *  after a scroll differ by the scroll delta — which used to send the whole
+ *  spread on a phantom sideways flight before settling. */
+export interface CardRect {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+}
+
 /** Flies the just-flipped card from the deck to its landing slot in one
  *  continuous motion. This is the ONLY thing that moves during a reveal —
  *  the deck reverts to face-down and the real JerseyCard mounts (invisible,
@@ -328,8 +340,8 @@ export function GhostCard({
   onArrived,
 }: {
   stint: Stint;
-  from: DOMRect;
-  to: DOMRect;
+  from: CardRect;
+  to: CardRect;
   onArrived: () => void;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
@@ -374,7 +386,10 @@ export function GhostCard({
       ref={ref}
       className="jersey-card w-full px-1.5 pb-2 pt-1"
       style={{
-        position: "fixed",
+        // absolute in document coords (not fixed/viewport): if the page is
+        // still smooth-scrolling mid-flight, the ghost rides WITH the layout
+        // instead of drifting against it
+        position: "absolute",
         left: from.left,
         top: from.top,
         width: from.width,

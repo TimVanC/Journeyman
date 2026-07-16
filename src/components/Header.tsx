@@ -13,7 +13,7 @@ export default function Header({ streak, onHelp, onArchive, onAccount, signedIn 
   return (
     <header className="baseline-rule relative z-10 bg-paper/80 backdrop-blur-sm">
       <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-3">
-        <div className="flex items-end gap-2">
+        <a href="/" className="flex items-end gap-2" aria-label="Journeyman — today's puzzle">
           <span aria-hidden="true" className="-mb-0.5">
             <JerseyRenderer
               primary="#b3855a"
@@ -27,7 +27,7 @@ export default function Header({ streak, onHelp, onArchive, onAccount, signedIn 
           <h1 className="font-display text-[1.65rem] leading-none tracking-wide">
             JOURNEYMAN
           </h1>
-        </div>
+        </a>
         <div className="flex items-center gap-2">
           <span
             className="chip tabular-nums"

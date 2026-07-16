@@ -1,6 +1,6 @@
 import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
 import Header from "./components/Header";
-import JerseyCard, { DeckCard, GhostCard } from "./components/JerseyCard";
+import JerseyCard, { DeckCard, GhostCard, type CardRect } from "./components/JerseyCard";
 import HintTray from "./components/HintTray";
 import GuessInput from "./components/GuessInput";
 import ResultModal from "./components/ResultModal";
@@ -29,6 +29,20 @@ import {
 /** Only the BR-verified puzzles rotate daily; 6+ are archetype test
  *  puzzles reachable through test mode. */
 const DAILY_POOL = 5;
+
+/** Measure in document coordinates so FLIP math is scroll-independent —
+ *  the deck's smooth scrollIntoView is often still mid-flight when a reveal
+ *  commits, and mixing rects from different scroll positions used to send
+ *  the whole spread flying sideways by the scroll delta before settling. */
+function docRect(el: HTMLElement): CardRect {
+  const r = el.getBoundingClientRect();
+  return {
+    left: r.left + window.scrollX,
+    top: r.top + window.scrollY,
+    width: r.width,
+    height: r.height,
+  };
+}
 
 /** Test mode: ?p=3 forces puzzle 3 (1-based) in its own save slot;
  *  ?test drops you at puzzle 1. Remove before launch.
@@ -146,7 +160,7 @@ export default function App() {
 
   const DECK_KEY = -1;
   const cardEls = useRef(new Map<number, HTMLElement>());
-  const prevRects = useRef(new Map<number, DOMRect>());
+  const prevRects = useRef(new Map<number, CardRect>());
 
   // ---- flip-the-top-card reveal ----
   // Tapping the deck (or the reveal button) first flips the deck's top
@@ -162,7 +176,7 @@ export default function App() {
   // the deck's on-screen rect at the instant the flip ends, and the stint
   // it was showing — captured BEFORE the deck snaps back to face-down, so
   // the ghost's flight starts from exactly where the flipped card was
-  const flipOriginRect = useRef<DOMRect | null>(null);
+  const flipOriginRect = useRef<CardRect | null>(null);
   const pendingGhostStint = useRef<Stint | null>(null);
   // the stint index currently mid-flip — a ref, not just the flipIdx state,
   // because finishFlip is scheduled via setTimeout from the SAME render
@@ -172,8 +186,8 @@ export default function App() {
   const [ghost, setGhost] = useState<{
     key: number;
     stint: Stint;
-    from: DOMRect;
-    to: DOMRect;
+    from: CardRect;
+    to: CardRect;
   } | null>(null);
   // the card that's about to fly, hidden from the VERY render it appears in.
   // `ghost` only gets set a render later (in the layout effect), so relying on
@@ -185,7 +199,8 @@ export default function App() {
     if (flipTimer.current === null) return;
     clearTimeout(flipTimer.current);
     flipTimer.current = null;
-    flipOriginRect.current = cardEls.current.get(DECK_KEY)?.getBoundingClientRect() ?? null;
+    const deckEl = cardEls.current.get(DECK_KEY);
+    flipOriginRect.current = deckEl ? docRect(deckEl) : null;
     pendingGhostStint.current =
       flipTargetIdx.current !== null ? puzzle.stints[flipTargetIdx.current] : null;
     setFlipIdx(null);
@@ -246,7 +261,7 @@ export default function App() {
       el.style.transition = "none";
     });
     cardEls.current.forEach((el, key) => {
-      const now = el.getBoundingClientRect();
+      const now = docRect(el);
       const last = prevRects.current.get(key);
       // brand-new in-game card
       if (!last && !reduce && !over && key === newestIdx && key !== DECK_KEY) {
