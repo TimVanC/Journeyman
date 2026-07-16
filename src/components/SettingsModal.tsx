@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import type { GameMode } from "../game/storage";
+import { supabase } from "../lib/supabase";
 import { ArchiveIcon, UserIcon } from "./Icons";
 
 interface Props {
@@ -88,6 +89,18 @@ export default function SettingsModal({
           >
             <UserIcon /> {signedIn ? "Your locker" : "Sign in — it's free"}
           </button>
+          {signedIn && (
+            <button
+              type="button"
+              className="btn w-full py-2.5"
+              onClick={() => {
+                onClose();
+                void supabase.auth.signOut();
+              }}
+            >
+              Sign out
+            </button>
+          )}
         </div>
       </div>
     </div>

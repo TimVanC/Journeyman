@@ -70,9 +70,7 @@ export default function StartScreen({
         </p>
 
         <p className="mt-5 text-base font-semibold">{dateLabel}</p>
-        <p className="mt-0.5 text-[0.95rem] font-bold uppercase tracking-[0.2em] text-ink">
-          No. {day}
-        </p>
+        <p className="mt-0.5 text-base font-semibold text-ink-soft">No. {day}</p>
 
         <button type="button" className="btn btn-primary mt-4 w-full py-3.5 text-sm" onClick={onPlay}>
           {cta}
