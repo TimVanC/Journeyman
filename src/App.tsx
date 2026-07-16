@@ -148,6 +148,11 @@ export default function App() {
     from: DOMRect;
     to: DOMRect;
   } | null>(null);
+  // the card that's about to fly, hidden from the VERY render it appears in.
+  // `ghost` only gets set a render later (in the layout effect), so relying on
+  // it alone would flash the real card at its final slot for one frame before
+  // the ghost covers it. This bridges that gap; the ghost takes over once set.
+  const [flightIdx, setFlightIdx] = useState<number | null>(null);
 
   const finishFlip = () => {
     if (flipTimer.current === null) return;
@@ -158,6 +163,7 @@ export default function App() {
       flipTargetIdx.current !== null ? puzzle.stints[flipTargetIdx.current] : null;
     setFlipIdx(null);
     dealtFromFlip.current = true;
+    setFlightIdx(flipTargetIdx.current); // hide the incoming card on this render
     dispatch({ type: "reveal", puzzle });
   };
 
@@ -286,6 +292,10 @@ export default function App() {
     dealtFromFlip.current = false;
     flipOriginRect.current = null;
     pendingGhostStint.current = null;
+    // hand off hiding to the ghost (now set) — or, if no ghost was created
+    // (game-over cascade, missing rects), let the card show. Both updates
+    // batch with setGhost into the next render, so hiding never lapses.
+    setFlightIdx(null);
     // safe to restore immediately: the nudge has already snapped, so no
     // transition retriggers, and hover lifts keep animating afterwards
     cardEls.current.forEach((el) => {
@@ -384,7 +394,7 @@ export default function App() {
                 }
                 showLabel
                 dealDelay={cascadeDelays.get(stintIdx) ?? 0}
-                hidden={ghost?.key === stintIdx}
+                hidden={ghost?.key === stintIdx || flightIdx === stintIdx}
                 cardRef={(el) => {
                   if (el) cardEls.current.set(stintIdx, el);
                   else cardEls.current.delete(stintIdx);
@@ -466,7 +476,10 @@ export default function App() {
           stint={ghost.stint}
           from={ghost.from}
           to={ghost.to}
-          onArrived={() => setGhost(null)}
+          onArrived={() => {
+            setGhost(null);
+            setFlightIdx(null);
+          }}
         />
       )}
 
