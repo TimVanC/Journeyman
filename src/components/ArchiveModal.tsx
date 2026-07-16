@@ -1,8 +1,14 @@
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { fetchResults, type CloudResult } from "../lib/cloud";
-import { loadArchiveResults, loadProfile } from "../game/storage";
-import { CheckIcon, GraveIcon, LockIcon } from "./Icons";
+import {
+  LAUNCH_DATE_ET,
+  dayNumberForDate,
+  loadArchiveResults,
+  loadProfile,
+  todayET,
+} from "../game/storage";
+import { LockIcon } from "./Icons";
 
 interface Props {
   session: Session | null;
@@ -13,8 +19,9 @@ interface Props {
   onSignUp: () => void;
 }
 
-/** Every past daily puzzle, playable any time — a free-account perk. */
-export default function ArchiveModal({ session, today, onClose, onSignUp }: Props) {
+/** Every past daily puzzle in a month calendar (NYT-style) — a free-account
+ *  perk. Days already played are marked red. */
+export default function ArchiveModal({ session, onClose, onSignUp }: Props) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
@@ -35,7 +42,7 @@ export default function ArchiveModal({ session, today, onClose, onSignUp }: Prop
         </div>
 
         {session ? (
-          <ArchiveGrid today={today} />
+          <ArchiveCalendar />
         ) : (
           <div className="mt-4 flex flex-col items-center gap-3 text-center text-sm">
             <LockIcon size={28} className="text-wood-deep" />
@@ -54,66 +61,134 @@ export default function ArchiveModal({ session, today, onClose, onSignUp }: Prop
   );
 }
 
-function ArchiveGrid({ today }: { today: number }) {
-  const [cloud, setCloud] = useState<CloudResult[] | null>(null);
+const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
+const ym = (y: number, m: number) => y * 12 + m;
 
+function ArchiveCalendar() {
+  const [cloud, setCloud] = useState<CloudResult[] | null>(null);
   useEffect(() => {
     fetchResults().then(setCloud);
   }, []);
 
-  const pastDays = Array.from({ length: today - 1 }, (_, i) => today - 1 - i); // newest first
+  const todayStr = todayET();
+  const [view, setView] = useState(() => ({
+    y: Number(todayStr.slice(0, 4)),
+    m: Number(todayStr.slice(5, 7)) - 1, // 0-based month
+  }));
 
-  if (pastDays.length === 0) {
-    return (
-      <p className="mt-4 text-sm text-ink-soft">
-        No past puzzles yet — the archive starts filling up tomorrow.
-      </p>
-    );
+  // any recorded result (won or DNF) marks the day as played
+  const played = new Set<number>();
+  for (const d of Object.keys({ ...loadProfile().history, ...loadArchiveResults() })) {
+    played.add(Number(d));
   }
+  for (const r of cloud ?? []) played.add(r.day);
 
-  // merge cloud + local so results show even before a sync finishes
-  const byDay = new Map<number, { won: boolean; revealed: number | null }>();
-  const local = { ...loadProfile().history, ...loadArchiveResults() };
-  for (const [d, res] of Object.entries(local)) {
-    byDay.set(Number(d), { won: res !== "DNF", revealed: res === "DNF" ? null : res });
-  }
-  for (const r of cloud ?? []) {
-    byDay.set(r.day, { won: r.won, revealed: r.revealed });
-  }
+  const launchYm = ym(Number(LAUNCH_DATE_ET.slice(0, 4)), Number(LAUNCH_DATE_ET.slice(5, 7)) - 1);
+  const todayYm = ym(Number(todayStr.slice(0, 4)), Number(todayStr.slice(5, 7)) - 1);
+  const viewYm = ym(view.y, view.m);
+  const canPrev = viewYm > launchYm;
+  const canNext = viewYm < todayYm;
+
+  const first = new Date(Date.UTC(view.y, view.m, 1));
+  const leadingBlanks = first.getUTCDay();
+  const daysInMonth = new Date(Date.UTC(view.y, view.m + 1, 0)).getUTCDate();
+  const monthLabel = first.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  const dateStr = (d: number) =>
+    `${view.y}-${String(view.m + 1).padStart(2, "0")}-${String(d).padStart(2, "0")}`;
+
+  const move = (dir: -1 | 1) =>
+    setView((v) => {
+      const next = ym(v.y, v.m) + dir;
+      return { y: Math.floor(next / 12), m: ((next % 12) + 12) % 12 };
+    });
+
+  const cellBase =
+    "flex h-9 w-full items-center justify-center rounded-full text-sm tabular-nums";
 
   return (
     <div className="mt-3">
-      <p className="mb-2 text-xs text-ink-soft">
-        Archive games count in your stats but not your daily streak.
-      </p>
-      <ul className="grid max-h-[50vh] grid-cols-3 gap-1.5 overflow-y-auto">
-        {pastDays.map((day) => {
-          const res = byDay.get(day);
-          return (
-            <li key={day}>
+      <div className="flex items-center justify-between">
+        <button
+          type="button"
+          className="chip cursor-pointer font-bold disabled:opacity-30"
+          onClick={() => move(-1)}
+          disabled={!canPrev}
+          aria-label="Previous month"
+        >
+          ‹
+        </button>
+        <p className="font-display text-lg tracking-wide">{monthLabel}</p>
+        <button
+          type="button"
+          className="chip cursor-pointer font-bold disabled:opacity-30"
+          onClick={() => move(1)}
+          disabled={!canNext}
+          aria-label="Next month"
+        >
+          ›
+        </button>
+      </div>
+
+      <div className="mt-2 grid grid-cols-7 gap-1 text-center">
+        {WEEKDAYS.map((w, i) => (
+          <span key={i} className="text-[0.6rem] font-bold uppercase text-ink-soft">
+            {w}
+          </span>
+        ))}
+        {Array.from({ length: leadingBlanks }, (_, i) => (
+          <span key={`b${i}`} />
+        ))}
+        {Array.from({ length: daysInMonth }, (_, i) => {
+          const d = i + 1;
+          const ds = dateStr(d);
+          const dayNum = dayNumberForDate(ds);
+          const isToday = ds === todayStr;
+          const playable = dayNum >= 1 && ds < todayStr;
+          if (isToday) {
+            return (
               <a
-                href={`?d=${day}`}
-                className="btn flex w-full flex-col items-center gap-0.5 py-2 text-xs"
+                key={d}
+                href={location.pathname}
+                className={`${cellBase} border-2 border-ink font-bold`}
+                title="Today's puzzle"
               >
-                <span className="font-display text-base leading-none">#{day}</span>
-                {res ? (
-                  res.won ? (
-                    <span className="flex items-center gap-1 text-[0.6rem] text-[#2e7d43]">
-                      <CheckIcon size={11} /> {res.revealed} 👕
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1 text-[0.6rem] text-[#b3362a]">
-                      <GraveIcon size={11} /> DNF
-                    </span>
-                  )
-                ) : (
-                  <span className="text-[0.6rem] text-ink-soft">unplayed</span>
-                )}
+                {d}
               </a>
-            </li>
+            );
+          }
+          if (playable) {
+            const done = played.has(dayNum);
+            return (
+              <a
+                key={d}
+                href={`?d=${dayNum}`}
+                title={`Puzzle #${dayNum}${done ? " · played" : ""}`}
+                className={`${cellBase} ${
+                  done
+                    ? "bg-[#b3362a] font-bold text-[#faf6ec]"
+                    : "border border-line font-medium hover:border-ink"
+                }`}
+              >
+                {d}
+              </a>
+            );
+          }
+          return (
+            <span key={d} className={`${cellBase} text-ink-soft/40`}>
+              {d}
+            </span>
           );
         })}
-      </ul>
+      </div>
+
+      <p className="mt-3 text-xs text-ink-soft">
+        <span className="mr-1 inline-block h-2.5 w-2.5 rounded-full bg-[#b3362a] align-middle" />{" "}
+        played · Archive games count in your stats but not your daily streak.
+      </p>
     </div>
   );
 }

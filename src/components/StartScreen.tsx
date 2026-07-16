@@ -1,12 +1,11 @@
 import JerseyRenderer from "./JerseyRenderer";
-import { FlameIcon, GearIcon } from "./Icons";
+import { GearIcon } from "./Icons";
 
 interface Props {
   day: number;
   /** label depends on where today's game stands */
   cta: "Play" | "Continue" | "See result";
   dateLabel: string;
-  streak: number;
   onPlay: () => void;
   onRules: () => void;
   onSettings: () => void;
@@ -18,7 +17,6 @@ export default function StartScreen({
   day,
   cta,
   dateLabel,
-  streak,
   onPlay,
   onRules,
   onSettings,
@@ -27,15 +25,8 @@ export default function StartScreen({
 }: Props) {
   return (
     <div className="start-screen" role="dialog" aria-label="Journeyman — start">
-      {/* same control row the game header carries: streak · how-to-play · settings */}
+      {/* how-to-play + settings, same corner as the game header */}
       <div className="absolute right-4 top-4 flex items-center gap-2">
-        <span
-          className="chip tabular-nums"
-          title="Current streak"
-          aria-label={`Current streak: ${streak}`}
-        >
-          <FlameIcon className="text-wood-deep" /> {streak}
-        </span>
         <button
           type="button"
           className="chip cursor-pointer font-bold"
@@ -76,8 +67,9 @@ export default function StartScreen({
           Name him in as few jerseys as you can.
         </p>
 
-        <p className="mt-5 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-ink-soft">
-          Puzzle #{day} · {dateLabel}
+        <p className="mt-5 text-base font-semibold">{dateLabel}</p>
+        <p className="mt-0.5 text-[0.72rem] font-bold uppercase tracking-[0.2em] text-ink-soft">
+          No. {day}
         </p>
 
         <button type="button" className="btn btn-primary mt-4 w-full py-3.5 text-sm" onClick={onPlay}>

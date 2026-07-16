@@ -1,7 +1,7 @@
 import type { GameState, Profile } from "./types";
 
 /** Puzzle #1 lands on this ET calendar date. */
-const LAUNCH_DATE_ET = "2026-07-15";
+export const LAUNCH_DATE_ET = "2026-07-15";
 
 const PROFILE_KEY = "journeyman:profile:v1";
 const stateKey = (day: number) => `journeyman:game:v1:${day}`;
@@ -24,8 +24,13 @@ function dateToUTC(dateStr: string): number {
 
 /** Daily puzzle number: #1 on launch day, +1 per ET midnight. */
 export function currentDayNumber(): number {
-  const diff = dateToUTC(todayET()) - dateToUTC(LAUNCH_DATE_ET);
-  return Math.max(1, Math.round(diff / 86_400_000) + 1);
+  return Math.max(1, dayNumberForDate(todayET()));
+}
+
+/** Puzzle day number for any YYYY-MM-DD calendar date (may be < 1 pre-launch). */
+export function dayNumberForDate(dateStr: string): number {
+  const diff = dateToUTC(dateStr) - dateToUTC(LAUNCH_DATE_ET);
+  return Math.round(diff / 86_400_000) + 1;
 }
 
 function read<T>(key: string): T | null {

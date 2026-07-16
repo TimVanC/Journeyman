@@ -234,7 +234,7 @@ function AuthForm({
       {message && <p className="font-bold text-[#2e7d43]">{message}</p>}
       {error && <p className="font-bold text-[#b3362a]">{error}</p>}
 
-      <p className="text-center text-xs text-ink-soft">
+      <p className="pt-1 text-center text-xs text-ink-soft">
         {view === "signup" ? (
           <>
             Already have an account?{" "}
@@ -259,12 +259,6 @@ function AuthForm({
           </>
         )}
       </p>
-
-      {view === "signup" && (
-        <p className="text-xs leading-relaxed text-ink-soft">
-          Free forever — no card, no spam. Just your streaks, safe.
-        </p>
-      )}
     </div>
   );
 }

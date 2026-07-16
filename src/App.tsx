@@ -22,6 +22,7 @@ import type { Stint } from "./game/types";
 import {
   currentDayNumber,
   displayStreak,
+  loadArchiveResults,
   loadGameState,
   loadMode,
   loadProfile,
@@ -161,15 +162,22 @@ export default function App() {
     if (!over || recorded.current) return;
     recorded.current = true;
     const result = state.status === "won" ? state.revealed : "DNF";
+    // reloading a finished game re-runs this effect — the local record is the
+    // "already counted" source of truth, checked BEFORE we write it, so cloud
+    // pushes (especially the append-only plays log) fire exactly once ever
+    const firstRecording =
+      archiveDay !== null
+        ? loadArchiveResults()[day] === undefined
+        : loadProfile().history[day] === undefined;
     if (archiveDay !== null) {
       recordArchiveResult(day, result);
-      void pushResult(day, result, true);
+      if (firstRecording) void pushResult(day, result, true);
     } else if (testIndex === null) {
       setProfile(recordResult(day, result));
-      void pushResult(day, result, false);
+      if (firstRecording) void pushResult(day, result, false);
     }
     // anonymous play pool — powers "better than X% of today's players"
-    if (testIndex === null) {
+    if (testIndex === null && firstRecording) {
       void logPlay({
         day,
         won: state.status === "won",
@@ -384,7 +392,7 @@ export default function App() {
   const profileRevealed = over ? HINT_COUNT : state.hintsRevealed;
   const profileInGrid = total % 3 !== 0;
   const dateLabel = new Date(`${todayET()}T12:00:00`).toLocaleDateString("en-US", {
-    month: "short",
+    month: "long",
     day: "numeric",
     year: "numeric",
   });
@@ -624,7 +632,6 @@ export default function App() {
           day={day}
           cta={startCta}
           dateLabel={dateLabel}
-          streak={streak}
           onPlay={() => {
             setShowStart(false);
             if (over) setShowResult(true);
