@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
 import { computeStats, fetchResults, type Stats } from "../lib/cloud";
-import { FlameIcon } from "./Icons";
+import { FlameIcon, GoogleIcon } from "./Icons";
 
 interface Props {
   session: Session | null;
@@ -13,11 +13,15 @@ interface Props {
 
 /** Sign-up / sign-in when logged out; profile + lifetime stats when in. */
 export default function AccountModal({ session, today, onClose }: Props) {
+  const [view, setView] = useState<"signup" | "signin">("signup");
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
+
+  const heading = session ? "Your locker" : view === "signup" ? "Join the league" : "Sign in";
 
   return (
     <div
@@ -27,19 +31,21 @@ export default function AccountModal({ session, today, onClose }: Props) {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label={session ? "Your account" : "Create a free account"}
+        aria-label={heading}
         className="modal-panel p-5"
       >
         <div className="flex items-start justify-between gap-4">
-          <h2 className="font-display text-2xl">
-            {session ? "Your locker" : "Join the league"}
-          </h2>
+          <h2 className="font-display text-2xl">{heading}</h2>
           <button type="button" className="chip cursor-pointer" onClick={onClose} aria-label="Close">
             ✕
           </button>
         </div>
 
-        {session ? <SignedIn session={session} today={today} /> : <AuthForm />}
+        {session ? (
+          <SignedIn session={session} today={today} />
+        ) : (
+          <AuthForm view={view} onSwitchView={setView} />
+        )}
       </div>
     </div>
   );
@@ -47,77 +53,91 @@ export default function AccountModal({ session, today, onClose }: Props) {
 
 /* ------------------------------------------------------------------ */
 
-function AuthForm() {
-  const [method, setMethod] = useState<"email" | "phone">("email");
-
-  return (
-    <div className="mt-3 space-y-3 text-sm">
-      <p className="leading-relaxed">
-        <strong>100% free.</strong> An account saves your streak and stats
-        across devices and unlocks the <strong>Archive</strong> — every past
-        puzzle, playable any time.
-      </p>
-
-      <div className="flex gap-1.5" role="tablist" aria-label="Sign in method">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={method === "email"}
-          className={`btn flex-1 py-2 ${method === "email" ? "btn-primary" : ""}`}
-          onClick={() => setMethod("email")}
-        >
-          Email
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={method === "phone"}
-          className={`btn flex-1 py-2 ${method === "phone" ? "btn-primary" : ""}`}
-          onClick={() => setMethod("phone")}
-        >
-          Phone
-        </button>
-      </div>
-
-      {method === "email" ? <EmailAuth /> : <PhoneAuth />}
-
-      <p className="text-xs leading-relaxed text-ink-soft">
-        Free forever — no card, no spam. Just your streaks, safe.
-      </p>
-    </div>
-  );
+/** One field accepts email OR phone; detect which and route accordingly.
+ *  Bare 10-digit numbers are treated as US (+1). Phone accounts still use a
+ *  password — the only SMS ever sent is the one confirmation code at sign-up,
+ *  so repeat logins cost nothing. */
+function parseIdentifier(raw: string): { email: string } | { phone: string } | null {
+  const t = raw.trim();
+  if (t.includes("@")) return { email: t };
+  const digits = t.replace(/\D/g, "");
+  if (digits.length === 10) return { phone: `+1${digits}` };
+  if (digits.length >= 11 && digits.length <= 15) return { phone: `+${digits}` };
+  return null;
 }
 
-function EmailAuth() {
-  const [mode, setMode] = useState<"signup" | "signin">("signup");
-  const [email, setEmail] = useState("");
+function AuthForm({
+  view,
+  onSwitchView,
+}: {
+  view: "signup" | "signin";
+  onSwitchView: (v: "signup" | "signin") => void;
+}) {
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // set while a phone sign-up waits on its SMS confirmation code
+  const [confirmPhone, setConfirmPhone] = useState<string | null>(null);
+  const [code, setCode] = useState("");
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const id = parseIdentifier(identifier);
+    if (!id) {
+      setError("Enter a valid email address or phone number");
+      return;
+    }
     setBusy(true);
     setError(null);
     setMessage(null);
     try {
-      if (mode === "signup") {
-        const { data, error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: { emailRedirectTo: location.origin },
-        });
-        if (error) throw error;
-        // depending on project settings, sign-up may need email confirmation
-        if (data.session) setMessage("Account created — you're in!");
-        else setMessage("Check your email for a confirmation link, then sign in.");
+      if (view === "signup") {
+        if ("email" in id) {
+          const { data, error } = await supabase.auth.signUp({
+            email: id.email,
+            password,
+            options: { emailRedirectTo: location.origin },
+          });
+          if (error) throw error;
+          if (data.session) setMessage("Account created — you're in!");
+          else setMessage("Check your email for a confirmation link, then sign in.");
+        } else {
+          const { data, error } = await supabase.auth.signUp({ phone: id.phone, password });
+          if (error) throw error;
+          if (data.session) setMessage("Account created — you're in!");
+          else setConfirmPhone(id.phone); // Supabase just texted a code
+        }
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword(
+          "email" in id ? { email: id.email, password } : { phone: id.phone, password }
+        );
         if (error) throw error;
+        // session change flips the modal to the signed-in view
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const confirmCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!confirmPhone) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        phone: confirmPhone,
+        token: code,
+        type: "sms",
+      });
+      if (error) throw error;
+      // verified = signed in; onAuthStateChange re-renders into "Your locker"
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "That code didn't match");
     } finally {
       setBusy(false);
     }
@@ -132,132 +152,18 @@ function EmailAuth() {
     if (error) setError(error.message);
   };
 
-  return (
-    <div className="space-y-3">
-      <div className="flex gap-1.5" role="tablist" aria-label="Sign up or sign in">
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mode === "signup"}
-          className={`btn flex-1 py-2 ${mode === "signup" ? "btn-primary" : ""}`}
-          onClick={() => setMode("signup")}
-        >
-          Sign up
-        </button>
-        <button
-          type="button"
-          role="tab"
-          aria-selected={mode === "signin"}
-          className={`btn flex-1 py-2 ${mode === "signin" ? "btn-primary" : ""}`}
-          onClick={() => setMode("signin")}
-        >
-          Sign in
-        </button>
-      </div>
-
-      <form onSubmit={submit} className="space-y-2">
-        <input
-          type="email"
-          required
-          autoComplete="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full rounded-lg border-2 border-ink bg-card px-3 py-2.5"
-        />
-        <input
-          type="password"
-          required
-          minLength={6}
-          autoComplete={mode === "signup" ? "new-password" : "current-password"}
-          placeholder={mode === "signup" ? "Password (6+ characters)" : "Password"}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full rounded-lg border-2 border-ink bg-card px-3 py-2.5"
-        />
-        <button type="submit" className="btn btn-primary w-full py-2.5" disabled={busy}>
-          {busy ? "…" : mode === "signup" ? "Create free account" : "Sign in"}
-        </button>
-      </form>
-
-      <div className="flex items-center gap-2 text-[0.65rem] uppercase tracking-widest text-ink-soft">
-        <span className="h-px flex-1 bg-line" /> or <span className="h-px flex-1 bg-line" />
-      </div>
-
-      <button type="button" className="btn w-full py-2.5" onClick={google}>
-        Continue with Google
-      </button>
-
-      {message && <p className="font-bold text-[#2e7d43]">{message}</p>}
-      {error && <p className="font-bold text-[#b3362a]">{error}</p>}
-    </div>
-  );
-}
-
-/** US-biased formatter: bare 10-digit input becomes +1XXXXXXXXXX (E.164).
- *  A number already starting with + is left as the user typed it. */
-function toE164(raw: string): string {
-  const trimmed = raw.trim();
-  if (trimmed.startsWith("+")) return `+${trimmed.slice(1).replace(/\D/g, "")}`;
-  const digits = trimmed.replace(/\D/g, "");
-  return digits.length === 10 ? `+1${digits}` : `+${digits}`;
-}
-
-/** Phone sign-in: one continuous flow (send code, then confirm it) — Twilio
- *  Verify + Supabase treat phone OTP as sign-up-or-sign-in, no mode toggle
- *  needed the way email/password requires one. */
-function PhoneAuth() {
-  const [step, setStep] = useState<"enter" | "code">("enter");
-  const [phone, setPhone] = useState("");
-  const [code, setCode] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const sendCode = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
-    setError(null);
-    try {
-      const { error } = await supabase.auth.signInWithOtp({ phone: toE164(phone) });
-      if (error) throw error;
-      setStep("code");
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Couldn't send that code");
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const confirmCode = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
-    setError(null);
-    try {
-      const { error } = await supabase.auth.verifyOtp({
-        phone: toE164(phone),
-        token: code,
-        type: "sms",
-      });
-      if (error) throw error;
-      // on success, useSession's onAuthStateChange picks up the new session
-      // and the modal re-renders into the signed-in view automatically
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "That code didn't match");
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  if (step === "code") {
+  // phone sign-up confirmation step
+  if (confirmPhone) {
     return (
-      <form onSubmit={confirmCode} className="space-y-2">
+      <form onSubmit={confirmCode} className="mt-3 space-y-2 text-sm">
         <p className="text-xs text-ink-soft">
-          Code sent to {toE164(phone)}.{" "}
+          We texted a code to {confirmPhone}.{" "}
           <button
             type="button"
             className="underline"
             onClick={() => {
-              setStep("enter");
+              setConfirmPhone(null);
+              setCode("");
               setError(null);
             }}
           >
@@ -283,22 +189,87 @@ function PhoneAuth() {
   }
 
   return (
-    <form onSubmit={sendCode} className="space-y-2">
-      <input
-        type="tel"
-        autoComplete="tel"
-        required
-        placeholder="Phone number"
-        value={phone}
-        onChange={(e) => setPhone(e.target.value)}
-        className="w-full rounded-lg border-2 border-ink bg-card px-3 py-2.5"
-      />
-      <button type="submit" className="btn btn-primary w-full py-2.5" disabled={busy}>
-        {busy ? "…" : "Send code"}
+    <div className="mt-3 space-y-3 text-sm">
+      {view === "signup" && (
+        <p className="leading-relaxed">
+          <strong>100% free.</strong> An account saves your streak and stats
+          across devices and unlocks the <strong>Archive</strong> — every past
+          puzzle, playable any time.
+        </p>
+      )}
+
+      <form onSubmit={submit} className="space-y-2">
+        <input
+          type="text"
+          required
+          autoComplete="username"
+          placeholder="Email or phone number"
+          value={identifier}
+          onChange={(e) => setIdentifier(e.target.value)}
+          className="w-full rounded-lg border-2 border-ink bg-card px-3 py-2.5"
+        />
+        <input
+          type="password"
+          required
+          minLength={6}
+          autoComplete={view === "signup" ? "new-password" : "current-password"}
+          placeholder={view === "signup" ? "Password (6+ characters)" : "Password"}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full rounded-lg border-2 border-ink bg-card px-3 py-2.5"
+        />
+        <button type="submit" className="btn btn-primary w-full py-2.5" disabled={busy}>
+          {busy ? "…" : view === "signup" ? "Create free account" : "Sign in"}
+        </button>
+      </form>
+
+      <div className="flex items-center gap-2 text-[0.65rem] uppercase tracking-widest text-ink-soft">
+        <span className="h-px flex-1 bg-line" /> or <span className="h-px flex-1 bg-line" />
+      </div>
+
+      <button
+        type="button"
+        className="btn flex w-full items-center justify-center gap-2 py-2.5"
+        onClick={google}
+      >
+        <GoogleIcon size={15} /> Continue with Google
       </button>
+
+      {message && <p className="font-bold text-[#2e7d43]">{message}</p>}
       {error && <p className="font-bold text-[#b3362a]">{error}</p>}
-      <p className="text-xs text-ink-soft">Standard SMS rates may apply.</p>
-    </form>
+
+      <p className="text-center text-xs text-ink-soft">
+        {view === "signup" ? (
+          <>
+            Already have an account?{" "}
+            <button
+              type="button"
+              className="font-bold text-ink underline underline-offset-2"
+              onClick={() => onSwitchView("signin")}
+            >
+              Sign in here
+            </button>
+          </>
+        ) : (
+          <>
+            New here?{" "}
+            <button
+              type="button"
+              className="font-bold text-ink underline underline-offset-2"
+              onClick={() => onSwitchView("signup")}
+            >
+              Create a free account
+            </button>
+          </>
+        )}
+      </p>
+
+      {view === "signup" && (
+        <p className="text-xs leading-relaxed text-ink-soft">
+          Free forever — no card, no spam. Just your streaks, safe.
+        </p>
+      )}
+    </div>
   );
 }
 
