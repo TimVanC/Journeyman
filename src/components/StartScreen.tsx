@@ -1,6 +1,5 @@
 import JerseyRenderer from "./JerseyRenderer";
-import { FlameIcon } from "./Icons";
-import type { GameMode } from "../game/storage";
+import { FlameIcon, GearIcon } from "./Icons";
 
 interface Props {
   day: number;
@@ -8,11 +7,9 @@ interface Props {
   cta: "Play" | "Continue" | "See result";
   dateLabel: string;
   streak: number;
-  mode: GameMode;
-  onMode: (m: GameMode) => void;
   onPlay: () => void;
   onRules: () => void;
-  onArchive: () => void;
+  onSettings: () => void;
   onAccount: () => void;
   signedIn: boolean;
 }
@@ -22,16 +19,42 @@ export default function StartScreen({
   cta,
   dateLabel,
   streak,
-  mode,
-  onMode,
   onPlay,
   onRules,
-  onArchive,
+  onSettings,
   onAccount,
   signedIn,
 }: Props) {
   return (
     <div className="start-screen" role="dialog" aria-label="Journeyman — start">
+      {/* same control row the game header carries: streak · how-to-play · settings */}
+      <div className="absolute right-4 top-4 flex items-center gap-2">
+        <span
+          className="chip tabular-nums"
+          title="Current streak"
+          aria-label={`Current streak: ${streak}`}
+        >
+          <FlameIcon className="text-wood-deep" /> {streak}
+        </span>
+        <button
+          type="button"
+          className="chip cursor-pointer font-bold"
+          onClick={onRules}
+          aria-label="How to play"
+        >
+          ?
+        </button>
+        <button
+          type="button"
+          className="chip cursor-pointer"
+          onClick={onSettings}
+          aria-label="Settings"
+          title="Settings"
+        >
+          <GearIcon />
+        </button>
+      </div>
+
       <div className="flex w-full max-w-sm flex-col items-center px-6 text-center">
         <div className="start-jersey" aria-hidden="true">
           <JerseyRenderer
@@ -55,48 +78,10 @@ export default function StartScreen({
 
         <p className="mt-5 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-ink-soft">
           Puzzle #{day} · {dateLabel}
-          {streak > 0 && (
-            <>
-              {" · "}
-              <FlameIcon size={12} className="text-wood-deep" /> {streak}
-            </>
-          )}
         </p>
 
-        <div className="mt-4 flex w-full gap-1.5" role="radiogroup" aria-label="Difficulty">
-          <button
-            type="button"
-            role="radio"
-            aria-checked={mode === "normal"}
-            className={`btn flex-1 py-2 ${mode === "normal" ? "btn-primary" : ""}`}
-            onClick={() => onMode("normal")}
-          >
-            Normal
-          </button>
-          <button
-            type="button"
-            role="radio"
-            aria-checked={mode === "hard"}
-            className={`btn flex-1 py-2 ${mode === "hard" ? "btn-primary" : ""}`}
-            onClick={() => onMode("hard")}
-          >
-            Hard
-          </button>
-        </div>
-        <p className="mt-1.5 min-h-[1rem] text-[0.65rem] text-ink-soft">
-          {mode === "hard"
-            ? "Hard: no accolades, and cards don't flip for season records."
-            : "Normal: tap cards for season records and accolades."}
-        </p>
-
-        <button type="button" className="btn btn-primary mt-3 w-full py-3.5 text-sm" onClick={onPlay}>
+        <button type="button" className="btn btn-primary mt-4 w-full py-3.5 text-sm" onClick={onPlay}>
           {cta}
-        </button>
-        <button type="button" className="btn mt-2.5 w-full" onClick={onRules}>
-          How to play
-        </button>
-        <button type="button" className="btn mt-2.5 w-full" onClick={onArchive}>
-          Archive
         </button>
         {/* pre-launch: jump into the replayable test puzzles (?p=1..9) */}
         <a className="btn mt-2.5 w-full" href="?p=1">
@@ -109,7 +94,7 @@ export default function StartScreen({
             className="mt-4 text-xs font-bold text-wood-deep underline underline-offset-2"
             onClick={onAccount}
           >
-            Create a free account — save your streak &amp; unlock the archive
+            Create a free account — save your streak and unlock the archive
           </button>
         )}
 

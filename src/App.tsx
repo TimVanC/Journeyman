@@ -9,6 +9,7 @@ import StartScreen from "./components/StartScreen";
 import Confetti from "./components/Confetti";
 import AccountModal from "./components/AccountModal";
 import ArchiveModal from "./components/ArchiveModal";
+import SettingsModal from "./components/SettingsModal";
 import { LockIcon } from "./components/Icons";
 import { useSession } from "./lib/useAuth";
 import { logPlay, pushResult } from "./lib/cloud";
@@ -118,6 +119,7 @@ export default function App() {
   const session = useSession(); // undefined = loading, null = signed out
   const [showAccount, setShowAccount] = useState(false);
   const [showArchive, setShowArchive] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   const [state, dispatch] = useReducer(reducer, day, (d) => {
     const saved = loadGameState(d);
@@ -450,9 +452,7 @@ export default function App() {
       <Header
         streak={streak}
         onHelp={() => setShowHelp(true)}
-        onArchive={() => setShowArchive(true)}
-        onAccount={() => setShowAccount(true)}
-        signedIn={!!session}
+        onSettings={() => setShowSettings(true)}
       />
 
       {/* dev builds always show the picker; production only via ?p / ?test */}
@@ -625,22 +625,36 @@ export default function App() {
           cta={startCta}
           dateLabel={dateLabel}
           streak={streak}
-          mode={mode}
-          onMode={(m) => {
-            setMode(m);
-            saveMode(m);
-          }}
           onPlay={() => {
             setShowStart(false);
             if (over) setShowResult(true);
           }}
           onRules={() => setShowHelp(true)}
-          onArchive={() => setShowArchive(true)}
+          onSettings={() => setShowSettings(true)}
           onAccount={() => setShowAccount(true)}
           signedIn={!!session}
         />
       )}
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
+      {showSettings && (
+        <SettingsModal
+          mode={mode}
+          onMode={(m) => {
+            setMode(m);
+            saveMode(m);
+          }}
+          signedIn={!!session}
+          onArchive={() => {
+            setShowSettings(false);
+            setShowArchive(true);
+          }}
+          onAccount={() => {
+            setShowSettings(false);
+            setShowAccount(true);
+          }}
+          onClose={() => setShowSettings(false)}
+        />
+      )}
       {showAccount && (
         <AccountModal
           session={session ?? null}

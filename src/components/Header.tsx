@@ -1,15 +1,13 @@
 import JerseyRenderer from "./JerseyRenderer";
-import { ArchiveIcon, FlameIcon, UserIcon } from "./Icons";
+import { FlameIcon, GearIcon } from "./Icons";
 
 interface Props {
   streak: number;
   onHelp: () => void;
-  onArchive: () => void;
-  onAccount: () => void;
-  signedIn: boolean;
+  onSettings: () => void;
 }
 
-export default function Header({ streak, onHelp, onArchive, onAccount, signedIn }: Props) {
+export default function Header({ streak, onHelp, onSettings }: Props) {
   return (
     <header className="baseline-rule relative z-10 bg-paper/80 backdrop-blur-sm">
       <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-3">
@@ -38,29 +36,20 @@ export default function Header({ streak, onHelp, onArchive, onAccount, signedIn 
           </span>
           <button
             type="button"
-            className="chip cursor-pointer"
-            onClick={onArchive}
-            aria-label="Puzzle archive"
-            title="Archive"
-          >
-            <ArchiveIcon />
-          </button>
-          <button
-            type="button"
-            className="chip cursor-pointer"
-            onClick={onAccount}
-            aria-label={signedIn ? "Your account" : "Sign in or create a free account"}
-            title={signedIn ? "Account" : "Sign in — free"}
-          >
-            <UserIcon className={signedIn ? "text-wood-deep" : undefined} />
-          </button>
-          <button
-            type="button"
             className="chip cursor-pointer font-bold"
             onClick={onHelp}
             aria-label="How to play"
           >
             ?
+          </button>
+          <button
+            type="button"
+            className="chip cursor-pointer"
+            onClick={onSettings}
+            aria-label="Settings"
+            title="Settings"
+          >
+            <GearIcon />
           </button>
         </div>
       </div>

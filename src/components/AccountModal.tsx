@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
 import { computeStats, fetchResults, type Stats } from "../lib/cloud";
-import { FlameIcon, GoogleIcon } from "./Icons";
+import { FlameIcon } from "./Icons";
 
 interface Props {
   session: Session | null;
@@ -227,12 +227,8 @@ function AuthForm({
         <span className="h-px flex-1 bg-line" /> or <span className="h-px flex-1 bg-line" />
       </div>
 
-      <button
-        type="button"
-        className="btn flex w-full items-center justify-center gap-2 py-2.5"
-        onClick={google}
-      >
-        <GoogleIcon size={15} /> Continue with Google
+      <button type="button" className="btn w-full py-2.5" onClick={google}>
+        Continue with Google
       </button>
 
       {message && <p className="font-bold text-[#2e7d43]">{message}</p>}
