@@ -58,16 +58,6 @@ function UnibrowGlyph(p: GlyphProps) {
   );
 }
 
-/** Air Canada — a maple leaf */
-function MapleLeafGlyph(p: GlyphProps) {
-  return (
-    <Glyph {...p} filled>
-      <path d="M12 2l1.7 3.4 2.9-1.1-.8 3.2 3.3.5-2.1 2.5 2.7 1.7-3.1 1.2.6 3.2-3.3-.7-.4 3.1h-3l-.4-3.1-3.3.7.6-3.2-3.1-1.2 2.7-1.7-2.1-2.5 3.3-.5-.8-3.2 2.9 1.1L12 2z" />
-      <rect x="11.2" y="17" width="1.6" height="5" rx="0.8" />
-    </Glyph>
-  );
-}
-
 /** Black Mamba — an S-curved snake */
 function SnakeGlyph(p: GlyphProps) {
   return (
@@ -78,22 +68,13 @@ function SnakeGlyph(p: GlyphProps) {
   );
 }
 
-/** the famous Halloween bat swat */
-function BatGlyph(p: GlyphProps) {
-  return (
-    <Glyph {...p} filled>
-      <path d="M12 6.5c-.5 1.7-1.9 2.5-3.3 2.1C7 8.2 5 8.8 4 10.4c1.6-.2 2.6.6 3 1.8.5-.9 1.6-1.2 2.6-.7.8.4 1.1 1.2.9 2.1.5-.4 1-.6 1.5-.6s1 .2 1.5.6c-.2-.9.1-1.7.9-2.1 1-.5 2.1-.2 2.6.7.4-1.2 1.4-2 3-1.8-1-1.6-3-2.2-4.7-1.8-1.4.4-2.8-.4-3.3-2.1z" />
-    </Glyph>
-  );
-}
-
-/** backboard-breaker — a mini hoop */
-function HoopGlyph(p: GlyphProps) {
+/** the true Journeyman — a packed suitcase, always on the move */
+function SuitcaseGlyph(p: GlyphProps) {
   return (
     <Glyph {...p}>
-      <rect x="4" y="3.5" width="16" height="11" rx="1" />
-      <rect x="9.5" y="7" width="5" height="4" />
-      <path d="M9 14.5h6M9.5 14.5l.8 5M14.5 14.5l-.8 5M10.3 19.5h3.4" />
+      <rect x="3" y="7.5" width="18" height="12.5" rx="2" />
+      <path d="M9 7.5V6a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v1.5" />
+      <path d="M8 7.5v12.5M16 7.5v12.5" />
     </Glyph>
   );
 }
@@ -117,16 +98,6 @@ function CapeGlyph(p: GlyphProps) {
   );
 }
 
-/** Point God — a halo */
-function HaloGlyph(p: GlyphProps) {
-  return (
-    <Glyph {...p}>
-      <ellipse cx="12" cy="9" rx="7.5" ry="3" />
-      <ellipse cx="12" cy="9.6" rx="4.6" ry="1.7" />
-    </Glyph>
-  );
-}
-
 /* ---- the registry: only the most special of players ---- */
 
 const EGGS: Record<string, EasterEgg> = {
@@ -145,21 +116,6 @@ const EGGS: Record<string, EasterEgg> = {
     colors: ["#552583", "#fdb927", "#1d1a13", "#7a5fa0"],
     label: "snakes for the Black Mamba",
   },
-  "vince carter": {
-    Icon: MapleLeafGlyph,
-    colors: ["#ce1141", "#a10d33", "#e04a6b", "#753bbd"],
-    label: "maple leaves for Air Canada",
-  },
-  "manu ginobili": {
-    Icon: BatGlyph,
-    colors: ["#1d1a13", "#3a3a3a", "#575757", "#8a8a8a"],
-    label: "bats for the bat swat",
-  },
-  "shaquille o'neal": {
-    Icon: HoopGlyph,
-    colors: ["#e03a3e", "#1d428a", "#fdb927", "#1d1a13"],
-    label: "hoops for the backboard breaker",
-  },
   "kevin durant": {
     Icon: ScytheGlyph,
     colors: ["#1d1a13", "#4a4a4a", "#007ac1", "#6b6353"],
@@ -170,10 +126,10 @@ const EGGS: Record<string, EasterEgg> = {
     colors: ["#c8102e", "#0057b8", "#e5c453", "#8f0f24"],
     label: "capes for Superman",
   },
-  "chris paul": {
-    Icon: HaloGlyph,
-    colors: ["#c9a227", "#e5c453", "#b3852a", "#8c6239"],
-    label: "halos for the Point God",
+  "ish smith": {
+    Icon: SuitcaseGlyph,
+    colors: ["#8c6239", "#b3855a", "#55432c", "#1d1a13"],
+    label: "suitcases for the truest Journeyman of all",
   },
 };
 
