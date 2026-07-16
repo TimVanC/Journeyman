@@ -177,7 +177,7 @@ function AuthForm({
           placeholder="6-digit code"
           value={code}
           onChange={(e) => setCode(e.target.value)}
-          className="w-full rounded-lg border-2 border-ink bg-card px-3 py-2.5 tracking-[0.3em]"
+          className="w-full rounded-lg border-2 border-ink bg-card px-3 py-2.5"
         />
         <button type="submit" className="btn btn-primary w-full py-2.5" disabled={busy}>
           {busy ? "…" : "Confirm code"}
