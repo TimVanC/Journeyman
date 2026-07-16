@@ -84,3 +84,22 @@ export function displayStreak(profile: Profile, today: number): number {
   if (profile.lastSolvedDay === null) return 0;
   return profile.lastSolvedDay >= today - 1 ? profile.streak : 0;
 }
+
+/* ------------------------------------------------------------------
+   Archive plays (signed-in feature) — kept OUT of the daily profile
+   so replaying past puzzles never touches the live streak.
+------------------------------------------------------------------- */
+
+const ARCHIVE_KEY = "journeyman:archive:v1";
+
+export function loadArchiveResults(): Record<string, number | "DNF"> {
+  return read<Record<string, number | "DNF">>(ARCHIVE_KEY) ?? {};
+}
+
+/** Record an archive game exactly once (first result stands). */
+export function recordArchiveResult(day: number, result: number | "DNF") {
+  const all = loadArchiveResults();
+  if (all[day] !== undefined) return;
+  all[day] = result;
+  write(ARCHIVE_KEY, all);
+}

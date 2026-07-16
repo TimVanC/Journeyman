@@ -9,9 +9,22 @@ interface Props {
   streak: number;
   onPlay: () => void;
   onRules: () => void;
+  onArchive: () => void;
+  onAccount: () => void;
+  signedIn: boolean;
 }
 
-export default function StartScreen({ day, cta, dateLabel, streak, onPlay, onRules }: Props) {
+export default function StartScreen({
+  day,
+  cta,
+  dateLabel,
+  streak,
+  onPlay,
+  onRules,
+  onArchive,
+  onAccount,
+  signedIn,
+}: Props) {
   return (
     <div className="start-screen" role="dialog" aria-label="Journeyman — start">
       <div className="flex w-full max-w-sm flex-col items-center px-6 text-center">
@@ -51,10 +64,23 @@ export default function StartScreen({ day, cta, dateLabel, streak, onPlay, onRul
         <button type="button" className="btn mt-2.5 w-full" onClick={onRules}>
           How to play
         </button>
+        <button type="button" className="btn mt-2.5 w-full" onClick={onArchive}>
+          Archive
+        </button>
         {/* pre-launch: jump into the replayable test puzzles (?p=1..9) */}
         <a className="btn mt-2.5 w-full" href="?p=1">
           Run tests
         </a>
+
+        {!signedIn && (
+          <button
+            type="button"
+            className="mt-4 text-xs font-bold text-wood-deep underline underline-offset-2"
+            onClick={onAccount}
+          >
+            Create a free account — save your streak &amp; unlock the archive
+          </button>
+        )}
 
         <p className="mt-8 text-[0.65rem] text-ink-soft">
           New puzzle at midnight ET · Not affiliated with the NBA

@@ -7,6 +7,11 @@ import ResultModal from "./components/ResultModal";
 import HelpModal from "./components/HelpModal";
 import StartScreen from "./components/StartScreen";
 import Confetti from "./components/Confetti";
+import AccountModal from "./components/AccountModal";
+import ArchiveModal from "./components/ArchiveModal";
+import { LockIcon } from "./components/Icons";
+import { useSession } from "./lib/useAuth";
+import { pushResult } from "./lib/cloud";
 import { puzzles } from "./data/puzzles";
 import { getPhase, initialState, reducer, HINT_COUNT } from "./game/state";
 import type { Stint } from "./game/types";
@@ -15,6 +20,7 @@ import {
   displayStreak,
   loadGameState,
   loadProfile,
+  recordArchiveResult,
   recordResult,
   saveGameState,
   todayET,
@@ -25,23 +31,36 @@ import {
 const DAILY_POOL = 5;
 
 /** Test mode: ?p=3 forces puzzle 3 (1-based) in its own save slot;
- *  ?test drops you at puzzle 1. Remove before launch. */
+ *  ?test drops you at puzzle 1. Remove before launch.
+ *  Archive mode: ?d=12 replays past daily puzzle #12 (free account only). */
 function resolveGame(): {
   day: number;
   puzzle: (typeof puzzles)[number];
   testIndex: number | null;
+  /** set when replaying a past daily puzzle from the archive */
+  archiveDay: number | null;
 } {
   const realDay = currentDayNumber();
   const params = new URLSearchParams(location.search);
   let forced = Number(params.get("p"));
   if (!forced && params.has("test")) forced = 1;
   if (forced >= 1 && forced <= puzzles.length) {
-    return { day: 9000 + forced, puzzle: puzzles[forced - 1], testIndex: forced };
+    return { day: 9000 + forced, puzzle: puzzles[forced - 1], testIndex: forced, archiveDay: null };
+  }
+  const archive = Number(params.get("d"));
+  if (Number.isInteger(archive) && archive >= 1 && archive < realDay) {
+    return {
+      day: archive,
+      puzzle: puzzles[(archive - 1) % DAILY_POOL],
+      testIndex: null,
+      archiveDay: archive,
+    };
   }
   return {
     day: realDay,
     puzzle: puzzles[(realDay - 1) % DAILY_POOL],
     testIndex: null,
+    archiveDay: null,
   };
 }
 
@@ -70,8 +89,12 @@ function resetTestSlots() {
 }
 
 export default function App() {
-  const { day, puzzle, testIndex } = resolveGame();
+  const { day, puzzle, testIndex, archiveDay } = resolveGame();
   const total = puzzle.stints.length;
+  const realToday = currentDayNumber();
+  const session = useSession(); // undefined = loading, null = signed out
+  const [showAccount, setShowAccount] = useState(false);
+  const [showArchive, setShowArchive] = useState(false);
 
   const [state, dispatch] = useReducer(reducer, day, (d) => {
     const saved = loadGameState(d);
@@ -81,8 +104,8 @@ export default function App() {
     return saved ?? initialState(d);
   });
   const [profile, setProfile] = useState(loadProfile);
-  // test mode goes straight to the board — no start screen between puzzles
-  const [showStart, setShowStart] = useState(testIndex === null);
+  // test mode and archive replays go straight to the board — no start screen
+  const [showStart, setShowStart] = useState(testIndex === null && archiveDay === null);
   const [showResult, setShowResult] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
@@ -103,19 +126,23 @@ export default function App() {
   }, [state.status]);
 
   // record win/loss exactly once, then pop the result card.
-  // test games never touch the real streak/history.
+  // test games never touch the real streak/history; archive replays record
+  // to their own ledger (stats yes, daily streak no) and sync to the cloud.
   const recorded = useRef(false);
   useEffect(() => {
     if (!over || recorded.current) return;
     recorded.current = true;
-    if (testIndex === null) {
-      setProfile(
-        recordResult(day, state.status === "won" ? state.revealed : "DNF")
-      );
+    const result = state.status === "won" ? state.revealed : "DNF";
+    if (archiveDay !== null) {
+      recordArchiveResult(day, result);
+      void pushResult(day, result, true);
+    } else if (testIndex === null) {
+      setProfile(recordResult(day, result));
+      void pushResult(day, result, false);
     }
     const t = setTimeout(() => setShowResult(true), state.status === "won" ? 1100 : 1400);
     return () => clearTimeout(t);
-  }, [over, day, state.status, state.revealed, testIndex]);
+  }, [over, day, state.status, state.revealed, testIndex, archiveDay]);
 
   const DECK_KEY = -1;
   const cardEls = useRef(new Map<number, HTMLElement>());
@@ -306,7 +333,7 @@ export default function App() {
   }, [state.revealed, newestIdx, over]);
 
   const remaining = total - state.revealed;
-  const streak = displayStreak(profile, day);
+  const streak = displayStreak(profile, realToday);
 
   // player profile: full reveal once the game ends; on mobile it fills the
   // leftover columns of the spread's last row when the count isn't a
@@ -335,10 +362,58 @@ export default function App() {
           ? "Last guess!"
           : "See result";
 
+  // the archive is a free-account perk — anonymous visitors get today's
+  // puzzle only, plus a friendly pitch instead of a wall
+  if (archiveDay !== null && !session) {
+    return (
+      <div className="start-screen" role="dialog" aria-label="Archive — members only">
+        <div className="flex w-full max-w-sm flex-col items-center px-6 text-center">
+          <LockIcon size={34} className="text-wood-deep" />
+          <h1 className="font-display mt-4 text-3xl tracking-wide">THE ARCHIVE</h1>
+          {session === undefined ? (
+            <p className="mt-3 text-sm text-ink-soft">Checking your locker…</p>
+          ) : (
+            <>
+              <p className="mt-3 text-sm leading-relaxed text-ink-soft">
+                Past puzzles are a perk for members — and membership is{" "}
+                <strong className="text-ink">100% free</strong>. Sign up to
+                replay every previous Journeyman and keep your streaks and
+                stats safe across devices.
+              </p>
+              <button
+                type="button"
+                className="btn btn-primary mt-5 w-full py-3"
+                onClick={() => setShowAccount(true)}
+              >
+                Create a free account
+              </button>
+              <a className="btn mt-2.5 w-full" href={location.pathname}>
+                Back to today's puzzle
+              </a>
+            </>
+          )}
+        </div>
+        {showAccount && (
+          <AccountModal
+            session={session ?? null}
+            today={realToday}
+            onClose={() => setShowAccount(false)}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="relative min-h-dvh pb-40">
       <div className="court-arc" aria-hidden="true" />
-      <Header streak={streak} onHelp={() => setShowHelp(true)} />
+      <Header
+        streak={streak}
+        onHelp={() => setShowHelp(true)}
+        onArchive={() => setShowArchive(true)}
+        onAccount={() => setShowAccount(true)}
+        signedIn={!!session}
+      />
 
       {/* dev builds always show the picker; production only via ?p / ?test */}
       {(testIndex !== null || import.meta.env.DEV) && (
@@ -371,6 +446,14 @@ export default function App() {
         <p className="mt-4 text-center text-[0.7rem] font-bold uppercase tracking-[0.2em] text-ink-soft">
           Puzzle #{day} · jersey {state.revealed} of {total}
         </p>
+        {archiveDay !== null && (
+          <p className="mt-1 text-center text-[0.65rem] text-ink-soft">
+            Archive replay — counts in stats, not your streak ·{" "}
+            <a className="underline" href={location.pathname}>
+              back to today
+            </a>
+          </p>
+        )}
 
         {showProfile && (
           <HintTray
@@ -499,9 +582,30 @@ export default function App() {
             if (over) setShowResult(true);
           }}
           onRules={() => setShowHelp(true)}
+          onArchive={() => setShowArchive(true)}
+          onAccount={() => setShowAccount(true)}
+          signedIn={!!session}
         />
       )}
       {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
+      {showAccount && (
+        <AccountModal
+          session={session ?? null}
+          today={realToday}
+          onClose={() => setShowAccount(false)}
+        />
+      )}
+      {showArchive && (
+        <ArchiveModal
+          session={session ?? null}
+          today={realToday}
+          onClose={() => setShowArchive(false)}
+          onSignUp={() => {
+            setShowArchive(false);
+            setShowAccount(true);
+          }}
+        />
+      )}
       {showResult && over && (
         <ResultModal
           puzzle={puzzle}
