@@ -699,6 +699,14 @@ body {
   animation: confetti-fall 2.4s cubic-bezier(0.3, 0.1, 0.6, 1) forwards;
 }
 
+/* easter-egg glyph pieces (crowns, unibrows...) instead of paper bits */
+.confetti i.shape {
+  background: none;
+  width: auto;
+  height: auto;
+  line-height: 0;
+}
+
 @keyframes confetti-fall {
   0% {
     transform: translate(0, 0) rotate(0deg);

@@ -13,6 +13,8 @@ import { LockIcon } from "./components/Icons";
 import { useSession } from "./lib/useAuth";
 import { pushResult } from "./lib/cloud";
 import { puzzles } from "./data/puzzles";
+import { warnRelocationSpans } from "./data/validatePuzzles";
+import { eggFor } from "./game/easterEggs";
 import { getPhase, initialState, reducer, HINT_COUNT } from "./game/state";
 import type { Stint } from "./game/types";
 import {
@@ -29,6 +31,9 @@ import {
 /** Only the BR-verified puzzles rotate daily; 6+ are archetype test
  *  puzzles reachable through test mode. */
 const DAILY_POOL = 5;
+
+// authoring guard: a stint spanning a relocation would hide the old jersey
+if (import.meta.env.DEV) warnRelocationSpans();
 
 /** Measure in document coordinates so FLIP math is scroll-independent —
  *  the deck's smooth scrollIntoView is often still mid-flight when a reveal
@@ -584,7 +589,7 @@ export default function App() {
         />
       )}
 
-      {celebrate && <Confetti />}
+      {celebrate && <Confetti egg={eggFor(puzzle.answer)} />}
 
       {showStart && (
         <StartScreen
