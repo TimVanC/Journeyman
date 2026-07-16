@@ -147,17 +147,23 @@ export default function JerseyCard({
       return;
     }
     animating.current = true;
+    // fill:forwards holds the card squeezed shut instead of snapping back to
+    // full width for a frame between the two halves — that revert is what
+    // made the flip stutter. The opening half starts from the same 0.04, then
+    // we cancel the held squeeze so it no longer pins the transform.
     const squeeze = el.animate(
       [{ transform: "scaleX(1)" }, { transform: "scaleX(0.04)" }],
-      { duration: 130, easing: "ease-in" }
+      { duration: 130, easing: "ease-in", fill: "forwards" }
     );
     squeeze.finished
       .then(() => {
         setShowBack((b) => !b);
-        return el.animate(
+        const open = el.animate(
           [{ transform: "scaleX(0.04)" }, { transform: "scaleX(1)" }],
           { duration: 170, easing: "ease-out" }
-        ).finished;
+        );
+        squeeze.cancel(); // `open` now owns the transform; drop the held frame
+        return open.finished;
       })
       .catch(() => {
         setShowBack((b) => !b);
@@ -416,17 +422,23 @@ export function DeckCard({
       setFaceUp(true);
       return;
     }
+    // fill:forwards holds the deck squeezed shut through the content swap
+    // instead of flashing back to full width between the two halves — the
+    // swap to the face-up card lands while it's a thin sliver, so you never
+    // see it happen. The opening half then owns the transform.
     const squeeze = el.animate(
       [{ transform: "scaleX(1)" }, { transform: "scaleX(0.04)" }],
-      { duration: 150, easing: "ease-in" }
+      { duration: 150, easing: "ease-in", fill: "forwards" }
     );
     squeeze.finished
       .then(() => {
         setFaceUp(true);
-        return el.animate(
+        const open = el.animate(
           [{ transform: "scaleX(0.04)" }, { transform: "scaleX(1)" }],
           { duration: 200, easing: "ease-out" }
-        ).finished;
+        );
+        squeeze.cancel(); // `open` now owns the transform; drop the held frame
+        return open.finished;
       })
       .catch(() => {
         setFaceUp(true);
