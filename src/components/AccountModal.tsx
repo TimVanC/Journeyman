@@ -301,7 +301,7 @@ function SignedIn({ session, today }: { session: Session; today: number }) {
               {SCORE_BUCKETS.map((b, i) => (
                 <DistBar key={b.label} label={b.label} count={stats.scoreDist[i]} max={maxBar} />
               ))}
-              <DistBar label="DNF" count={stats.dnf} max={maxBar} muted />
+              <DistBar label="0" count={stats.dnf} max={maxBar} muted />
             </div>
           </div>
 
@@ -346,14 +346,17 @@ function DistBar({
   max: number;
   muted?: boolean;
 }) {
+  // stub-width bars (zero or tiny counts) center their number; long bars
+  // right-align it Wordle-style
+  const stub = count === 0 || count / max < 0.15;
   return (
     <div className="flex items-center gap-2 text-xs tabular-nums">
       <span className="w-9 shrink-0 text-right font-bold">{label}</span>
       <div className="h-5 flex-1">
         <div
-          className={`flex h-full items-center justify-end rounded-sm px-1.5 text-[0.65rem] font-bold text-[#faf6ec] ${
-            muted ? "bg-ink-soft" : "bg-wood-deep"
-          }`}
+          className={`flex h-full items-center rounded-sm text-[0.65rem] font-bold text-[#faf6ec] ${
+            stub ? "justify-center" : "justify-end px-1.5"
+          } ${muted ? "bg-ink-soft" : "bg-wood-deep"}`}
           style={{ width: count > 0 ? `${(count / max) * 100}%` : "1.4rem", minWidth: "1.4rem" }}
         >
           {count}

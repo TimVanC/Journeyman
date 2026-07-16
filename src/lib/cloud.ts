@@ -1,5 +1,5 @@
 import { supabase } from "./supabase";
-import { loadProfile, loadArchiveResults } from "../game/storage";
+import { loadProfile, loadArchiveResults, loadLocalScores } from "../game/storage";
 
 /** One finished game as stored in Supabase (`results` table). */
 export interface CloudResult {
@@ -47,6 +47,7 @@ export async function syncUp(): Promise<void> {
 
   const rows: Array<Record<string, unknown>> = [];
   const profile = loadProfile();
+  const scores = loadLocalScores();
   for (const [dayStr, res] of Object.entries(profile.history)) {
     const day = Number(dayStr);
     if (day >= 9000) continue; // test slots stay local
@@ -55,6 +56,7 @@ export async function syncUp(): Promise<void> {
       day,
       won: res !== "DNF",
       revealed: res === "DNF" ? null : res,
+      score: scores[day] ?? null,
       is_archive: false,
     });
   }
@@ -65,13 +67,15 @@ export async function syncUp(): Promise<void> {
       day: Number(dayStr),
       won: res !== "DNF",
       revealed: res === "DNF" ? null : res,
+      score: scores[Number(dayStr)] ?? null,
       is_archive: true,
     });
   }
   if (rows.length > 0) {
-    await supabase
-      .from("results")
-      .upsert(rows, { onConflict: "user_id,day", ignoreDuplicates: true });
+    // plain upsert (NOT ignoreDuplicates): the local ledger is itself
+    // recorded exactly once per day, so re-syncing can only backfill —
+    // e.g. add a score to a row that first synced scoreless
+    await supabase.from("results").upsert(rows, { onConflict: "user_id,day" });
   }
 }
 

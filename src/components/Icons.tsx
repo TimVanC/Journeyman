@@ -72,6 +72,16 @@ export function GoogleIcon({ size = 15, className, title }: IconProps) {
   );
 }
 
+export function ChartIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <path d="M6 20V10" />
+      <path d="M12 20V4" />
+      <path d="M18 20v-6" />
+    </Base>
+  );
+}
+
 export function GearIcon(p: IconProps) {
   return (
     <Base {...p}>

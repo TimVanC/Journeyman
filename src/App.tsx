@@ -27,6 +27,7 @@ import {
   loadMode,
   loadProfile,
   recordArchiveResult,
+  recordLocalScore,
   recordResult,
   saveGameState,
   saveMode,
@@ -172,9 +173,11 @@ export default function App() {
         : loadProfile().history[day] === undefined;
     if (archiveDay !== null) {
       recordArchiveResult(day, result);
+      recordLocalScore(day, score);
       if (firstRecording) void pushResult(day, result, true, score);
     } else if (testIndex === null) {
       setProfile(recordResult(day, result));
+      recordLocalScore(day, score);
       if (firstRecording) void pushResult(day, result, false, score);
     }
     // anonymous play pool — powers "better than X% of today's players"
@@ -461,6 +464,7 @@ export default function App() {
       <Header
         streak={streak}
         onHelp={() => setShowHelp(true)}
+        onStats={() => setShowAccount(true)}
         onSettings={() => setShowSettings(true)}
       />
 

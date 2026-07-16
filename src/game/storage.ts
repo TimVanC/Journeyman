@@ -91,6 +91,26 @@ export function displayStreak(profile: Profile, today: number): number {
 }
 
 /* ------------------------------------------------------------------
+   Local score ledger (day → points). The profile history only keeps
+   jerseys/DNF, so this is what lets a later sign-in sync full scores
+   up to the cloud instead of scoreless rows.
+------------------------------------------------------------------- */
+
+const SCORES_KEY = "journeyman:scores:v1";
+
+export function loadLocalScores(): Record<string, number> {
+  return read<Record<string, number>>(SCORES_KEY) ?? {};
+}
+
+/** Record a game's score exactly once (first result stands). */
+export function recordLocalScore(day: number, score: number) {
+  const all = loadLocalScores();
+  if (all[day] !== undefined) return;
+  all[day] = score;
+  write(SCORES_KEY, all);
+}
+
+/* ------------------------------------------------------------------
    Difficulty preference. Hard mode: no flipping cards over for the
    season-by-season record, and no accolade hardware anywhere.
 ------------------------------------------------------------------- */

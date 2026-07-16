@@ -1,13 +1,14 @@
 import JerseyRenderer from "./JerseyRenderer";
-import { FlameIcon, GearIcon } from "./Icons";
+import { ChartIcon, FlameIcon, GearIcon } from "./Icons";
 
 interface Props {
   streak: number;
   onHelp: () => void;
+  onStats: () => void;
   onSettings: () => void;
 }
 
-export default function Header({ streak, onHelp, onSettings }: Props) {
+export default function Header({ streak, onHelp, onStats, onSettings }: Props) {
   return (
     <header className="baseline-rule relative z-10 bg-paper/80 backdrop-blur-sm">
       <div className="mx-auto flex max-w-4xl items-center justify-between gap-3 px-4 py-3">
@@ -34,6 +35,15 @@ export default function Header({ streak, onHelp, onSettings }: Props) {
           >
             <FlameIcon className="text-wood-deep" /> {streak}
           </span>
+          <button
+            type="button"
+            className="chip cursor-pointer"
+            onClick={onStats}
+            aria-label="Your stats"
+            title="Stats"
+          >
+            <ChartIcon />
+          </button>
           <button
             type="button"
             className="chip cursor-pointer font-bold"
