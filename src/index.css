@@ -51,6 +51,16 @@ body {
   z-index: 0;
 }
 
+/* iOS Safari zooms the whole page in on any field it focuses whose
+   font-size is under 16px. Pin every control to a hard 16px (not rem —
+   that drifts if the root size changes) so tapping one never rescales
+   the view. */
+input,
+textarea,
+select {
+  font-size: 16px;
+}
+
 .font-display {
   font-family: var(--font-display);
   letter-spacing: 0.02em;

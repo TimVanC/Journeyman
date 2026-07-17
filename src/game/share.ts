@@ -1,49 +1,54 @@
-/** Share text. One idea per line, score on top:
+import { HINT_COUNT } from "./state";
+
+/** 🎽 is the closest thing to a basketball jersey in the emoji set — a
+ *  sleeveless athletic singlet. 🔍 reads as a clue pulled from the player
+ *  profile (position → height → draft → college). */
+const JERSEY = "🎽";
+const CLUE = "🔍";
+
+/** Share text. One idea per line, score on its own line under the rank:
  *
- *    Journeyman #12 · All-NBA · 85 pts
- *    🟨🟨🟩 3/7 jerseys · 1 miss
- *    🔥 4 · Better than 94% today
+ *    Journeyman #12 · Buzzer Beater
+ *    375 pts
+ *    🎽🎽🎽🎽🎽🎽🎽 7/7 jerseys
+ *    🔍🔍🔍 3/5 profile
+ *    🔥 4 · Better than 60% today
  *    journeymanjersey.com
  *
- *  The squares are just your walk through the deck: one 🟨 per jersey it
- *  took, 🟩 the one you solved on (🟥 if he walked). Hints and misses are
- *  written out as words — nobody should need a legend to read a score. */
+ *  Each 🎽 is a jersey you had to flip and each 🔍 a profile hint you had
+ *  to burn, so a short line is a good game — no legend required. Wrong
+ *  guesses aren't listed: a miss auto-burns the next jersey or hint, so
+ *  it's already counted in the rows above. */
 export function buildShareText(opts: {
   day: number;
   grade: string;
   score: number;
-  won: boolean;
   /** jerseys on the table when it ended */
   revealed: number;
   total: number;
   hints: number;
-  misses: number;
   streak: number;
   hard: boolean;
   /** % of today's other players outscored; null = not enough data */
   beatenPct: number | null;
 }): string {
-  const { day, grade, score, won, revealed, total, hints, misses, streak, hard, beatenPct } = opts;
+  const { day, grade, score, revealed, total, hints, streak, hard, beatenPct } = opts;
 
-  const squares = won
-    ? "🟨".repeat(revealed - 1) + "🟩"
-    : "🟨".repeat(revealed) + "🟥";
-  const runFacts = [
-    `${won ? revealed : "X"}/${total} jerseys`,
-    hints > 0 ? `${hints} hint${hints > 1 ? "s" : ""}` : null,
-    misses > 0 ? `${misses} miss${misses > 1 ? "es" : ""}` : null,
-  ].filter(Boolean);
+  const lines = [
+    `Journeyman #${day} · ${grade}${hard ? " · HARD" : ""}`,
+    `${score} pts`,
+    `${JERSEY.repeat(revealed)} ${revealed}/${total} jerseys`,
+  ];
+  if (hints > 0) {
+    lines.push(`${CLUE.repeat(hints)} ${hints}/${HINT_COUNT} profile`);
+  }
 
   const flexes = [
     streak > 0 ? `🔥 ${streak}` : null,
     beatenPct !== null ? `Better than ${beatenPct}% today` : null,
   ].filter(Boolean);
-
-  const lines = [
-    `Journeyman #${day} · ${grade} · ${score} pts${hard ? " · HARD" : ""}`,
-    `${squares} ${runFacts.join(" · ")}`,
-  ];
   if (flexes.length > 0) lines.push(flexes.join(" · "));
+
   lines.push("journeymanjersey.com");
   return lines.join("\n");
 }
