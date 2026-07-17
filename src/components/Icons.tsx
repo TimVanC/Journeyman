@@ -221,7 +221,42 @@ function BadgeIcon({ glyph, ...p }: IconProps & { glyph: string }) {
   );
 }
 
-export const SixthManIcon = (p: IconProps) => <BadgeIcon glyph="6" {...p} />;
+/** 6th Man of the Year. NOT a BadgeIcon: a "6" ringed by a circle turns to
+ *  mush at the ~12px these render at on a phone. Spelled out, with no circle
+ *  stroke competing for pixels and a wider box so the glyphs get real width.
+ *  textLength pins it inside the viewBox at any font fallback. */
+export function SixthManIcon({ size = 15, className, title }: IconProps) {
+  const W = 30;
+  const H = 24;
+  return (
+    <svg
+      width={size * (W / H)}
+      height={size}
+      viewBox={`0 0 ${W} ${H}`}
+      className={className}
+      role={title ? "img" : "presentation"}
+      aria-label={title}
+      aria-hidden={title ? undefined : true}
+      style={{ display: "inline-block", verticalAlign: "-0.15em", flexShrink: 0 }}
+    >
+      <text
+        x={W / 2}
+        y="19.5"
+        textAnchor="middle"
+        textLength={W - 3}
+        lengthAdjust="spacingAndGlyphs"
+        fontSize="21"
+        fontFamily="'Archivo Black','Arial Black',sans-serif"
+        fontWeight="900"
+        fill="currentColor"
+        stroke="none"
+      >
+        6th
+      </text>
+    </svg>
+  );
+}
+
 export const RoyIcon = (p: IconProps) => <BadgeIcon glyph="R" {...p} />;
 export const AllNbaIcon = (p: IconProps) => <BadgeIcon glyph="1" {...p} />;
 export const FmvpIcon = (p: IconProps) => <BadgeIcon glyph="F" {...p} />;
