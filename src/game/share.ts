@@ -4,21 +4,23 @@ import { HINT_COUNT } from "./state";
  *  sleeveless athletic singlet. 🔍 reads as a clue pulled from the player
  *  profile (position → height → draft → college). */
 const JERSEY = "🎽";
-const CLUE = "🔍";
+const HINT = "🔍";
 
 /** Share text. One idea per line, score on its own line under the rank:
  *
  *    Journeyman #12 · Buzzer Beater
  *    375 pts
  *    🎽🎽🎽🎽🎽🎽🎽 7/7 jerseys
- *    🔍🔍🔍 3/5 profile
+ *    🔍🔍🔍 3/5 hints
  *    🔥 4 · Better than 60% today
  *    journeymanjersey.com
  *
- *  Each 🎽 is a jersey you had to flip and each 🔍 a profile hint you had
- *  to burn, so a short line is a good game — no legend required. Wrong
- *  guesses aren't listed: a miss auto-burns the next jersey or hint, so
- *  it's already counted in the rows above. */
+ *  Each 🎽 is a jersey you had to flip and each 🔍 a hint you had to burn,
+ *  so a short line is a good game — no legend required. "hints" (not
+ *  "profile") because that's what the button in the game says, and a
+ *  stranger seeing the share understands it cold. Wrong guesses aren't
+ *  listed: a miss auto-burns the next jersey or hint, so it's already
+ *  counted in the rows above. */
 export function buildShareText(opts: {
   day: number;
   grade: string;
@@ -40,7 +42,7 @@ export function buildShareText(opts: {
     `${JERSEY.repeat(revealed)} ${revealed}/${total} jerseys`,
   ];
   if (hints > 0) {
-    lines.push(`${CLUE.repeat(hints)} ${hints}/${HINT_COUNT} profile`);
+    lines.push(`${HINT.repeat(hints)} ${hints}/${HINT_COUNT} hints`);
   }
 
   const flexes = [
