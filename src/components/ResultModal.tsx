@@ -71,7 +71,6 @@ export default function ResultModal({
       total,
       hints: state.hintsRevealed,
       hard,
-      beatenPct,
     });
     // native share sheet on mobile, clipboard everywhere else
     if (navigator.share) {

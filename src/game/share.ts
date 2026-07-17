@@ -12,13 +12,13 @@ const HINT = "🔍";
  *    375 pts
  *    🎽🎽🎽🎽🎽🎽🎽 7/7
  *    🔍🔍🔍 3/5
- *    Better than 60% today
  *    journeymanjersey.com
  *
  *  Each 🎽 is a jersey you had to flip and each 🔍 a hint you had to burn —
  *  the icons carry the meaning, no words needed. Wrong guesses aren't
  *  listed: a miss auto-burns the next jersey or hint, so it's already
- *  counted in the rows above. */
+ *  counted in the rows above. The daily percentile stays an in-app stat
+ *  only; it doesn't travel in the share. */
 export function buildShareText(opts: {
   day: number;
   grade: string;
@@ -28,10 +28,8 @@ export function buildShareText(opts: {
   total: number;
   hints: number;
   hard: boolean;
-  /** % of today's other players outscored; null = not enough data */
-  beatenPct: number | null;
 }): string {
-  const { day, grade, score, revealed, total, hints, hard, beatenPct } = opts;
+  const { day, grade, score, revealed, total, hints, hard } = opts;
 
   const lines = [
     `Journeyman #${day} · ${grade}${hard ? " · HARD" : ""}`,
@@ -41,7 +39,6 @@ export function buildShareText(opts: {
   if (hints > 0) {
     lines.push(`${HINT.repeat(hints)} ${hints}/${HINT_COUNT}`);
   }
-  if (beatenPct !== null) lines.push(`Better than ${beatenPct}% today`);
 
   lines.push("journeymanjersey.com");
   return lines.join("\n");
