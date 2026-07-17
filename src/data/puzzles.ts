@@ -356,7 +356,7 @@ export const puzzles: Puzzle[] = [
       height: "6'2\"",
       draftYear: "2005",
       draftPick: "Round 2, Pick 45",
-      college: "None — drafted out of South Gwinnett HS (GA)",
+      college: "South Gwinnett HS (GA)",
     },
   },
   {
@@ -513,7 +513,7 @@ export const puzzles: Puzzle[] = [
       height: "6'9\"",
       draftYear: "2003",
       draftPick: "Round 1, Pick 1",
-      college: "None — St. Vincent–St. Mary HS (OH)",
+      college: "St. Vincent–St. Mary HS (OH)",
     },
   },
   {
@@ -555,7 +555,7 @@ export const puzzles: Puzzle[] = [
       height: "6'6\"",
       draftYear: "1996",
       draftPick: "Round 1, Pick 13",
-      college: "None — Lower Merion HS (PA)",
+      college: "Lower Merion HS (PA)",
     },
   },
   {
@@ -1278,7 +1278,7 @@ export const puzzles: Puzzle[] = [
       height: "6'10\"",
       draftYear: "1974 (ABA)",
       draftPick: "Round 3 (ABA)",
-      college: "None — prep-to-pro",
+      college: "Petersburg HS (VA)",
     },
   },
   {
