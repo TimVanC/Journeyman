@@ -75,7 +75,9 @@ function puzzleForDay(day: number): (typeof puzzles)[number] {
 }
 
 /** Test mode: ?p=3 forces puzzle 3 (1-based) in its own save slot;
- *  ?test drops you at puzzle 1. Remove before launch.
+ *  ?test drops you at puzzle 1. DEV BUILDS ONLY — in production the params
+ *  are ignored and everyone gets the daily/archive, so future answers can't
+ *  be browsed by anyone who guesses the URL.
  *  Archive mode: ?d=12 replays past daily puzzle #12 (free account only). */
 function resolveGame(): {
   day: number;
@@ -86,10 +88,12 @@ function resolveGame(): {
 } {
   const realDay = currentDayNumber();
   const params = new URLSearchParams(location.search);
-  let forced = Number(params.get("p"));
-  if (!forced && params.has("test")) forced = 1;
-  if (forced >= 1 && forced <= puzzles.length) {
-    return { day: 9000 + forced, puzzle: puzzles[forced - 1], testIndex: forced, archiveDay: null };
+  if (import.meta.env.DEV) {
+    let forced = Number(params.get("p"));
+    if (!forced && params.has("test")) forced = 1;
+    if (forced >= 1 && forced <= puzzles.length) {
+      return { day: 9000 + forced, puzzle: puzzles[forced - 1], testIndex: forced, archiveDay: null };
+    }
   }
   const archive = Number(params.get("d"));
   if (Number.isInteger(archive) && archive >= 1 && archive < realDay) {
