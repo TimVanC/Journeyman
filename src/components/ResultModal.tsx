@@ -70,7 +70,6 @@ export default function ResultModal({
       revealed: state.revealed,
       total,
       hints: state.hintsRevealed,
-      streak,
       hard,
       beatenPct,
     });

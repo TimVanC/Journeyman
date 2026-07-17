@@ -10,15 +10,13 @@ const HINT = "🔍";
  *
  *    Journeyman #12 · Buzzer Beater
  *    375 pts
- *    🎽🎽🎽🎽🎽🎽🎽 7/7 jerseys
- *    🔍🔍🔍 3/5 hints
- *    🔥 4 · Better than 60% today
+ *    🎽🎽🎽🎽🎽🎽🎽 7/7
+ *    🔍🔍🔍 3/5
+ *    Better than 60% today
  *    journeymanjersey.com
  *
- *  Each 🎽 is a jersey you had to flip and each 🔍 a hint you had to burn,
- *  so a short line is a good game — no legend required. "hints" (not
- *  "profile") because that's what the button in the game says, and a
- *  stranger seeing the share understands it cold. Wrong guesses aren't
+ *  Each 🎽 is a jersey you had to flip and each 🔍 a hint you had to burn —
+ *  the icons carry the meaning, no words needed. Wrong guesses aren't
  *  listed: a miss auto-burns the next jersey or hint, so it's already
  *  counted in the rows above. */
 export function buildShareText(opts: {
@@ -29,27 +27,21 @@ export function buildShareText(opts: {
   revealed: number;
   total: number;
   hints: number;
-  streak: number;
   hard: boolean;
   /** % of today's other players outscored; null = not enough data */
   beatenPct: number | null;
 }): string {
-  const { day, grade, score, revealed, total, hints, streak, hard, beatenPct } = opts;
+  const { day, grade, score, revealed, total, hints, hard, beatenPct } = opts;
 
   const lines = [
     `Journeyman #${day} · ${grade}${hard ? " · HARD" : ""}`,
     `${score} pts`,
-    `${JERSEY.repeat(revealed)} ${revealed}/${total} jerseys`,
+    `${JERSEY.repeat(revealed)} ${revealed}/${total}`,
   ];
   if (hints > 0) {
-    lines.push(`${HINT.repeat(hints)} ${hints}/${HINT_COUNT} hints`);
+    lines.push(`${HINT.repeat(hints)} ${hints}/${HINT_COUNT}`);
   }
-
-  const flexes = [
-    streak > 0 ? `🔥 ${streak}` : null,
-    beatenPct !== null ? `Better than ${beatenPct}% today` : null,
-  ].filter(Boolean);
-  if (flexes.length > 0) lines.push(flexes.join(" · "));
+  if (beatenPct !== null) lines.push(`Better than ${beatenPct}% today`);
 
   lines.push("journeymanjersey.com");
   return lines.join("\n");

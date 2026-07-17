@@ -36,8 +36,10 @@ export function computeGrade(state: GameState, puzzle: Puzzle): Grade {
     };
   }
   if (hints > 0) {
+    // NOT "Journeyman" — that label collides with the game's own name in the
+    // share line ("Journeyman #3 · Journeyman" reads like a stutter)
     return {
-      label: "Journeyman",
+      label: "10-Day Contract",
       detail: `All ${total} jerseys plus ${hints} profile hint${hints > 1 ? "s" : ""}${missNote}.`,
     };
   }
