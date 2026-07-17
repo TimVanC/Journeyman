@@ -260,6 +260,13 @@ select {
   cursor: pointer;
 }
 
+/* compact variant — e.g. the header-row Share on the result card */
+.btn-sm {
+  font-size: 0.62rem;
+  padding: 0.32rem 0.7rem;
+  border-radius: 7px;
+}
+
 .btn:hover:not(:disabled) {
   translate: 0 -1px;
   box-shadow: 0 3px 0 var(--color-ink);

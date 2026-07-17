@@ -99,14 +99,21 @@ export default function ResultModal({
         aria-label="Result"
         className="modal-panel p-5"
       >
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-center justify-between gap-4">
           <p className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-ink-soft">
             Journeyman #{state.day}
             {hard && " · Hard"}
           </p>
-          <button type="button" className="chip cursor-pointer" onClick={onClose} aria-label="Close">
-            ✕
-          </button>
+          <div className="flex items-center gap-2">
+            {/* long careers push the main share button way down — this one
+                stays in reach at the top */}
+            <button type="button" className="btn btn-primary btn-sm" onClick={share}>
+              {copied ? "Copied!" : "Share"}
+            </button>
+            <button type="button" className="chip cursor-pointer" onClick={onClose} aria-label="Close">
+              ✕
+            </button>
+          </div>
         </div>
 
         <h2 className="font-display mt-1 text-[2.1rem] leading-none tracking-wide">
