@@ -28,10 +28,12 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
 
         <div className="mt-3 space-y-3 text-sm leading-relaxed">
           <p>
-            A mystery NBA <strong>journeyman</strong> — a guy who suited up for
-            4+ franchises — is hidden behind his jerseys. No logos, no team
-            names: just era-accurate <strong>colorways</strong>, his{" "}
-            <strong>number</strong>, and his <strong>per-stop stats</strong>.
+            A mystery NBA player is hidden behind his jerseys — usually a{" "}
+            <strong>journeyman</strong> who bounced around the league, sometimes
+            a star with more stops than you'd remember. No logos, no names: just
+            era-accurate <strong>colorways</strong>, the <strong>city</strong> he
+            wore them in, his <strong>number</strong>, and{" "}
+            <strong>his stats with that team</strong>.
           </p>
           <p>
             You start with his <em>least</em> famous stop. Guess the player, or

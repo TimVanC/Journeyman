@@ -39,7 +39,7 @@ export function computeGrade(state: GameState, puzzle: Puzzle): Grade {
     // NOT "Journeyman" — that label collides with the game's own name in the
     // share line ("Journeyman #3 · Journeyman" reads like a stutter)
     return {
-      label: "10-Day Contract",
+      label: "10-Day",
       detail: `All ${total} jerseys plus ${hints} profile hint${hints > 1 ? "s" : ""}${missNote}.`,
     };
   }

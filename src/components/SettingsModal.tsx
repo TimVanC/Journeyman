@@ -67,10 +67,11 @@ export default function SettingsModal({
               Hard
             </button>
           </div>
+          {/* always describes what Hard takes away, whichever mode is on —
+              so it reads as "here's what you're opting into" */}
           <p className="mt-1.5 text-[0.68rem] text-ink-soft">
-            {mode === "hard"
-              ? "Hard: no accolades, and cards don't flip for season records."
-              : "Normal: tap cards for season records and accolades."}
+            Hard: accolades and flipping cards over for more information are
+            removed.
           </p>
         </div>
 
