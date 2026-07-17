@@ -78,10 +78,6 @@ export default function StartScreen({
         <button type="button" className="btn mt-2.5 w-full" onClick={onArchive}>
           Archive
         </button>
-        {/* pre-launch: jump into the replayable test puzzles (?p=1..9) */}
-        <a className="btn mt-2.5 w-full" href="?p=1">
-          Run tests
-        </a>
 
         {!signedIn && (
           <button

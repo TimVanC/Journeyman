@@ -15,7 +15,8 @@ import { useSession } from "./lib/useAuth";
 import { logPlay, pushResult } from "./lib/cloud";
 import { computeScore } from "./game/score";
 import { puzzles } from "./data/puzzles";
-import { warnRelocationSpans } from "./data/validatePuzzles";
+import { ROSTER, rosterKey } from "./data/roster";
+import { warnRelocationSpans, warnRosterGaps } from "./data/validatePuzzles";
 import { eggFor } from "./game/easterEggs";
 import { getPhase, initialState, reducer, HINT_COUNT } from "./game/state";
 import type { Stint } from "./game/types";
@@ -39,8 +40,11 @@ import {
  *  puzzles reachable through test mode. */
 const DAILY_POOL = 5;
 
-// authoring guard: a stint spanning a relocation would hide the old jersey
-if (import.meta.env.DEV) warnRelocationSpans();
+// authoring guards: relocation-spanning stints + roster schedule health
+if (import.meta.env.DEV) {
+  warnRelocationSpans();
+  warnRosterGaps();
+}
 
 /** Measure in document coordinates so FLIP math is scroll-independent —
  *  the deck's smooth scrollIntoView is often still mid-flight when a reveal
@@ -54,6 +58,20 @@ function docRect(el: HTMLElement): CardRect {
     width: r.width,
     height: r.height,
   };
+}
+
+/** The day's puzzle comes from the ROSTER schedule: look up the day's
+ *  answer and serve its authored puzzle. Roster names whose puzzles aren't
+ *  built yet fall back to cycling the verified pool, so a daily never 404s —
+ *  authoring a puzzle with a matching `answer` flips its day live, no other
+ *  wiring needed. */
+function puzzleForDay(day: number): (typeof puzzles)[number] {
+  const name = ROSTER[day - 1];
+  if (name) {
+    const built = puzzles.find((p) => rosterKey(p.answer) === rosterKey(name));
+    if (built) return built;
+  }
+  return puzzles[(day - 1) % DAILY_POOL];
 }
 
 /** Test mode: ?p=3 forces puzzle 3 (1-based) in its own save slot;
@@ -77,14 +95,14 @@ function resolveGame(): {
   if (Number.isInteger(archive) && archive >= 1 && archive < realDay) {
     return {
       day: archive,
-      puzzle: puzzles[(archive - 1) % DAILY_POOL],
+      puzzle: puzzleForDay(archive),
       testIndex: null,
       archiveDay: archive,
     };
   }
   return {
     day: realDay,
-    puzzle: puzzles[(realDay - 1) % DAILY_POOL],
+    puzzle: puzzleForDay(realDay),
     testIndex: null,
     archiveDay: null,
   };
