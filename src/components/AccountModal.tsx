@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import type { Session } from "@supabase/supabase-js";
+import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
 import { computeStats, fetchResults, SCORE_BUCKETS, type Stats } from "../lib/cloud";
 
@@ -56,6 +56,15 @@ export default function AccountModal({ session, today, onClose }: Props) {
  *  Bare 10-digit numbers are treated as US (+1). Phone accounts still use a
  *  password — the only SMS ever sent is the one confirmation code at sign-up,
  *  so repeat logins cost nothing. */
+/** Supabase never errors on a duplicate sign-up (that would let anyone probe
+ *  which emails/numbers are registered). Instead it refuses to create the
+ *  account and hands back an obfuscated user with an EMPTY identities array.
+ *  That empty array is the only signal the client gets, for email and phone
+ *  alike — so it's how we spot "you already have an account". */
+function isExistingAccount(user: User | null): boolean {
+  return !!user && user.identities?.length === 0;
+}
+
 function parseIdentifier(raw: string): { email: string } | { phone: string } | null {
   const t = raw.trim();
   // lowercase the email so "Tim@x.com" and "tim@x.com" can't look like two
@@ -104,9 +113,7 @@ function AuthForm({
             options: { emailRedirectTo: location.origin },
           });
           if (error) throw error;
-          // Supabase returns an empty identities array when the email already
-          // has an account (it won't create a duplicate) — send them to sign in
-          if (data.user && data.user.identities?.length === 0) {
+          if (isExistingAccount(data.user)) {
             onSwitchView("signin");
             setError("That email already has an account — sign in instead.");
           } else if (data.session) {
@@ -117,8 +124,16 @@ function AuthForm({
         } else {
           const { data, error } = await supabase.auth.signUp({ phone: id.phone, password });
           if (error) throw error;
-          if (data.session) setMessage("Account created — you're in!");
-          else setConfirmPhone(id.phone); // Supabase just texted a code
+          if (isExistingAccount(data.user)) {
+            // same guard as email: don't march an existing user through a
+            // "create account" OTP flow that only re-auths them anyway
+            onSwitchView("signin");
+            setError("That number already has an account — sign in instead.");
+          } else if (data.session) {
+            setMessage("Account created — you're in!");
+          } else {
+            setConfirmPhone(id.phone); // genuinely new — Supabase texted a code
+          }
         }
       } else {
         const { error } = await supabase.auth.signInWithPassword(
