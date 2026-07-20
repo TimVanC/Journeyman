@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import JerseyRenderer, { resolveColorway, type ColorwayDB } from "./JerseyRenderer";
-import colorwaysJson from "../data/colorways.json";
+import { SPORT } from "../sports/active";
+import { resolveColorway } from "../game/colorways";
 import { formatStintYears } from "./JerseyCard";
 import { buildShareText, copyToClipboard } from "../game/share";
 import { computeGrade } from "../game/grade";
@@ -8,8 +8,6 @@ import { computeScore } from "../game/score";
 import { fetchDayStanding, type DayStanding } from "../lib/cloud";
 import type { GameState, Puzzle } from "../game/types";
 import { FlameIcon } from "./Icons";
-
-const colorways = colorwaysJson as unknown as ColorwayDB;
 
 /** only claim a percentile once there's a real crowd to compare against */
 const MIN_CROWD = 5;
@@ -43,7 +41,7 @@ export default function ResultModal({
   const won = state.status === "won";
   const total = puzzle.stints.length;
   const score = computeScore(state, hard);
-  const grade = computeGrade(state, puzzle);
+  const grade = computeGrade(state, puzzle, SPORT.gradeLabels);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -54,7 +52,7 @@ export default function ResultModal({
   // where today's crowd landed (wins only — no percentile pats for a DNF)
   useEffect(() => {
     if (!canRank || !won) return;
-    fetchDayStanding(state.day, score).then(setStanding);
+    fetchDayStanding(SPORT.sport, state.day, score).then(setStanding);
   }, [canRank, won, state.day, score]);
 
   const beatenPct =
@@ -64,6 +62,8 @@ export default function ResultModal({
 
   const share = async () => {
     const text = buildShareText({
+      shareTag: SPORT.shareTag,
+      jerseyEmoji: SPORT.shareEmoji,
       day: state.day,
       grade: grade.label,
       score,
@@ -99,7 +99,7 @@ export default function ResultModal({
       >
         <div className="flex items-center justify-between gap-4">
           <p className="text-[0.68rem] font-bold uppercase tracking-[0.2em] text-ink-soft">
-            Journeyman #{state.day}
+            {SPORT.shareTag} #{state.day}
             {hard && " · Hard"}
           </p>
           <div className="flex items-center gap-2">
@@ -160,28 +160,19 @@ export default function ResultModal({
         {/* full career, chronological, team names finally shown */}
         <ol className="mt-4">
           {puzzle.stints.map((s, i) => {
-            const era = resolveColorway(colorways, s.franchise, s.startYear, s.endYear);
+            const era = resolveColorway(SPORT.colorways, s.franchise, s.startYear, s.endYear);
             return (
               <li
                 key={i}
                 className="flex items-center gap-3 border-t border-line py-1.5 last:border-b"
               >
-                {era && (
-                  <JerseyRenderer
-                    primary={era.primary}
-                    secondary={era.secondary}
-                    trim={era.trim}
-                    number={s.jerseyNumber}
-                    eraStyle={era.eraStyle}
-                    size={26}
-                  />
-                )}
+                {era && <SPORT.Jersey era={era} number={s.jerseyNumber} size={26} />}
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold leading-tight">
                     {s.displayTeam}
                   </p>
                   <p className="text-[0.7rem] text-ink-soft tabular-nums">
-                    {formatStintYears(s)} · {s.gp} GP · {s.ppg.toFixed(1)} PPG
+                    {formatStintYears(s)} · {SPORT.stintSummary(s)}
                   </p>
                 </div>
                 <span className="font-display text-base text-ink-soft">

@@ -1,6 +1,9 @@
 /** Accolades earned during a specific stint, rendered as icons on the
- *  card and written out on the card's flip side. all_nba = First Team only. */
+ *  card and written out on the card's flip side. One shared union across
+ *  all three sports; each sport's config maps its subset to icons+labels
+ *  (all_nba = First Team only; all_pro = AP First Team). */
 export type AccoladeType =
+  // NBA
   | "all_star"
   | "champion"
   | "mvp"
@@ -9,38 +12,61 @@ export type AccoladeType =
   | "sixth_man"
   | "roy"
   | "all_nba"
-  | "olympic_gold";
+  | "olympic_gold"
+  // NFL (champion = Super Bowl ring, roy/mvp shared)
+  | "pro_bowl"
+  | "all_pro"
+  | "sb_mvp"
+  | "opoy"
+  | "comeback"
+  // MLB (champion = World Series ring, all_star/mvp/roy shared)
+  | "cy_young"
+  | "ws_mvp"
+  | "gold_glove"
+  | "silver_slugger"
+  | "batting_title"
+  | "reliever_award";
 
 export interface StintAccolade {
   type: AccoladeType;
   count: number;
 }
 
+/** One labeled stat cell on a jersey card (5 per card: 3 top, 2 bottom). */
+export interface StatCell {
+  label: string;
+  value: string | number;
+}
+
 export interface Stint {
-  /** Modern franchise tricode — key into colorways.json */
+  /** Modern franchise tricode — key into the sport's colorways JSON */
   franchise: string;
   /** Era-correct team name, shown only on the result screen */
   displayTeam: string;
-  /** Season START years (2016 = the 2016-17 season) */
+  /** Season START years (2016 = the 2016-17 season; NFL/MLB = calendar season year) */
   startYear: number;
   endYear: number;
-  gp: number;
-  mpg: number;
-  ppg: number;
-  rpg: number;
-  apg: number;
   jerseyNumber: number;
   /** hardware earned at this stop (icons on the card front, text on the back) */
   accolades?: StintAccolade[];
+
+  /** NBA per-game line (Phase-1 fields; the NBA config builds its stat
+   *  cells from these so the verified puzzle set needed no rewrite) */
+  gp?: number;
+  mpg?: number;
+  ppg?: number;
+  rpg?: number;
+  apg?: number;
+
+  /** NFL/MLB: explicit position-shaped 5-cell stat line
+   *  (QB ≠ RB ≠ WR; batter ≠ pitcher) */
+  statLine?: StatCell[];
 }
 
-export interface PuzzleHints {
-  position: string;
-  height: string;
-  draftYear: string;
-  draftPick: string;
-  college: string;
-}
+/** Hint values keyed by the sport's hint ladder (see SportConfig.hintLadder).
+ *  NBA/NFL: position → height → draft year → draft pick → college.
+ *  MLB: position → bats/throws → height → debut year → born. */
+export type PuzzleHints = Record<string, string>;
 
 /** Which dimension the jerseys are split on (addendum §4.5a).
  *  Phase 1 puzzles are all Track A (`team`); the Phase 2 generator adds

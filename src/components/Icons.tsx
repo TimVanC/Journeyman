@@ -201,16 +201,19 @@ export function MedalIcon(p: IconProps) {
   );
 }
 
-/** letter/number badge — 6MOY, ROY, All-NBA First Team */
+/** letter/number badge — ROY, All-NBA First Team, Cy Young... Multi-char
+ *  glyphs shrink to stay inside the ring at phone sizes. */
 function BadgeIcon({ glyph, ...p }: IconProps & { glyph: string }) {
+  const fontSize = glyph.length >= 3 ? 6.5 : glyph.length === 2 ? 8.5 : 12;
+  const y = glyph.length >= 3 ? 14.4 : glyph.length === 2 ? 15 : 16.4;
   return (
     <Base {...p}>
       <circle cx="12" cy="12" r="9.5" />
       <text
         x="12"
-        y="16.4"
+        y={y}
         textAnchor="middle"
-        fontSize="12"
+        fontSize={fontSize}
         fontFamily="'Archivo Black','Arial Black',sans-serif"
         fill="currentColor"
         stroke="none"
@@ -260,3 +263,27 @@ export function SixthManIcon({ size = 15, className, title }: IconProps) {
 export const RoyIcon = (p: IconProps) => <BadgeIcon glyph="R" {...p} />;
 export const AllNbaIcon = (p: IconProps) => <BadgeIcon glyph="1" {...p} />;
 export const FmvpIcon = (p: IconProps) => <BadgeIcon glyph="F" {...p} />;
+// NFL/MLB accolade badges (same letter-badge family as ROY/All-NBA)
+export const OpoyIcon = (p: IconProps) => <BadgeIcon glyph="O" {...p} />;
+export const ComebackIcon = (p: IconProps) => <BadgeIcon glyph="C" {...p} />;
+export const CyYoungIcon = (p: IconProps) => <BadgeIcon glyph="CY" {...p} />;
+export const BattingTitleIcon = (p: IconProps) => <BadgeIcon glyph="AVG" {...p} />;
+export const RelieverIcon = (p: IconProps) => <BadgeIcon glyph="SV" {...p} />;
+
+/** Gold Glove — a fielder's mitt silhouette */
+export function GloveIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <path d="M7 13V6.5a2 2 0 0 1 4 0V11m0-5.5v-1a2 2 0 0 1 4 0V11m0-4.5a2 2 0 0 1 4 0V14a7 7 0 0 1-7 7h-1a7 7 0 0 1-6.8-5.3L3.5 12a1.9 1.9 0 0 1 3.4-1.2L8 12.5" />
+    </Base>
+  );
+}
+
+/** Silver Slugger — a crossed bat */
+export function BatIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <path d="M4 20 15.5 8.5M15.5 8.5l4.2-4.2a1.6 1.6 0 0 1 2.3 2.3L17.8 10.8M15.5 8.5l2.3 2.3M5.5 21.5 2.5 18.5" />
+    </Base>
+  );
+}

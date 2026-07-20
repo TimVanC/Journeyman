@@ -304,6 +304,12 @@ select {
   font-weight: 600;
 }
 
+/* selected league in the sport switcher */
+.chip-active {
+  background: var(--color-ink);
+  color: var(--color-card);
+}
+
 .chip-locked {
   border-style: dashed;
   border-color: var(--color-ink-soft);

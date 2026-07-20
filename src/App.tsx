@@ -14,36 +14,25 @@ import { LockIcon } from "./components/Icons";
 import { useSession } from "./lib/useAuth";
 import { logPlay, pushResult } from "./lib/cloud";
 import { computeScore } from "./game/score";
-import { puzzles } from "./data/puzzles";
-import { ROSTER, rosterKey } from "./data/roster";
-import { warnRelocationSpans, warnRosterGaps } from "./data/validatePuzzles";
+import { SPORT } from "./sports/active";
+import { SPORTS, SPORT_ORDER, sportHref } from "./sports";
+import { rosterKey } from "./data/roster";
+import { warnPuzzleData, warnRosterGaps } from "./data/validatePuzzles";
 import { eggFor } from "./game/easterEggs";
 import { getPhase, initialState, reducer, HINT_COUNT } from "./game/state";
 import type { Stint } from "./game/types";
-import {
-  currentDayNumber,
-  displayStreak,
-  loadArchiveResults,
-  loadGameState,
-  loadMode,
-  loadProfile,
-  recordArchiveResult,
-  recordLocalScore,
-  recordResult,
-  saveGameState,
-  saveMode,
-  todayET,
-  type GameMode,
-} from "./game/storage";
+import { loadMode, saveMode, todayET, type GameMode } from "./game/storage";
 
-/** Only the BR-verified puzzles rotate daily; 6+ are archetype test
- *  puzzles reachable through test mode. */
-const DAILY_POOL = 5;
+const storage = SPORT.storage;
+const puzzles = SPORT.puzzles;
 
-// authoring guards: relocation-spanning stints + roster schedule health
+// authoring guards: roster schedule health + stint/colorway integrity,
+// for every sport (data bugs shouldn't hide behind the sport you test in)
 if (import.meta.env.DEV) {
-  warnRelocationSpans();
-  warnRosterGaps();
+  for (const s of SPORT_ORDER) {
+    warnRosterGaps(SPORTS[s]);
+    warnPuzzleData(SPORTS[s]);
+  }
 }
 
 /** Measure in document coordinates so FLIP math is scroll-independent —
@@ -60,18 +49,18 @@ function docRect(el: HTMLElement): CardRect {
   };
 }
 
-/** The day's puzzle comes from the ROSTER schedule: look up the day's
- *  answer and serve its authored puzzle. Roster names whose puzzles aren't
- *  built yet fall back to cycling the verified pool, so a daily never 404s —
- *  authoring a puzzle with a matching `answer` flips its day live, no other
- *  wiring needed. */
+/** The day's puzzle comes from the sport's ROSTER schedule: look up the
+ *  day's answer and serve its authored puzzle. Roster names whose puzzles
+ *  aren't built yet fall back to cycling the verified pool, so a daily
+ *  never 404s — authoring a puzzle with a matching `answer` flips its day
+ *  live, no other wiring needed. */
 function puzzleForDay(day: number): (typeof puzzles)[number] {
-  const name = ROSTER[day - 1];
+  const name = SPORT.roster[day - 1];
   if (name) {
     const built = puzzles.find((p) => rosterKey(p.answer) === rosterKey(name));
     if (built) return built;
   }
-  return puzzles[(day - 1) % DAILY_POOL];
+  return puzzles[(day - 1) % SPORT.dailyPool];
 }
 
 /** Test mode: ?p=3 forces puzzle 3 (1-based) in its own save slot;
@@ -86,7 +75,7 @@ function resolveGame(): {
   /** set when replaying a past daily puzzle from the archive */
   archiveDay: number | null;
 } {
-  const realDay = currentDayNumber();
+  const realDay = storage.currentDayNumber();
   const params = new URLSearchParams(location.search);
   if (import.meta.env.DEV) {
     let forced = Number(params.get("p"));
@@ -114,11 +103,11 @@ function resolveGame(): {
 
 function resetTestSlots() {
   for (let i = 1; i <= puzzles.length; i++) {
-    localStorage.removeItem(`journeyman:game:v1:${9000 + i}`);
+    localStorage.removeItem(storage.gameKey(9000 + i));
   }
   // scrub any test-day records left in the profile by older builds
   try {
-    const raw = localStorage.getItem("journeyman:profile:v1");
+    const raw = localStorage.getItem(storage.profileKey);
     if (raw) {
       const prof = JSON.parse(raw);
       for (const k of Object.keys(prof.history ?? {})) {
@@ -128,7 +117,7 @@ function resetTestSlots() {
         prof.lastSolvedDay = null;
         prof.streak = 0;
       }
-      localStorage.setItem("journeyman:profile:v1", JSON.stringify(prof));
+      localStorage.setItem(storage.profileKey, JSON.stringify(prof));
     }
   } catch {
     /* fine */
@@ -139,20 +128,20 @@ function resetTestSlots() {
 export default function App() {
   const { day, puzzle, testIndex, archiveDay } = resolveGame();
   const total = puzzle.stints.length;
-  const realToday = currentDayNumber();
+  const realToday = storage.currentDayNumber();
   const session = useSession(); // undefined = loading, null = signed out
   const [showAccount, setShowAccount] = useState(false);
   const [showArchive, setShowArchive] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
 
   const [state, dispatch] = useReducer(reducer, day, (d) => {
-    const saved = loadGameState(d);
+    const saved = storage.loadGameState(d);
     // test puzzles replay forever: resume mid-game, but a finished
     // slot starts fresh on the next visit
     if (testIndex !== null && saved?.status !== "playing") return initialState(d);
     return saved ?? initialState(d);
   });
-  const [profile, setProfile] = useState(loadProfile);
+  const [profile, setProfile] = useState(storage.loadProfile);
   // difficulty: hard = no card backs, no accolade hardware anywhere
   const [mode, setMode] = useState<GameMode>(loadMode);
   const hard = mode === "hard";
@@ -167,7 +156,7 @@ export default function App() {
   const over = state.status !== "playing";
 
   // persist every move so a refresh resumes mid-game
-  useEffect(() => saveGameState(state), [state]);
+  useEffect(() => storage.saveGameState(state), [state]);
 
   // win/lose effects only when it happens live, not on reload of a done game
   const prevStatus = useRef(state.status);
@@ -191,20 +180,21 @@ export default function App() {
     // pushes (especially the append-only plays log) fire exactly once ever
     const firstRecording =
       archiveDay !== null
-        ? loadArchiveResults()[day] === undefined
-        : loadProfile().history[day] === undefined;
+        ? storage.loadArchiveResults()[day] === undefined
+        : storage.loadProfile().history[day] === undefined;
     if (archiveDay !== null) {
-      recordArchiveResult(day, result);
-      recordLocalScore(day, score);
-      if (firstRecording) void pushResult(day, result, true, score);
+      storage.recordArchiveResult(day, result);
+      storage.recordLocalScore(day, score);
+      if (firstRecording) void pushResult(SPORT.sport, day, result, true, score);
     } else if (testIndex === null) {
-      setProfile(recordResult(day, result));
-      recordLocalScore(day, score);
-      if (firstRecording) void pushResult(day, result, false, score);
+      setProfile(storage.recordResult(day, result));
+      storage.recordLocalScore(day, score);
+      if (firstRecording) void pushResult(SPORT.sport, day, result, false, score);
     }
     // anonymous play pool — powers "better than X% of today's players"
     if (testIndex === null && firstRecording) {
       void logPlay({
+        sport: SPORT.sport,
         day,
         won: state.status === "won",
         revealed: state.status === "won" ? state.revealed : null,
@@ -409,7 +399,7 @@ export default function App() {
   }, [state.revealed, newestIdx, over]);
 
   const remaining = total - state.revealed;
-  const streak = displayStreak(profile, realToday);
+  const streak = storage.displayStreak(profile, realToday);
 
   // player profile: full reveal once the game ends; on mobile it fills the
   // leftover columns of the spread's last row when the count isn't a
@@ -463,7 +453,7 @@ export default function App() {
               >
                 Create a free account
               </button>
-              <a className="btn mt-2.5 w-full" href={location.pathname}>
+              <a className="btn mt-2.5 w-full" href={sportHref(SPORT.sport)}>
                 Back to today's puzzle
               </a>
             </>
@@ -495,7 +485,7 @@ export default function App() {
         <div className="test-bar" role="navigation" aria-label="Test mode puzzle picker">
           <span className="test-bar-tag">Test</span>
           <a
-            href={location.pathname}
+            href={sportHref(SPORT.sport)}
             className={`test-bar-slot ${testIndex === null ? "is-active" : ""}`}
             aria-current={testIndex === null ? "page" : undefined}
           >
@@ -504,7 +494,7 @@ export default function App() {
           {puzzles.map((pz, i) => (
             <a
               key={pz.id}
-              href={`?p=${i + 1}`}
+              href={sportHref(SPORT.sport, { p: i + 1 })}
               className={`test-bar-slot ${i + 1 === testIndex ? "is-active" : ""}`}
               aria-current={i + 1 === testIndex ? "page" : undefined}
             >
@@ -524,7 +514,7 @@ export default function App() {
         {archiveDay !== null && (
           <p className="mt-1 text-center text-[0.65rem] text-ink-soft">
             Archive replay — counts in stats, not your streak ·{" "}
-            <a className="underline" href={location.pathname}>
+            <a className="underline" href={sportHref(SPORT.sport)}>
               back to today
             </a>
           </p>
@@ -719,14 +709,16 @@ export default function App() {
           onNext={
             testIndex !== null
               ? () => {
-                  location.href = `?p=${(testIndex % puzzles.length) + 1}`;
+                  location.href = sportHref(SPORT.sport, {
+                    p: (testIndex % puzzles.length) + 1,
+                  });
                 }
               : undefined
           }
           onReplay={
             testIndex !== null
               ? () => {
-                  localStorage.removeItem(`journeyman:game:v1:${day}`);
+                  localStorage.removeItem(storage.gameKey(day));
                   location.reload();
                 }
               : undefined

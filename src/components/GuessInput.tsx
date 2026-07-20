@@ -1,5 +1,8 @@
 import { useId, useRef, useState } from "react";
-import { searchPlayers, type IndexedPlayer } from "../data/playerIndex";
+import { SPORT } from "../sports/active";
+import type { IndexedPlayer } from "../data/playerSearch";
+
+const searchPlayers = SPORT.searchPlayers;
 
 interface Props {
   disabled: boolean;

@@ -1,5 +1,9 @@
 import { useEffect } from "react";
+import { SPORT } from "../sports/active";
 import { CheckIcon, FlameIcon, GraveIcon, JerseyIcon, XIcon } from "./Icons";
+
+// "position → height → draft year → draft pick → college", per sport
+const ladderLine = SPORT.hintLadder.map((h) => h.label.toLowerCase()).join(" → ");
 
 export default function HelpModal({ onClose }: { onClose: () => void }) {
   useEffect(() => {
@@ -28,12 +32,12 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
 
         <div className="mt-3 space-y-3 text-sm leading-relaxed">
           <p>
-            A mystery NBA player is hidden behind his jerseys — usually a{" "}
-            <strong>journeyman</strong> who bounced around the league, sometimes
-            a star with more stops than you'd remember. No logos, no names: just
-            era-accurate <strong>colorways</strong>, the <strong>city</strong> he
-            wore them in, his <strong>number</strong>, and{" "}
-            <strong>his stats with that team</strong>.
+            A mystery {SPORT.league} player is hidden behind his jerseys —
+            usually a <strong>journeyman</strong> who bounced around the
+            league, sometimes a star with more stops than you'd remember. No
+            logos, no names: just era-accurate <strong>colorways</strong>, the{" "}
+            <strong>city</strong> he wore them in, his <strong>number</strong>,
+            and <strong>his stats with that team</strong>.
           </p>
           <p>
             You start with his <em>least</em> famous stop. Guess the player, or
@@ -54,8 +58,7 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
             </li>
             <li>
               Out of jerseys? Wrong guesses open his player profile line by
-              line: position → height → draft year → draft pick → college.
-              Then one last guess.
+              line: {ladderLine}. Then one last guess.
             </li>
           </ul>
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-line pt-3 text-xs text-ink-soft">
@@ -68,7 +71,7 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
             Solve daily to build your <FlameIcon size={13} className="text-wood-deep" /> streak.
             New puzzle at midnight ET.
             <br />
-            Not affiliated with the NBA.
+            Not affiliated with the {SPORT.league}.
           </p>
         </div>
       </div>

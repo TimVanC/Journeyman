@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
+import { SPORT } from "../sports/active";
 import { supabase } from "../lib/supabase";
 import { computeStats, fetchResults, SCORE_BUCKETS, type Stats } from "../lib/cloud";
 
@@ -330,7 +331,7 @@ function SignedIn({ session, today }: { session: Session; today: number }) {
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
-    fetchResults().then((rows) => setStats(computeStats(rows, today)));
+    fetchResults(SPORT.sport).then((rows) => setStats(computeStats(rows, today)));
   }, [today]);
 
   // one shared scale so the bars compare honestly, DNF included
@@ -338,7 +339,9 @@ function SignedIn({ session, today }: { session: Session; today: number }) {
 
   return (
     <div className="mt-3 space-y-4 text-sm">
-      <p className="text-xs text-ink-soft">{session.user.email ?? session.user.phone}</p>
+      <p className="text-xs text-ink-soft">
+        {session.user.email ?? session.user.phone} · {SPORT.league} stats
+      </p>
 
       {stats === null ? (
         <p className="text-ink-soft">Loading stats…</p>

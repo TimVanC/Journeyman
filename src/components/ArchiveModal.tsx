@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
+import { SPORT } from "../sports/active";
+import { sportHref } from "../sports";
 import { fetchResults, type CloudResult } from "../lib/cloud";
-import {
-  LAUNCH_DATE_ET,
-  dayNumberForDate,
-  loadArchiveResults,
-  loadProfile,
-  todayET,
-} from "../game/storage";
+import { todayET } from "../game/storage";
 import { LockIcon } from "./Icons";
+
+const { launchDate, dayNumberForDate, loadArchiveResults, loadProfile } = SPORT.storage;
 
 interface Props {
   session: Session | null;
@@ -67,7 +65,7 @@ const ym = (y: number, m: number) => y * 12 + m;
 function ArchiveCalendar() {
   const [cloud, setCloud] = useState<CloudResult[] | null>(null);
   useEffect(() => {
-    fetchResults().then(setCloud);
+    fetchResults(SPORT.sport).then(setCloud);
   }, []);
 
   const todayStr = todayET();
@@ -83,7 +81,7 @@ function ArchiveCalendar() {
   }
   for (const r of cloud ?? []) played.add(r.day);
 
-  const launchYm = ym(Number(LAUNCH_DATE_ET.slice(0, 4)), Number(LAUNCH_DATE_ET.slice(5, 7)) - 1);
+  const launchYm = ym(Number(launchDate.slice(0, 4)), Number(launchDate.slice(5, 7)) - 1);
   const todayYm = ym(Number(todayStr.slice(0, 4)), Number(todayStr.slice(5, 7)) - 1);
   const viewYm = ym(view.y, view.m);
   const canPrev = viewYm > launchYm;
@@ -152,7 +150,7 @@ function ArchiveCalendar() {
             return (
               <a
                 key={d}
-                href={location.pathname}
+                href={sportHref(SPORT.sport)}
                 className={`${cellBase} border-2 border-ink font-bold`}
                 title="Today's puzzle"
               >
@@ -165,7 +163,7 @@ function ArchiveCalendar() {
             return (
               <a
                 key={d}
-                href={`?d=${dayNum}`}
+                href={sportHref(SPORT.sport, { d: dayNum })}
                 title={`Puzzle #${dayNum}${done ? " · played" : ""}`}
                 className={`${cellBase} ${
                   done

@@ -1,46 +1,15 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import JerseyRenderer, { eraTricode, resolveColorway, type ColorwayDB } from "./JerseyRenderer";
-import colorwaysJson from "../data/colorways.json";
-import { getStintSeasons, seasonLabel } from "../data/teamSeasons";
-import type { AccoladeType, Stint, StintAccolade } from "../game/types";
-import {
-  AllNbaIcon,
-  CrownIcon,
-  FmvpIcon,
-  MedalIcon,
-  RoyIcon,
-  ShieldIcon,
-  SixthManIcon,
-  StarIcon,
-  TrophyIcon,
-} from "./Icons";
-
-const colorways = colorwaysJson as unknown as ColorwayDB;
+import { SPORT } from "../sports/active";
+import { resolveColorway, type ColorwayEra } from "../game/colorways";
+import type { Stint, StintAccolade } from "../game/types";
 
 /** deterministic collector-spread nudge per position (px). Rotation is
  *  deliberately avoided — rotated text renders blurry. */
 const NUDGES = [0, 4, -3, 2, -4, 3, -2, 5];
 
-const ACCOLADE_META: Record<
-  AccoladeType,
-  { Icon: (p: { size?: number; className?: string }) => React.ReactNode; label: string }
-> = {
-  all_star: { Icon: StarIcon, label: "All-Star" },
-  champion: { Icon: TrophyIcon, label: "Champion" },
-  mvp: { Icon: CrownIcon, label: "MVP" },
-  fmvp: { Icon: FmvpIcon, label: "Finals MVP" },
-  dpoy: { Icon: ShieldIcon, label: "DPOY" },
-  sixth_man: { Icon: SixthManIcon, label: "6MOY" },
-  roy: { Icon: RoyIcon, label: "ROY" },
-  all_nba: { Icon: AllNbaIcon, label: "All-NBA" },
-  olympic_gold: { Icon: MedalIcon, label: "Olympic gold" },
-};
-
 export function formatStintYears(s: Stint): string {
-  return `${s.startYear}–${s.endYear + 1}`;
+  return SPORT.stintYears(s);
 }
-
-type Era = NonNullable<ReturnType<typeof resolveColorway>>;
 
 /** The card front — jersey art + stat block. Shared by JerseyCard (the
  *  spread) and DeckCard's mid-flip state, so the "whole card" the deck
@@ -49,17 +18,18 @@ function CardFront({
   stint,
   era,
   showLabel,
-  size = 70,
   hideAccolades = false,
 }: {
   stint: Stint;
-  era: Era | null;
+  era: ColorwayEra | null;
   showLabel: boolean;
-  size?: number;
   /** hard mode strips the hardware — the row stays (uniform card size) */
   hideAccolades?: boolean;
 }) {
   const accolades = hideAccolades ? [] : stint.accolades ?? [];
+  const cells = SPORT.cardStats(stint);
+  const top = cells.slice(0, 3);
+  const bottom = cells.slice(3);
   return (
     <>
       <p className="text-center font-display text-[0.85rem] leading-tight tracking-wide">
@@ -68,14 +38,11 @@ function CardFront({
 
       <div className="mt-0.5 mb-1 flex justify-center">
         {era ? (
-          <JerseyRenderer
-            primary={era.primary}
-            secondary={era.secondary}
-            trim={era.trim}
+          <SPORT.Jersey
+            era={era}
             number={stint.jerseyNumber}
-            eraStyle={era.eraStyle}
-            size={size}
-            label={showLabel ? eraTricode(era, stint.franchise) : null}
+            size={SPORT.cardJerseySize}
+            label={showLabel ? SPORT.eraTricode(era, stint.franchise) : null}
           />
         ) : (
           <div className="flex h-24 items-center justify-center text-ink-soft">?</div>
@@ -93,13 +60,14 @@ function CardFront({
 
       <dl className="border-t border-line pt-1">
         <div className="grid grid-cols-3 gap-0.5 text-center">
-          <Stat label="GP" value={stint.gp} />
-          <Stat label="MPG" value={stint.mpg.toFixed(1)} />
-          <Stat label="PPG" value={stint.ppg.toFixed(1)} />
+          {top.map((c) => (
+            <Stat key={c.label} label={c.label} value={c.value} />
+          ))}
         </div>
         <div className="mt-0.5 flex justify-center gap-4 text-center">
-          <Stat label="RPG" value={stint.rpg.toFixed(1)} />
-          <Stat label="APG" value={stint.apg.toFixed(1)} />
+          {bottom.map((c) => (
+            <Stat key={c.label} label={c.label} value={c.value} />
+          ))}
         </div>
       </dl>
     </>
@@ -194,7 +162,7 @@ export default function JerseyCard({
   }, [isNewest, dealDelay]);
 
   const era = resolveColorway(
-    colorways,
+    SPORT.colorways,
     stint.franchise,
     stint.startYear,
     stint.endYear
@@ -250,7 +218,8 @@ export default function JerseyCard({
           {accolades.length > 0 && (
             <ul className="mt-1 flex flex-wrap justify-center gap-x-2 gap-y-0.5 border-b border-line pb-1.5">
               {accolades.map((a) => {
-                const meta = ACCOLADE_META[a.type];
+                const meta = SPORT.accoladeMeta[a.type];
+                if (!meta) return null;
                 return (
                   <li key={a.type} className="flex items-center gap-1 text-[0.62rem] font-bold leading-tight">
                     <meta.Icon size={12} className="shrink-0 text-wood-deep" />
@@ -263,7 +232,7 @@ export default function JerseyCard({
           )}
 
           {(() => {
-            const seasons = getStintSeasons(stint.franchise, stint.startYear, stint.endYear);
+            const seasons = SPORT.getStintSeasons(stint.franchise, stint.startYear, stint.endYear);
             if (seasons.length === 0) return null;
             return (
               <div className="mt-1">
@@ -274,9 +243,10 @@ export default function JerseyCard({
                 </div>
                 {seasons.map((s) => (
                   <div key={s.year} className="season-grid">
-                    <span className="font-bold">{seasonLabel(s.year)}</span>
+                    <span className="font-bold">{SPORT.seasonLabel(s.year)}</span>
                     <span className="text-center">
                       {s.w}–{s.l}
+                      {s.t ? `–${s.t}` : ""}
                     </span>
                     <span
                       className={`text-right ${
@@ -304,7 +274,8 @@ export default function JerseyCard({
 }
 
 function AccoladeChip({ accolade }: { accolade: StintAccolade }) {
-  const meta = ACCOLADE_META[accolade.type];
+  const meta = SPORT.accoladeMeta[accolade.type];
+  if (!meta) return null;
   return (
     <span className="inline-flex items-center gap-0.5" title={meta.label}>
       <meta.Icon size={12} className="text-wood-deep" />
@@ -358,7 +329,7 @@ export function GhostCard({
   onArrived: () => void;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
-  const era = resolveColorway(colorways, stint.franchise, stint.startYear, stint.endYear);
+  const era = resolveColorway(SPORT.colorways, stint.franchise, stint.startYear, stint.endYear);
 
   // useLayoutEffect (not useEffect): the flight must start on the very
   // first paint, or the ghost would sit still at the deck for a frame
@@ -411,7 +382,7 @@ export function GhostCard({
         pointerEvents: "none",
       }}
     >
-      <CardFront stint={stint} era={era} showLabel size={70} hideAccolades={hard} />
+      <CardFront stint={stint} era={era} showLabel hideAccolades={hard} />
     </div>
   );
 }
@@ -491,10 +462,10 @@ export function DeckCard({
   }, [flipStint]);
 
   const era = flipStint
-    ? resolveColorway(colorways, flipStint.franchise, flipStint.startYear, flipStint.endYear)
+    ? resolveColorway(SPORT.colorways, flipStint.franchise, flipStint.startYear, flipStint.endYear)
     : null;
   const sizerEra = sizerStint
-    ? resolveColorway(colorways, sizerStint.franchise, sizerStint.startYear, sizerStint.endYear)
+    ? resolveColorway(SPORT.colorways, sizerStint.franchise, sizerStint.startYear, sizerStint.endYear)
     : null;
   const showFace = faceUp && flipStint !== null;
 
@@ -512,24 +483,17 @@ export function DeckCard({
     >
       <div className="w-full" ref={flipRef}>
         {showFace && flipStint ? (
-          <CardFront stint={flipStint} era={era} showLabel size={70} hideAccolades={hard} />
+          <CardFront stint={flipStint} era={era} showLabel hideAccolades={hard} />
         ) : (
           <div className="grid w-full">
             {/* invisible card front reserving a real card's exact footprint */}
             {sizerStint && (
               <div className="invisible col-start-1 row-start-1" aria-hidden="true">
-                <CardFront stint={sizerStint} era={sizerEra} showLabel={false} size={70} />
+                <CardFront stint={sizerStint} era={sizerEra} showLabel={false} />
               </div>
             )}
             <div className="col-start-1 row-start-1 flex flex-col items-center justify-center gap-1">
-              <JerseyRenderer
-                primary="#f2e7d2"
-                secondary="#8a5f3c"
-                trim="#3a2c1c"
-                number={null}
-                eraStyle="nineties"
-                size={62}
-              />
+              <SPORT.DeckJersey size={Math.round(SPORT.cardJerseySize * 0.88)} />
               <span className="text-[0.62rem] font-bold uppercase tracking-[0.14em]">
                 Flip next
               </span>

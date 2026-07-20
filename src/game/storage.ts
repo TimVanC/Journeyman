@@ -1,11 +1,5 @@
 import type { GameState, Profile } from "./types";
 
-/** Puzzle #1 lands on this ET calendar date. */
-export const LAUNCH_DATE_ET = "2026-07-15";
-
-const PROFILE_KEY = "journeyman:profile:v1";
-const stateKey = (day: number) => `journeyman:game:v1:${day}`;
-
 /** Calendar date in America/New_York, as YYYY-MM-DD.
  *  Phase 1 uses the client clock; Phase 2 moves rollover server-side. */
 export function todayET(): string {
@@ -20,17 +14,6 @@ export function todayET(): string {
 function dateToUTC(dateStr: string): number {
   const [y, m, d] = dateStr.split("-").map(Number);
   return Date.UTC(y, m - 1, d);
-}
-
-/** Daily puzzle number: #1 on launch day, +1 per ET midnight. */
-export function currentDayNumber(): number {
-  return Math.max(1, dayNumberForDate(todayET()));
-}
-
-/** Puzzle day number for any YYYY-MM-DD calendar date (may be < 1 pre-launch). */
-export function dayNumberForDate(dateStr: string): number {
-  const diff = dateToUTC(dateStr) - dateToUTC(LAUNCH_DATE_ET);
-  return Math.round(diff / 86_400_000) + 1;
 }
 
 function read<T>(key: string): T | null {
@@ -50,69 +33,11 @@ function write(key: string, value: unknown) {
   }
 }
 
-export function loadGameState(day: number): GameState | null {
-  const s = read<GameState>(stateKey(day));
-  return s && s.day === day ? s : null;
-}
-
-export function saveGameState(state: GameState) {
-  write(stateKey(state.day), state);
-}
-
-export function loadProfile(): Profile {
-  return (
-    read<Profile>(PROFILE_KEY) ?? { streak: 0, lastSolvedDay: null, history: {} }
-  );
-}
-
-/** Record a finished game exactly once; returns the updated profile. */
-export function recordResult(
-  day: number,
-  result: number | "DNF"
-): Profile {
-  const profile = loadProfile();
-  if (profile.history[day] !== undefined) return profile;
-
-  profile.history[day] = result;
-  if (result === "DNF") {
-    profile.streak = 0;
-  } else {
-    profile.streak = profile.lastSolvedDay === day - 1 ? profile.streak + 1 : 1;
-    profile.lastSolvedDay = day;
-  }
-  write(PROFILE_KEY, profile);
-  return profile;
-}
-
-/** Streak shown in the header — stale streaks (missed a day) read as 0. */
-export function displayStreak(profile: Profile, today: number): number {
-  if (profile.lastSolvedDay === null) return 0;
-  return profile.lastSolvedDay >= today - 1 ? profile.streak : 0;
-}
-
 /* ------------------------------------------------------------------
-   Local score ledger (day → points). The profile history only keeps
-   jerseys/DNF, so this is what lets a later sign-in sync full scores
-   up to the cloud instead of scoreless rows.
-------------------------------------------------------------------- */
-
-const SCORES_KEY = "journeyman:scores:v1";
-
-export function loadLocalScores(): Record<string, number> {
-  return read<Record<string, number>>(SCORES_KEY) ?? {};
-}
-
-/** Record a game's score exactly once (first result stands). */
-export function recordLocalScore(day: number, score: number) {
-  const all = loadLocalScores();
-  if (all[day] !== undefined) return;
-  all[day] = score;
-  write(SCORES_KEY, all);
-}
-
-/* ------------------------------------------------------------------
-   Difficulty preference. Hard mode: no flipping cards over for the
-   season-by-season record, and no accolade hardware anywhere.
+   Difficulty preference — a user preference, deliberately GLOBAL
+   across sports (same key the NBA-only build wrote).
+   Hard mode: no flipping cards over for the season-by-season record,
+   and no accolade hardware anywhere.
 ------------------------------------------------------------------- */
 
 export type GameMode = "normal" | "hard";
@@ -127,20 +52,111 @@ export function saveMode(mode: GameMode) {
 }
 
 /* ------------------------------------------------------------------
-   Archive plays (signed-in feature) — kept OUT of the daily profile
-   so replaying past puzzles never touches the live streak.
+   Per-sport storage. Each sport is its own game: own launch date, own
+   day numbering, own saves/streak/scores/archive. The NBA prefix is the
+   legacy bare "journeyman" so live players' history survives this
+   refactor untouched; NFL/MLB nest under it.
 ------------------------------------------------------------------- */
 
-const ARCHIVE_KEY = "journeyman:archive:v1";
-
-export function loadArchiveResults(): Record<string, number | "DNF"> {
-  return read<Record<string, number | "DNF">>(ARCHIVE_KEY) ?? {};
+export interface SportStorage {
+  /** Puzzle #1 lands on this ET calendar date. */
+  launchDate: string;
+  /** Daily puzzle number: #1 on launch day, +1 per ET midnight. */
+  currentDayNumber(): number;
+  /** Puzzle day number for any YYYY-MM-DD date (may be < 1 pre-launch). */
+  dayNumberForDate(dateStr: string): number;
+  /** localStorage key for a day's save slot (test-mode resets need it) */
+  gameKey(day: number): string;
+  profileKey: string;
+  loadGameState(day: number): GameState | null;
+  saveGameState(state: GameState): void;
+  loadProfile(): Profile;
+  /** Record a finished game exactly once; returns the updated profile. */
+  recordResult(day: number, result: number | "DNF"): Profile;
+  /** Streak shown in the header — stale streaks (missed a day) read as 0. */
+  displayStreak(profile: Profile, today: number): number;
+  loadLocalScores(): Record<string, number>;
+  /** Record a game's score exactly once (first result stands). */
+  recordLocalScore(day: number, score: number): void;
+  loadArchiveResults(): Record<string, number | "DNF">;
+  /** Record an archive game exactly once (first result stands). */
+  recordArchiveResult(day: number, result: number | "DNF"): void;
 }
 
-/** Record an archive game exactly once (first result stands). */
-export function recordArchiveResult(day: number, result: number | "DNF") {
-  const all = loadArchiveResults();
-  if (all[day] !== undefined) return;
-  all[day] = result;
-  write(ARCHIVE_KEY, all);
+export function createStorage(prefix: string, launchDate: string): SportStorage {
+  const profileKey = `${prefix}:profile:v1`;
+  const scoresKey = `${prefix}:scores:v1`;
+  const archiveKey = `${prefix}:archive:v1`;
+  const gameKey = (day: number) => `${prefix}:game:v1:${day}`;
+
+  const dayNumberForDate = (dateStr: string) => {
+    const diff = dateToUTC(dateStr) - dateToUTC(launchDate);
+    return Math.round(diff / 86_400_000) + 1;
+  };
+
+  // plain closures (no `this`) so callers can freely destructure methods
+  const loadProfile = () =>
+    read<Profile>(profileKey) ?? { streak: 0, lastSolvedDay: null, history: {} };
+
+  /* Local score ledger (day → points). The profile history only keeps
+     jerseys/DNF, so this is what lets a later sign-in sync full scores
+     up to the cloud instead of scoreless rows. */
+  const loadLocalScores = () => read<Record<string, number>>(scoresKey) ?? {};
+
+  /* Archive plays (signed-in feature) — kept OUT of the daily profile
+     so replaying past puzzles never touches the live streak. */
+  const loadArchiveResults = () =>
+    read<Record<string, number | "DNF">>(archiveKey) ?? {};
+
+  return {
+    launchDate,
+    dayNumberForDate,
+    currentDayNumber: () => Math.max(1, dayNumberForDate(todayET())),
+    gameKey,
+    profileKey,
+
+    loadGameState(day) {
+      const s = read<GameState>(gameKey(day));
+      return s && s.day === day ? s : null;
+    },
+    saveGameState(state) {
+      write(gameKey(state.day), state);
+    },
+
+    loadProfile,
+    recordResult(day, result) {
+      const profile = loadProfile();
+      if (profile.history[day] !== undefined) return profile;
+
+      profile.history[day] = result;
+      if (result === "DNF") {
+        profile.streak = 0;
+      } else {
+        profile.streak = profile.lastSolvedDay === day - 1 ? profile.streak + 1 : 1;
+        profile.lastSolvedDay = day;
+      }
+      write(profileKey, profile);
+      return profile;
+    },
+    displayStreak(profile, today) {
+      if (profile.lastSolvedDay === null) return 0;
+      return profile.lastSolvedDay >= today - 1 ? profile.streak : 0;
+    },
+
+    loadLocalScores,
+    recordLocalScore(day, score) {
+      const all = loadLocalScores();
+      if (all[day] !== undefined) return;
+      all[day] = score;
+      write(scoresKey, all);
+    },
+
+    loadArchiveResults,
+    recordArchiveResult(day, result) {
+      const all = loadArchiveResults();
+      if (all[day] !== undefined) return;
+      all[day] = result;
+      write(archiveKey, all);
+    },
+  };
 }

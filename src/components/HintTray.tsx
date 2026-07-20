@@ -1,13 +1,10 @@
+import { SPORT } from "../sports/active";
 import type { PuzzleHints } from "../game/types";
 import { LockIcon } from "./Icons";
 
-const LADDER: { key: keyof PuzzleHints; label: string }[] = [
-  { key: "position", label: "Position" },
-  { key: "height", label: "Height" },
-  { key: "draftYear", label: "Draft year" },
-  { key: "draftPick", label: "Draft pick" },
-  { key: "college", label: "College" },
-];
+// per-sport ladder: NBA/NFL run position→height→draft→college; MLB swaps
+// in bats/throws, debut year, and birthplace
+const LADDER = SPORT.hintLadder;
 
 interface Props {
   hints: PuzzleHints;

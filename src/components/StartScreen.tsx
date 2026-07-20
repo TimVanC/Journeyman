@@ -1,4 +1,5 @@
-import JerseyRenderer from "./JerseyRenderer";
+import { SPORT } from "../sports/active";
+import { SPORTS, SPORT_ORDER, sportHref } from "../sports";
 import { GearIcon } from "./Icons";
 
 interface Props {
@@ -26,7 +27,7 @@ export default function StartScreen({
   signedIn,
 }: Props) {
   return (
-    <div className="start-screen" role="dialog" aria-label="Journeyman — start">
+    <div className="start-screen" role="dialog" aria-label={`Journeyman ${SPORT.league} — start`}>
       {/* how-to-play + settings, same corner as the game header */}
       <div className="absolute right-4 top-4 flex items-center gap-2">
         <button
@@ -50,21 +51,34 @@ export default function StartScreen({
 
       <div className="flex w-full max-w-sm flex-col items-center px-6 text-center">
         <div className="start-jersey" aria-hidden="true">
-          <JerseyRenderer
-            primary="#b3855a"
-            secondary="#faf6ec"
-            trim="#3a2c1c"
-            number={null}
-            eraStyle="nineties"
-            size={110}
-          />
+          <SPORT.DeckJersey size={SPORT.sport === "nba" ? 110 : 130} />
         </div>
 
         <h1 className="font-display mt-4 text-[3.4rem] leading-none tracking-wide">
           JOURNEYMAN
         </h1>
-        <p className="mt-2 text-sm font-medium text-ink-soft">
-          A mystery NBA journeyman, one jersey at a time.
+
+        {/* three games, one site — each league is its own daily puzzle */}
+        <nav
+          className="mt-2 flex items-center gap-1.5"
+          aria-label="Choose your league"
+        >
+          {SPORT_ORDER.map((s) => (
+            <a
+              key={s}
+              href={sportHref(s)}
+              className={`chip px-3 py-1 text-[0.7rem] font-bold uppercase tracking-widest ${
+                s === SPORT.sport ? "chip-active" : "cursor-pointer"
+              }`}
+              aria-current={s === SPORT.sport ? "page" : undefined}
+            >
+              {SPORTS[s].league}
+            </a>
+          ))}
+        </nav>
+
+        <p className="mt-3 text-sm font-medium text-ink-soft">
+          {SPORT.tagline}
           <br />
           Name him in as few jerseys as you can.
         </p>
@@ -90,7 +104,7 @@ export default function StartScreen({
         )}
 
         <p className="mt-8 text-[0.65rem] text-ink-soft">
-          New puzzle at midnight ET · Not affiliated with the NBA
+          New puzzle at midnight ET · Not affiliated with the {SPORT.league}
         </p>
       </div>
     </div>

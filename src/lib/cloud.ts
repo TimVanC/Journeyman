@@ -1,7 +1,13 @@
 import { supabase } from "./supabase";
-import { loadProfile, loadArchiveResults, loadLocalScores } from "../game/storage";
+import type { Sport } from "../sports/types";
+import type { SportStorage } from "../game/storage";
 
-/** One finished game as stored in Supabase (`results` table). */
+/** One finished game as stored in Supabase (`results` table).
+ *
+ *  MULTI-SPORT NOTE: every query/write here carries a `sport` column.
+ *  The live database predates it — run supabase/multisport-migration.sql
+ *  BEFORE deploying this branch, or cloud sync silently no-ops (every
+ *  call is fire-and-forget and error-tolerant by design). */
 export interface CloudResult {
   day: number;
   won: boolean;
@@ -16,6 +22,7 @@ export interface CloudResult {
  *  No-op when signed out. Cloud keeps the FIRST result for a day
  *  (ignoreDuplicates), matching the local "record exactly once" rule. */
 export async function pushResult(
+  sport: Sport,
   day: number,
   result: number | "DNF",
   isArchive: boolean,
@@ -27,55 +34,62 @@ export async function pushResult(
   await supabase.from("results").upsert(
     {
       user_id: userId,
+      sport,
       day,
       won: result !== "DNF",
       revealed: result === "DNF" ? null : result,
       score,
       is_archive: isArchive,
     },
-    { onConflict: "user_id,day", ignoreDuplicates: true }
+    { onConflict: "user_id,sport,day", ignoreDuplicates: true }
   );
 }
 
-/** On sign-in: push everything recorded locally (first result per day wins
- *  server-side), then pull the full cloud history back for stats. Test-mode
- *  days (9000+) never leave the device. */
-export async function syncUp(): Promise<void> {
+/** On sign-in: push everything recorded locally for every sport (first
+ *  result per day wins server-side). Test-mode days (9000+) never leave
+ *  the device. */
+export async function syncUp(
+  ledgers: Array<{ sport: Sport; storage: SportStorage }>
+): Promise<void> {
   const { data } = await supabase.auth.getSession();
   const userId = data.session?.user.id;
   if (!userId) return;
 
   const rows: Array<Record<string, unknown>> = [];
-  const profile = loadProfile();
-  const scores = loadLocalScores();
-  for (const [dayStr, res] of Object.entries(profile.history)) {
-    const day = Number(dayStr);
-    if (day >= 9000) continue; // test slots stay local
-    rows.push({
-      user_id: userId,
-      day,
-      won: res !== "DNF",
-      revealed: res === "DNF" ? null : res,
-      score: scores[day] ?? null,
-      is_archive: false,
-    });
-  }
-  const archive = loadArchiveResults();
-  for (const [dayStr, res] of Object.entries(archive)) {
-    rows.push({
-      user_id: userId,
-      day: Number(dayStr),
-      won: res !== "DNF",
-      revealed: res === "DNF" ? null : res,
-      score: scores[Number(dayStr)] ?? null,
-      is_archive: true,
-    });
+  for (const { sport, storage } of ledgers) {
+    const profile = storage.loadProfile();
+    const scores = storage.loadLocalScores();
+    for (const [dayStr, res] of Object.entries(profile.history)) {
+      const day = Number(dayStr);
+      if (day >= 9000) continue; // test slots stay local
+      rows.push({
+        user_id: userId,
+        sport,
+        day,
+        won: res !== "DNF",
+        revealed: res === "DNF" ? null : res,
+        score: scores[day] ?? null,
+        is_archive: false,
+      });
+    }
+    const archive = storage.loadArchiveResults();
+    for (const [dayStr, res] of Object.entries(archive)) {
+      rows.push({
+        user_id: userId,
+        sport,
+        day: Number(dayStr),
+        won: res !== "DNF",
+        revealed: res === "DNF" ? null : res,
+        score: scores[Number(dayStr)] ?? null,
+        is_archive: true,
+      });
+    }
   }
   if (rows.length > 0) {
     // plain upsert (NOT ignoreDuplicates): the local ledger is itself
     // recorded exactly once per day, so re-syncing can only backfill —
     // e.g. add a score to a row that first synced scoreless
-    await supabase.from("results").upsert(rows, { onConflict: "user_id,day" });
+    await supabase.from("results").upsert(rows, { onConflict: "user_id,sport,day" });
   }
 }
 
@@ -83,6 +97,7 @@ export async function syncUp(): Promise<void> {
  *  not) — this is what powers "better than X% of today's players". Write-only
  *  on the client; aggregates come back through the day_score_stats RPC. */
 export async function logPlay(p: {
+  sport: Sport;
   day: number;
   won: boolean;
   revealed: number | null;
@@ -92,6 +107,7 @@ export async function logPlay(p: {
 }): Promise<void> {
   if (p.day >= 9000) return; // test slots stay off the books
   await supabase.from("plays").insert({
+    sport: p.sport,
     day: p.day,
     won: p.won,
     revealed: p.revealed,
@@ -110,10 +126,12 @@ export interface DayStanding {
 
 /** Where a score lands against everyone who played this day. */
 export async function fetchDayStanding(
+  sport: Sport,
   day: number,
   score: number
 ): Promise<DayStanding | null> {
   const { data, error } = await supabase.rpc("day_score_stats", {
+    p_sport: sport,
     p_day: day,
     p_score: score,
   });
@@ -126,11 +144,13 @@ export async function fetchDayStanding(
   return { others: Math.max(0, total - 1), beaten: lower };
 }
 
-/** All of the signed-in user's results, for stats + the archive grid. */
-export async function fetchResults(): Promise<CloudResult[]> {
+/** All of the signed-in user's results for one sport, for stats + the
+ *  archive grid. */
+export async function fetchResults(sport: Sport): Promise<CloudResult[]> {
   const { data, error } = await supabase
     .from("results")
     .select("day, won, revealed, score, is_archive")
+    .eq("sport", sport)
     .order("day");
   if (error || !data) return [];
   return data as CloudResult[];

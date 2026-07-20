@@ -1,25 +1,28 @@
 import { HINT_COUNT } from "./state";
 
-/** 🎽 is the closest thing to a basketball jersey in the emoji set — a
- *  sleeveless athletic singlet. 🔍 reads as a clue pulled from the player
- *  profile (position → height → draft → college). */
-const JERSEY = "🎽";
+/** 🔍 reads as a clue pulled from the player profile ladder. The jersey
+ *  emoji is per sport: 🎽 for NBA (closest thing to a singlet in the
+ *  emoji set), 🏈 / ⚾ for the others — the ball reads instantly. */
 const HINT = "🔍";
 
 /** Share text. One idea per line, score on its own line under the rank:
  *
- *    Journeyman #12 · Buzzer Beater
+ *    Journeyman NFL #12 · All-Pro
  *    375 pts
- *    🎽🎽🎽🎽🎽🎽🎽 7/7
+ *    🏈🏈🏈🏈🏈🏈🏈 7/7
  *    🔍🔍🔍 3/5
  *    journeymanjersey.com
  *
- *  Each 🎽 is a jersey you had to flip and each 🔍 a hint you had to burn —
- *  the icons carry the meaning, no words needed. Wrong guesses aren't
- *  listed: a miss auto-burns the next jersey or hint, so it's already
- *  counted in the rows above. The daily percentile stays an in-app stat
- *  only; it doesn't travel in the share. */
+ *  Each jersey emoji is a jersey you had to flip and each 🔍 a hint you
+ *  had to burn — the icons carry the meaning, no words needed. Wrong
+ *  guesses aren't listed: a miss auto-burns the next jersey or hint, so
+ *  it's already counted in the rows above. The daily percentile stays an
+ *  in-app stat only; it doesn't travel in the share. */
 export function buildShareText(opts: {
+  /** "Journeyman" / "Journeyman NFL" / "Journeyman MLB" */
+  shareTag: string;
+  /** the sport's flipped-jersey emoji */
+  jerseyEmoji: string;
   day: number;
   grade: string;
   score: number;
@@ -29,10 +32,10 @@ export function buildShareText(opts: {
   hints: number;
   hard: boolean;
 }): string {
-  const { day, grade, score, revealed, total, hints, hard } = opts;
+  const { shareTag, jerseyEmoji: JERSEY, day, grade, score, revealed, total, hints, hard } = opts;
 
   const lines = [
-    `Journeyman #${day} · ${grade}${hard ? " · HARD" : ""}`,
+    `${shareTag} #${day} · ${grade}${hard ? " · HARD" : ""}`,
     `${score} pts`,
     `${JERSEY.repeat(revealed)} ${revealed}/${total}`,
   ];
