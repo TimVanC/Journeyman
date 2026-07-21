@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import posthog from "posthog-js";
 import JerseyRenderer, { resolveColorway, type ColorwayDB } from "./JerseyRenderer";
 import colorwaysJson from "../data/colorways.json";
 import { formatStintYears } from "./JerseyCard";
@@ -70,6 +71,14 @@ export default function ResultModal({
       revealed: state.revealed,
       total,
       hints: state.hintsRevealed,
+      hard,
+    });
+    posthog.capture("result_shared", {
+      day: state.day,
+      won,
+      score,
+      grade: grade.label,
+      method: "share" in navigator ? "native" : "clipboard",
       hard,
     });
     // native share sheet on mobile, clipboard everywhere else

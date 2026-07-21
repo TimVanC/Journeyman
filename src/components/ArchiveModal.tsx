@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
+import posthog from "posthog-js";
 import { fetchResults, type CloudResult } from "../lib/cloud";
 import {
   LAUNCH_DATE_ET,
@@ -172,6 +173,7 @@ function ArchiveCalendar() {
                     ? "bg-[#b3362a] font-bold text-[#faf6ec]"
                     : "border border-line font-medium hover:border-ink"
                 }`}
+                onClick={() => posthog.capture("archive_puzzle_started", { day: dayNum, already_played: done })}
               >
                 {d}
               </a>

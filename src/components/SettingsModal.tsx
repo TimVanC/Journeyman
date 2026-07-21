@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import posthog from "posthog-js";
 import type { GameMode } from "../game/storage";
 import { supabase } from "../lib/supabase";
 import { ArchiveIcon, UserIcon } from "./Icons";
@@ -53,7 +54,10 @@ export default function SettingsModal({
               role="radio"
               aria-checked={mode === "normal"}
               className={`btn flex-1 py-2 ${mode === "normal" ? "btn-primary" : ""}`}
-              onClick={() => onMode("normal")}
+              onClick={() => {
+                if (mode !== "normal") posthog.capture("hard_mode_toggled", { mode: "normal" });
+                onMode("normal");
+              }}
             >
               Normal
             </button>
@@ -62,7 +66,10 @@ export default function SettingsModal({
               role="radio"
               aria-checked={mode === "hard"}
               className={`btn flex-1 py-2 ${mode === "hard" ? "btn-primary" : ""}`}
-              onClick={() => onMode("hard")}
+              onClick={() => {
+                if (mode !== "hard") posthog.capture("hard_mode_toggled", { mode: "hard" });
+                onMode("hard");
+              }}
             >
               Hard
             </button>

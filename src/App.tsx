@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useReducer, useRef, useState } from "react";
+import posthog from "posthog-js";
 import Header from "./components/Header";
 import JerseyCard, { DeckCard, GhostCard, type CardRect } from "./components/JerseyCard";
 import HintTray from "./components/HintTray";
@@ -172,10 +173,33 @@ export default function App() {
   // win/lose effects only when it happens live, not on reload of a done game
   const prevStatus = useRef(state.status);
   useEffect(() => {
-    if (prevStatus.current === "playing" && state.status === "won") setCelebrate(true);
-    if (prevStatus.current === "playing" && state.status === "lost") setJustLost(true);
+    if (prevStatus.current === "playing" && state.status === "won") {
+      setCelebrate(true);
+      posthog.capture("game_won", {
+        day,
+        jerseys_used: state.revealed,
+        hints_used: state.hintsRevealed,
+        wrong_guesses: state.wrongGuesses.length,
+        score: computeScore(state, hard),
+        hard,
+        is_archive: archiveDay !== null,
+        is_test: testIndex !== null,
+      });
+    }
+    if (prevStatus.current === "playing" && state.status === "lost") {
+      setJustLost(true);
+      posthog.capture("game_lost", {
+        day,
+        jerseys_revealed: state.revealed,
+        hints_used: state.hintsRevealed,
+        wrong_guesses: state.wrongGuesses.length,
+        hard,
+        is_archive: archiveDay !== null,
+        is_test: testIndex !== null,
+      });
+    }
     prevStatus.current = state.status;
-  }, [state.status]);
+  }, [state.status]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // record win/loss exactly once, then pop the result card.
   // test games never touch the real streak/history; archive replays record
@@ -272,6 +296,11 @@ export default function App() {
 
   const revealNext = () => {
     if (over || flipTimer.current !== null) return;
+    if (phase === "jerseys") {
+      posthog.capture("jersey_revealed", { day, jersey_index: state.revealed, hard, is_test: testIndex !== null });
+    } else if (phase === "hints") {
+      posthog.capture("hint_taken", { day, hint_index: state.hintsRevealed, hard, is_test: testIndex !== null });
+    }
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     // hints and reduced-motion reveals stay instant — only jersey flips stage
     if (phase !== "jerseys" || reduce) {
@@ -614,6 +643,8 @@ export default function App() {
             alreadyGuessed={state.wrongGuesses}
             onGuess={(name) => {
               finishFlip(); // a guess mid-flip settles the pending reveal first
+              const correct = name.toLowerCase() === puzzle.answer.toLowerCase();
+              posthog.capture("guess_submitted", { day, correct, hard, is_test: testIndex !== null });
               dispatch({ type: "guess", puzzle, name });
             }}
           />
@@ -660,6 +691,7 @@ export default function App() {
           cta={startCta}
           dateLabel={dateLabel}
           onPlay={() => {
+            posthog.capture("game_started", { day, cta: startCta, hard, is_archive: archiveDay !== null });
             setShowStart(false);
             if (over) setShowResult(true);
           }}

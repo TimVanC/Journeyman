@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
+import posthog from "posthog-js";
 import { supabase } from "../lib/supabase";
 import { computeStats, fetchResults, SCORE_BUCKETS, type Stats } from "../lib/cloud";
 
@@ -117,8 +118,10 @@ function AuthForm({
             onSwitchView("signin");
             setError("That email already has an account — sign in instead.");
           } else if (data.session) {
+            posthog.capture("signup_completed", { method: "email" });
             setMessage("Account created — you're in!");
           } else {
+            posthog.capture("signup_completed", { method: "email" });
             setMessage("Check your email to confirm your account, then sign in.");
           }
         } else {
@@ -130,6 +133,7 @@ function AuthForm({
             onSwitchView("signin");
             setError("That number already has an account — sign in instead.");
           } else if (data.session) {
+            posthog.capture("signup_completed", { method: "phone" });
             setMessage("Account created — you're in!");
           } else {
             setConfirmPhone(id.phone); // genuinely new — Supabase texted a code
@@ -140,9 +144,11 @@ function AuthForm({
           "email" in id ? { email: id.email, password } : { phone: id.phone, password }
         );
         if (error) throw error;
+        posthog.capture("signin_completed", { method: "email" in id ? "email" : "phone" });
         // session change flips the modal to the signed-in view
       }
     } catch (err) {
+      posthog.captureException(err);
       setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setBusy(false);
@@ -161,8 +167,10 @@ function AuthForm({
         type: "sms",
       });
       if (error) throw error;
+      posthog.capture("signup_completed", { method: "phone" });
       // verified = signed in; onAuthStateChange re-renders into "Your locker"
     } catch (err) {
+      posthog.captureException(err);
       setError(err instanceof Error ? err.message : "That code didn't match");
     } finally {
       setBusy(false);
