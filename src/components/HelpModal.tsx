@@ -5,7 +5,14 @@ import { CheckIcon, FlameIcon, GraveIcon, JerseyIcon, XIcon } from "./Icons";
 // "position → height → draft year → draft pick → college", per sport
 const ladderLine = SPORT.hintLadder.map((h) => h.label.toLowerCase()).join(" → ");
 
-export default function HelpModal({ onClose }: { onClose: () => void }) {
+interface Props {
+  /** opened from the home hub, where all three leagues are on offer — the
+   *  copy stays league-neutral there instead of claiming the current one */
+  home?: boolean;
+  onClose: () => void;
+}
+
+export default function HelpModal({ home = false, onClose }: Props) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
@@ -32,13 +39,20 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
 
         <div className="mt-3 space-y-3 text-sm leading-relaxed">
           <p>
-            A mystery {SPORT.league} player is hidden behind his jerseys —
-            usually a <strong>journeyman</strong> who bounced around the
-            league, sometimes a star with more stops than you'd remember. No
-            logos, no names: just era-accurate <strong>colorways</strong>, the{" "}
-            <strong>city</strong> he wore them in, his <strong>number</strong>,
-            and <strong>his stats with that team</strong>.
+            A mystery {home ? "NBA, NFL, or MLB" : SPORT.league} player is
+            hidden behind his jerseys — usually a <strong>journeyman</strong>{" "}
+            who bounced around the league, sometimes a star with more stops
+            than you'd remember. No logos, no names: just era-accurate{" "}
+            <strong>colorways</strong>, the <strong>city</strong> he wore them
+            in, his <strong>number</strong>, and{" "}
+            <strong>his stats with that team</strong>.
           </p>
+          {home && (
+            <p>
+              Three puzzles a day — <strong>one per league</strong>, each with
+              its own streak. Play whichever you know best, or all three.
+            </p>
+          )}
           <p>
             You start with his <em>least</em> famous stop. Guess the player, or
             flip the next jersey from the deck. Solve him in as few jerseys as
@@ -53,12 +67,13 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
               jersey for you.
             </li>
             <li>
-              Tap any jersey to turn it over and see the hardware he won at
-              that stop.
+              Tap any jersey to turn it over: the awards he won at that stop,
+              plus how his teams fared season by season.
             </li>
             <li>
               Out of jerseys? Wrong guesses open his player profile line by
-              line: {ladderLine}. Then one last guess.
+              line{home ? " — position, height, and the rest" : `: ${ladderLine}`}.
+              Then one last guess.
             </li>
           </ul>
           <p className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-line pt-3 text-xs text-ink-soft">
@@ -69,7 +84,7 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
           </p>
           <p className="text-xs text-ink-soft">
             Solve daily to build your <FlameIcon size={13} className="text-wood-deep" /> streak.
-            New puzzle at midnight ET.
+            New puzzles at midnight ET.
             <br />
             Not affiliated with the NBA/NFL/MLB.
           </p>

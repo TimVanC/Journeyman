@@ -719,7 +719,7 @@ export default function App() {
           signedIn={!!session}
         />
       )}
-      {showHelp && <HelpModal onClose={() => setShowHelp(false)} />}
+      {showHelp && <HelpModal home={showStart} onClose={() => setShowHelp(false)} />}
       {showSettings && (
         <SettingsModal
           mode={mode}
