@@ -90,7 +90,17 @@ export interface SportConfig {
   stintSummary: (stint: Stint) => string;
 
   accoladeMeta: Partial<
-    Record<AccoladeType, { Icon: (p: { size?: number; className?: string }) => ReactNode; label: string }>
+    Record<
+      AccoladeType,
+      {
+        Icon: (p: { size?: number; className?: string }) => ReactNode;
+        label: string;
+        /** the icon IS the abbreviation ("FMVP", "OROY", "1st"). The card
+         *  front needs it, but the back already spells the award out — so
+         *  the back drops it and reads "2× Finals MVP", not "FMVP 2× …". */
+        wordmark?: true;
+      }
+    >
   >;
 
   /** the five profile hints, in reveal order, with display labels */

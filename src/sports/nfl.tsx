@@ -9,15 +9,15 @@ import { createStorage } from "../game/storage";
 import type { ColorwayDB } from "../game/colorways";
 import type { StatCell, Stint } from "../game/types";
 import {
-  AllNbaIcon,
   ComebackIcon,
   CrownIcon,
-  FmvpIcon,
+  FirstTeamIcon,
   FootballIcon,
   LombardiIcon,
   MedalIcon,
   OpoyIcon,
-  RoyIcon,
+  OroyIcon,
+  SbMvpIcon,
   StarIcon,
   TrophyIcon,
 } from "../components/Icons";
@@ -90,11 +90,11 @@ export const nfl: SportConfig = {
     pro_bowl: { Icon: StarIcon, label: "Pro Bowl" },
     champion: { Icon: LombardiIcon, label: "Super Bowl champ" },
     mvp: { Icon: CrownIcon, label: "MVP" },
-    sb_mvp: { Icon: FmvpIcon, label: "Super Bowl MVP" },
-    all_pro: { Icon: AllNbaIcon, label: "First-Team All-Pro" },
-    roy: { Icon: RoyIcon, label: "Off. ROY" },
-    opoy: { Icon: OpoyIcon, label: "Off. Player of the Year" },
-    comeback: { Icon: ComebackIcon, label: "Comeback Player" },
+    sb_mvp: { Icon: SbMvpIcon, label: "Super Bowl MVP", wordmark: true },
+    all_pro: { Icon: FirstTeamIcon, label: "First-Team All-Pro", wordmark: true },
+    roy: { Icon: OroyIcon, label: "Off. Rookie of the Year", wordmark: true },
+    opoy: { Icon: OpoyIcon, label: "Off. Player of the Year", wordmark: true },
+    comeback: { Icon: ComebackIcon, label: "Comeback Player", wordmark: true },
     // the Lombardi covers the ring, so the plain trophy is free for
     // the two statistical crowns
     rushing_title: { Icon: TrophyIcon, label: "Rushing title" },

@@ -63,6 +63,19 @@ export function warnPuzzleData(config: SportConfig): void {
             `${s.statLine?.length ?? 0} stat cells (expected 5)`
         );
       }
+      // a stint with no team-season rows flips to a card back with nothing on
+      // it but the year range — the gap that left Rick Barry's cards blank
+      const seasons = config.getStintSeasons(s.franchise, s.startYear, s.endYear);
+      const want = s.endYear - s.startYear + 1;
+      if (seasons.length < want) {
+        const have = new Set(seasons.map((x) => x.year));
+        const gaps = [];
+        for (let y = s.startYear; y <= s.endYear; y++) if (!have.has(y)) gaps.push(y);
+        console.warn(
+          `${tag} "${pz.answer}": no teamSeasons row for ${s.franchise} ${gaps.join(", ")} ` +
+            `— those seasons are missing from the card back`
+        );
+      }
     }
     if (pz.revealOrder.length !== pz.stints.length) {
       console.warn(`${tag} "${pz.answer}": revealOrder length ≠ stints length`);

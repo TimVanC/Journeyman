@@ -89,6 +89,9 @@ interface Props {
   hidden?: boolean;
   /** hard mode: no flipping for the season record, no accolade hardware */
   hard?: boolean;
+  /** "flip every card" broadcast from the spread. `n` bumps on each press so
+   *  a card that was tapped out of sync still obeys the next one. */
+  flipAll?: { back: boolean; n: number };
   /** lets the spread run FLIP slide animations on reorder */
   cardRef?: (el: HTMLElement | null) => void;
 }
@@ -101,6 +104,7 @@ export default function JerseyCard({
   dealDelay = 0,
   hidden = false,
   hard = false,
+  flipAll,
   cardRef,
 }: Props) {
   const ref = useRef<HTMLElement | null>(null);
@@ -159,6 +163,16 @@ export default function JerseyCard({
     if (hard && showBack) runFlip(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- runFlip is stable enough here
   }, [hard]);
+
+  // "flip all" from the spread. Seeded with the current `n` so a card that
+  // deals in later doesn't immediately flip itself on mount.
+  const lastFlipAll = useRef(flipAll?.n ?? 0);
+  useEffect(() => {
+    if (hard || !flipAll || flipAll.n === lastFlipAll.current) return;
+    lastFlipAll.current = flipAll.n;
+    if (showBack !== flipAll.back) runFlip(flipAll.back);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runFlip is stable enough here
+  }, [flipAll, hard]);
 
   // the flip is the moment of the game — make sure it happens on screen
   // (skip during the end-of-game cascade, where many cards land at once)
@@ -233,7 +247,9 @@ export default function JerseyCard({
                 if (!meta) return null;
                 return (
                   <li key={a.type} className="flex items-center gap-1 text-[0.62rem] font-bold leading-tight">
-                    <meta.Icon size={14} className="shrink-0 text-wood-deep" />
+                    {/* a wordmark icon is the award's abbreviation, which the
+                        label right next to it already spells out — skip it */}
+                    {!meta.wordmark && <meta.Icon size={14} className="shrink-0 text-wood-deep" />}
                     {a.count > 1 ? `${a.count}× ` : ""}
                     {meta.label}
                   </li>

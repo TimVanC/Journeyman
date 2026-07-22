@@ -9,16 +9,16 @@ import { createStorage } from "../game/storage";
 import type { ColorwayDB, ColorwayEra } from "../game/colorways";
 import type { Stint } from "../game/types";
 import {
-  AllNbaIcon,
   BasketballIcon,
   CrownIcon,
+  FirstTeamIcon,
   FmvpIcon,
+  LarryOBrienIcon,
   MedalIcon,
   RoyIcon,
   ShieldIcon,
   SixthManIcon,
   StarIcon,
-  TrophyIcon,
 } from "../components/Icons";
 import type { SportConfig } from "./types";
 
@@ -106,13 +106,13 @@ export const nba: SportConfig = {
 
   accoladeMeta: {
     all_star: { Icon: StarIcon, label: "All-Star" },
-    champion: { Icon: TrophyIcon, label: "Champion" },
+    champion: { Icon: LarryOBrienIcon, label: "Champion" },
     mvp: { Icon: CrownIcon, label: "MVP" },
-    fmvp: { Icon: FmvpIcon, label: "Finals MVP" },
+    fmvp: { Icon: FmvpIcon, label: "Finals MVP", wordmark: true },
     dpoy: { Icon: ShieldIcon, label: "DPOY" },
-    sixth_man: { Icon: SixthManIcon, label: "6MOY" },
-    roy: { Icon: RoyIcon, label: "ROY" },
-    all_nba: { Icon: AllNbaIcon, label: "All-NBA" },
+    sixth_man: { Icon: SixthManIcon, label: "6MOY", wordmark: true },
+    roy: { Icon: RoyIcon, label: "ROY", wordmark: true },
+    all_nba: { Icon: FirstTeamIcon, label: "All-NBA First Team", wordmark: true },
     olympic_gold: { Icon: MedalIcon, label: "Olympic gold" },
   },
 
@@ -136,7 +136,7 @@ export const nba: SportConfig = {
     full: "6th Man",
   },
 
-  getStintSeasons: createSeasonDB(teamSeasonsJson as SeasonJSON),
+  getStintSeasons: createSeasonDB(teamSeasonsJson as unknown as SeasonJSON),
   seasonLabel: crossYearLabel,
 
   // bare legacy prefix: live players' NBA history predates multi-sport

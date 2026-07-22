@@ -14,15 +14,15 @@ import {
   BaseballIcon,
   BatIcon,
   BattingTitleIcon,
+  CommissionersTrophyIcon,
   CrownIcon,
   CyYoungIcon,
-  FmvpIcon,
   GloveIcon,
   MedalIcon,
   RelieverIcon,
   RoyIcon,
   StarIcon,
-  TrophyIcon,
+  WsMvpIcon,
 } from "../components/Icons";
 import type { SportConfig } from "./types";
 
@@ -92,11 +92,11 @@ export const mlb: SportConfig = {
 
   accoladeMeta: {
     all_star: { Icon: StarIcon, label: "All-Star" },
-    champion: { Icon: TrophyIcon, label: "WS champion" },
+    champion: { Icon: CommissionersTrophyIcon, label: "WS champion" },
     mvp: { Icon: CrownIcon, label: "MVP" },
-    ws_mvp: { Icon: FmvpIcon, label: "World Series MVP" },
-    cy_young: { Icon: CyYoungIcon, label: "Cy Young" },
-    roy: { Icon: RoyIcon, label: "ROY" },
+    ws_mvp: { Icon: WsMvpIcon, label: "World Series MVP", wordmark: true },
+    cy_young: { Icon: CyYoungIcon, label: "Cy Young", wordmark: true },
+    roy: { Icon: RoyIcon, label: "Rookie of the Year", wordmark: true },
     gold_glove: { Icon: GloveIcon, label: "Gold Glove" },
     silver_slugger: { Icon: BatIcon, label: "Silver Slugger" },
     batting_title: { Icon: BattingTitleIcon, label: "Batting title" },

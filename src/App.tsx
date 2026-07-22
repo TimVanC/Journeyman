@@ -184,6 +184,9 @@ export default function App() {
   const [showHelp, setShowHelp] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
   const [justLost, setJustLost] = useState(false);
+  // "flip all" broadcast — `n` bumps per press so every revealed card obeys
+  // even if it drifted out of sync from an individual tap
+  const [flipAll, setFlipAll] = useState({ back: false, n: 0 });
 
   const phase = getPhase(state, puzzle);
   const over = state.status !== "playing";
@@ -545,8 +548,22 @@ export default function App() {
       )}
 
       <main className="relative z-0">
-        <p className="mt-4 text-center text-[0.7rem] font-bold uppercase tracking-[0.2em] text-ink-soft">
-          Puzzle #{day} · jersey {state.revealed} of {total}
+        <p className="mt-4 flex flex-wrap items-center justify-center gap-x-2 text-center text-[0.7rem] font-bold uppercase tracking-[0.2em] text-ink-soft">
+          <span>
+            Puzzle #{day} · jersey {state.revealed} of {total}
+          </span>
+          {/* reading every card back one tap at a time is the tedious part —
+              this turns the whole spread over at once. Two cards minimum:
+              below that it's the same work as tapping the card. */}
+          {!hard && state.revealed > 1 && (
+            <button
+              type="button"
+              className="flip-all"
+              onClick={() => setFlipAll((f) => ({ back: !f.back, n: f.n + 1 }))}
+            >
+              {flipAll.back ? "Show fronts" : "Show backs"}
+            </button>
+          )}
         </p>
         {archiveDay !== null && (
           <p className="mt-1 text-center text-[0.65rem] text-ink-soft">
@@ -583,6 +600,7 @@ export default function App() {
                 dealDelay={cascadeDelays.get(stintIdx) ?? 0}
                 hidden={ghost?.key === stintIdx || flightIdx === stintIdx}
                 hard={hard}
+                flipAll={flipAll}
                 cardRef={(el) => {
                   if (el) cardEls.current.set(stintIdx, el);
                   else cardEls.current.delete(stintIdx);

@@ -182,11 +182,14 @@ export function CrownIcon(p: IconProps) {
   );
 }
 
-/** Defensive Player of the Year */
+/** Defensive Player of the Year — crest with a double chevron, so it reads as
+ *  a defensive badge rather than the generic "security" shield. */
 export function ShieldIcon(p: IconProps) {
   return (
     <Base {...p}>
       <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+      <path d="m8.6 11.9 3.4-2.7 3.4 2.7" />
+      <path d="m8.6 16.1 3.4-2.7 3.4 2.7" />
     </Base>
   );
 }
@@ -201,55 +204,16 @@ export function MedalIcon(p: IconProps) {
   );
 }
 
-/** Single-letter badge — ROY, All-Pro First Team, Finals/Series MVP.
- *  Deliberately one character only: at the ~14px these render at on a card,
- *  two or three letters inside a ring turn to mush. Anything that needs more
- *  than a letter gets a real pictogram instead. */
-function BadgeIcon({ glyph, ...p }: IconProps & { glyph: string }) {
-  return (
-    <Base {...p}>
-      <circle cx="12" cy="12" r="9.5" />
-      <text
-        x="12"
-        y="16.8"
-        textAnchor="middle"
-        fontSize="14"
-        fontFamily="'Archivo Black','Arial Black',sans-serif"
-        fill="currentColor"
-        stroke="none"
-      >
-        {glyph}
-      </text>
-    </Base>
-  );
-}
-
-/** Wrapper for the filled 512-grid pictograms borrowed from icon sets. */
-function SolidIcon({ size = 15, className, title, d, box = 512 }: IconProps & { d: string; box?: number }) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox={`0 0 ${box} ${box}`}
-      fill="currentColor"
-      className={className}
-      role={title ? "img" : "presentation"}
-      aria-label={title}
-      aria-hidden={title ? undefined : true}
-      style={{ display: "inline-block", verticalAlign: "-0.15em", flexShrink: 0 }}
-    >
-      <path d={d} />
-    </svg>
-  );
-}
-
-/** 6th Man of the Year. NOT a BadgeIcon: a "6" ringed by a circle turns to
- *  mush at the ~12px these render at on a phone. Spelled out, with no circle
- *  stroke competing for pixels and a wider box so the glyphs get real width.
- *  textLength pins it inside the viewBox at any font fallback. */
-export function SixthManIcon({ size = 15, className, title }: IconProps) {
-  const W = 30;
+/** Lettered accolade mark — ROY, FMVP, SBMVP, 6th, 1st…
+ *
+ *  Awards nobody has a picture for get their abbreviation instead, set solid
+ *  with NO enclosing ring: at the ~12px these render at on a phone, a circle
+ *  stroke just eats the pixels the letters need. The box grows 9 units per
+ *  character and textLength pins the run inside it, so every mark in the
+ *  family has the same glyph width no matter how many letters it carries. */
+function WordMark({ text, size = 15, className, title }: IconProps & { text: string }) {
   const H = 24;
+  const W = text.length * 9 + 3;
   return (
     <svg
       width={size * (W / H)}
@@ -273,29 +237,46 @@ export function SixthManIcon({ size = 15, className, title }: IconProps) {
         fill="currentColor"
         stroke="none"
       >
-        6th
+        {text}
       </text>
     </svg>
   );
 }
 
-export const RoyIcon = (p: IconProps) => <BadgeIcon glyph="R" {...p} />;
-export const AllNbaIcon = (p: IconProps) => <BadgeIcon glyph="1" {...p} />;
-export const FmvpIcon = (p: IconProps) => <BadgeIcon glyph="F" {...p} />;
-// NFL letter badges (same single-letter family as ROY / All-Pro)
-export const OpoyIcon = (p: IconProps) => <BadgeIcon glyph="O" {...p} />;
-export const ComebackIcon = (p: IconProps) => <BadgeIcon glyph="C" {...p} />;
-
-/** Cy Young — the trophy's motif: a hand cradling a baseball. */
-export function CyYoungIcon(p: IconProps) {
+/** Wrapper for the filled 512-grid pictograms borrowed from icon sets. */
+function SolidIcon({ size = 15, className, title, d, box = 512 }: IconProps & { d: string; box?: number }) {
   return (
-    <Base {...p}>
-      <circle cx="12" cy="8.4" r="4.6" />
-      <path d="M4.8 14.1c0 4 3.2 6.9 7.2 6.9s7.2-2.9 7.2-6.9" />
-      <path d="M7.4 14v2.1M12 14.7v2.3M16.6 14v2.1" />
-    </Base>
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${box} ${box}`}
+      fill="currentColor"
+      className={className}
+      role={title ? "img" : "presentation"}
+      aria-label={title}
+      aria-hidden={title ? undefined : true}
+      style={{ display: "inline-block", verticalAlign: "-0.15em", flexShrink: 0 }}
+    >
+      <path d={d} />
+    </svg>
   );
 }
+
+/* Lettered marks. Every one of these is also spelled out in full on the card
+   back, so `accoladeMeta` flags them `wordmark` and the back drops the icon —
+   "2× Finals MVP" reads better than "FMVP 2× Finals MVP". */
+export const SixthManIcon = (p: IconProps) => <WordMark text="6th" {...p} />;
+export const FirstTeamIcon = (p: IconProps) => <WordMark text="1st" {...p} />;
+export const RoyIcon = (p: IconProps) => <WordMark text="ROY" {...p} />;
+export const FmvpIcon = (p: IconProps) => <WordMark text="FMVP" {...p} />;
+// NFL
+export const SbMvpIcon = (p: IconProps) => <WordMark text="SBMVP" {...p} />;
+export const OroyIcon = (p: IconProps) => <WordMark text="OROY" {...p} />;
+export const OpoyIcon = (p: IconProps) => <WordMark text="OPOY" {...p} />;
+export const ComebackIcon = (p: IconProps) => <WordMark text="CMB" {...p} />;
+// MLB
+export const WsMvpIcon = (p: IconProps) => <WordMark text="WSMVP" {...p} />;
+export const CyYoungIcon = (p: IconProps) => <WordMark text="CY" {...p} />;
 
 /** Reliever of the Year — a pitcher mid-delivery
  *  (game-icons.net `throwing-ball` by Delapouite, CC BY 3.0). */
@@ -327,6 +308,34 @@ export function LombardiIcon(p: IconProps) {
   );
 }
 
+/** NBA title — the Larry O'Brien: a ball tipped on the mouth of a funnel
+ *  that flares down to a plinth. Same construction as the Lombardi (ball,
+ *  stem, plinth, floor line) so the three leagues' rings look like a set. */
+export function LarryOBrienIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <circle cx="12" cy="6.6" r="3.5" />
+      <path d="M6.2 8c.8 4.2 2.5 7.4 4.1 9.4h3.4c1.6-2 3.3-5.2 4.1-9.4" />
+      <path d="M6.6 9.1c1.5 1.4 3.3 2.1 5.4 2.1s3.9-.7 5.4-2.1" />
+      <path d="M8.6 17.4h6.8l1 2.9H7.6l1-2.9Z" />
+      <path d="M5.4 22h13.2" />
+    </Base>
+  );
+}
+
+/** World Series — the Commissioner's Trophy: a crown of pennant flags
+ *  splaying up out of a tapered plinth. */
+export function CommissionersTrophyIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <ellipse cx="12" cy="6.5" rx="6.5" ry="2.2" />
+      <path d="M5.6 7c.9 4.4 2.9 7.6 4.6 9.4M12 8.7v7.7M18.4 7c-.9 4.4-2.9 7.6-4.6 9.4" />
+      <path d="M9.7 16.4h4.6l1.9 3.2H7.8l1.9-3.2Z" />
+      <path d="M5 22h14" />
+    </Base>
+  );
+}
+
 /** Gold Glove — a fielder's mitt silhouette */
 export function GloveIcon(p: IconProps) {
   return (
@@ -336,12 +345,13 @@ export function GloveIcon(p: IconProps) {
   );
 }
 
-/** Silver Slugger — just the bat
- *  (game-icons.net `baseball-bat` by Delapouite, CC BY 3.0). */
+/** Silver Slugger — the same Font Awesome bat as the batting title, minus
+ *  the ball. A matched pair beats two bats drawn in two different weights:
+ *  the earlier game-icons bat was a hairline next to this one's solid barrel. */
 export const BatIcon = (p: IconProps) => (
   <SolidIcon
     {...p}
-    d="M429.725 54.54c-3.023.094-5.838 1.16-8.16 3.48l-.055.056-.057.055s-115.29 111.285-169.37 169.364c-28.277 30.37-56.8 65.693-88.448 102.922l17.726 17.73c37.02-31.78 72.285-60.387 103.388-88.236 58.86-52.703 169.174-169.187 169.174-169.187l.084-.09.088-.088c11.49-11.49-7.83-35.118-23.063-35.988-.438-.025-.874-.032-1.305-.018zM151.89 344.13c-17.598 20.413-36.214 41.272-56.33 62.114l10.327 10.248c20.79-20.14 41.52-38.848 61.828-56.54l-15.824-15.823zm-80.21 63.776l-9.9 9.9 32.652 32.4 9.9-9.9-32.652-32.4z"
+    d="M424 0c-12.4 0-24.2 4.9-33 13.7L233.5 171.2c-10.5 10.5-19.8 22.1-27.7 34.6L132.7 321.6c-7.3 11.5-15.8 22.2-25.5 31.9L69.9 390.7l51.3 51.3 37.3-37.3c9.6-9.6 20.3-18.2 31.9-25.5l115.8-73.1c12.5-7.9 24.1-17.2 34.6-27.7L498.3 121c8.7-8.7 13.7-20.6 13.7-33s-4.9-24.2-13.7-33L457 13.7C448.2 4.9 436.4 0 424 0zM15 399c-9.4 9.4-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9L49 399c-9.4-9.4-24.6-9.4-33.9 0z"
   />
 );
 
