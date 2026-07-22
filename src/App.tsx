@@ -711,13 +711,6 @@ export default function App() {
           onClose={() => setShowSettings(false)}
         />
       )}
-      {showAccount && (
-        <AccountModal
-          session={session ?? null}
-          defaultScope={accountScope}
-          onClose={() => setShowAccount(false)}
-        />
-      )}
       {showArchive && (
         <ArchiveModal
           session={session ?? null}
@@ -736,6 +729,7 @@ export default function App() {
           hard={hard}
           canRank={testIndex === null && archiveDay === null}
           onClose={() => setShowResult(false)}
+          onStats={() => openAccount(SPORT.sport)}
           onNext={
             testIndex !== null
               ? () => {
@@ -753,6 +747,15 @@ export default function App() {
                 }
               : undefined
           }
+        />
+      )}
+      {/* rendered last so the locker stacks ABOVE the result card — the
+          result card's own Stats button opens it from underneath */}
+      {showAccount && (
+        <AccountModal
+          session={session ?? null}
+          defaultScope={accountScope}
+          onClose={() => setShowAccount(false)}
         />
       )}
     </div>

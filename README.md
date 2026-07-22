@@ -32,28 +32,29 @@ npm run dev
 | `src/sports/active.ts` | The sport this page-load is playing (`?s=` param) |
 | `src/components/JerseyRenderer.tsx` | NBA jersey SVG (provided art, unchanged) |
 | `src/components/FootballJerseyRenderer.tsx` + `footballJerseyPaths.ts` | NFL jersey, extracted from the user-supplied NovaeMakersMart SVG (front view), 4 era treatments |
-| `src/components/BaseballJerseyRenderer.tsx` + `baseballJerseyPaths.ts` | MLB jersey, extracted from the user-supplied Baseball Jersey SVG (front + its line-art overlay), 4 era treatments incl. pullovers + pinstripes |
+| `src/components/BaseballBackJerseyRenderer.tsx` + `baseballBackPaths.ts` | MLB jersey — the BACK view (numbers live on the back in baseball). The vendor sheet lays each jersey out twice: front on the top row, back on the bottom; this is the bottom row. 4 era treatments incl. pullovers + pinstripes |
 | `src/data/colorways.json` | NBA franchise colorways (unchanged) |
 | `src/data/{nfl,mlb}/colorways.json` | NFL (32) / MLB (30) franchise era colorways, relocations carried as era entries with era tricodes (OIL→HOU, MON Expos…) |
 | `src/data/{nfl,mlb}/puzzles.ts` | 5 hand-written puzzles per sport (see provenance below) |
-| `src/data/{nfl,mlb}/playerIndex.json` | Curated skill-position search pools (~450 names each) |
+| `src/data/{nfl,mlb}/playerIndex.json` | Full search indexes — 8.4k NFL skill players (nflverse), 10.9k MLB players (Lahman, re-accented from MLB StatsAPI). Loaded per league via dynamic `import()`, so only the sport you're playing downloads one |
 | `src/data/{nfl,mlb}/teamSeasons.json` | Per-season W-L + playoff results for the card backs |
 | `src/game/` | Shared engine: reducer, scoring, grading, share, colorway resolution, per-sport storage factory |
-| `supabase/multisport-migration.sql` | **Run before deploying this branch** — adds `sport` to results/plays + updates the percentile RPC |
+| `supabase/multisport-migration.sql` | **Already applied.** Creates `results_v2` / `plays_v2` / `day_score_stats_v2` alongside the originals so the live NBA-only client keeps working; see the file for the merge-day top-up |
 
 ## Before this branch ships
 
-1. **Run the Supabase migration** (`supabase/multisport-migration.sql`) —
-   the client now writes a `sport` column everywhere. Until it runs, all
-   cloud sync (including NBA) silently no-ops on this branch.
+1. **Top up the cloud tables at merge** — the multi-sport client uses
+   `results_v2`/`plays_v2`; the live NBA build still writes `results`.
+   Run the top-up query at the head of `supabase/multisport-migration.sql`
+   once main is serving this build, then the old tables can be dropped.
 2. **Verify the NFL/MLB data.** NBA puzzles were verified against
    Basketball-Reference (2026-07-15). The NFL/MLB puzzles, colorways, and
    team seasons were generated from general knowledge (2026-07-19) and
    must be verified against Pro-Football-Reference / Baseball-Reference /
    uniform databases before launch — grep for `VERIFY` and `confidence`.
-3. **Player indexes are curated, not exhaustive** (~450 names/sport vs the
-   NBA's full 5,400). Phase 2 ETL should replace them with complete
-   BR/PFR indexes so any legal guess autocompletes.
+3. **Remove the staging test account** (`test@test.com`) from Supabase
+   auth before launch — it exists so the preview can be exercised without
+   Google OAuth, which only redirects to the production domain.
 4. NFL/MLB launch dates are placeholders (`2026-07-20`) in
    `src/sports/nfl.tsx` / `mlb.tsx` — set them to the real launch day so
    puzzle #1 lands correctly and the archive calendar starts there.

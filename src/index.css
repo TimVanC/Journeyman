@@ -680,6 +680,17 @@ select {
   filter: drop-shadow(0 10px 14px rgba(60, 45, 20, 0.3));
 }
 
+/* the stats shortcut on the result card — the one cool accent in a warm
+   palette, so it reads as a different kind of action than Share */
+.btn-stats {
+  background: #2f5d8a;
+  border-color: #1f3f60;
+  color: var(--color-card);
+}
+.btn-stats:hover:not(:disabled) {
+  background: #26527b;
+}
+
 /* home hub: one tappable card per league */
 .home-card {
   cursor: pointer;

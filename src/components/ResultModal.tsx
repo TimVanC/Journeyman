@@ -22,6 +22,8 @@ interface Props {
   /** daily game (not test, not archive) — eligible for today's leaderboard pool */
   canRank: boolean;
   onClose: () => void;
+  /** open the stats locker for this league */
+  onStats: () => void;
   /** test mode only: jump to the next puzzle */
   onNext?: () => void;
   /** test mode only: wipe this slot and play it again */
@@ -35,6 +37,7 @@ export default function ResultModal({
   hard,
   canRank,
   onClose,
+  onStats,
   onNext,
   onReplay,
 }: Props) {
@@ -61,6 +64,31 @@ export default function ResultModal({
     standing && standing.others >= MIN_CROWD
       ? Math.round((standing.beaten / standing.others) * 100)
       : null;
+
+  /** The other leagues' puzzles for THE SAME DATE as the one just played —
+   *  finishing an archived Saturday should offer that Saturday's NFL game,
+   *  not today's. Leagues that hadn't launched yet are shown disabled. */
+  const isTestSlot = state.day >= 9000;
+  const playedDate = isTestSlot ? null : SPORT.storage.dateForDay(state.day);
+  const alsoPlayable = otherSports(SPORT.sport).map((s) => {
+    const cfg = SPORTS[s];
+    if (!playedDate) {
+      return { sport: s, href: sportHref(s, { play: 1 }), label: null as string | null };
+    }
+    const theirDay = cfg.storage.dayNumberForDate(playedDate);
+    const theirToday = cfg.storage.currentDayNumber();
+    const [, m, d] = playedDate.split("-");
+    const label = `${Number(m)}/${Number(d)}`;
+    if (theirDay < 1 || theirDay > theirToday) {
+      return { sport: s, href: null, label }; // that league wasn't running yet
+    }
+    // the same date's puzzle: today's daily, or its archive entry
+    const href =
+      theirDay === theirToday
+        ? sportHref(s, { play: 1 })
+        : sportHref(s, { d: theirDay });
+    return { sport: s, href, label };
+  });
 
   const share = async () => {
     trackShare({ sport: SPORT.sport, day: state.day, won, score });
@@ -106,6 +134,9 @@ export default function ResultModal({
             {hard && " · Hard"}
           </p>
           <div className="flex items-center gap-2">
+            <button type="button" className="btn btn-stats btn-sm" onClick={onStats}>
+              Stats
+            </button>
             {/* long careers push the main share button way down — this one
                 stays in reach at the top */}
             <button type="button" className="btn btn-primary btn-sm" onClick={share}>
@@ -194,18 +225,31 @@ export default function ResultModal({
           {copied ? "Copied to clipboard!" : "Share result"}
         </button>
 
-        {/* keep the streak going in another league */}
+        {/* the same day's puzzle in the other two leagues */}
         <div className="mt-2 flex gap-2">
-          {otherSports(SPORT.sport).map((s) => {
+          {alsoPlayable.map(({ sport: s, href, label }) => {
             const Ball = SPORTS[s].ballIcon;
-            return (
-              <a
-                key={s}
-                href={sportHref(s, { play: 1 })}
-                className="btn flex flex-1 items-center justify-center gap-2 py-2.5 text-sm"
-              >
+            const text = (
+              <>
                 <Ball size={17} /> Play {SPORTS[s].league}
+                {label && <span className="tabular-nums opacity-70">{label}</span>}
+              </>
+            );
+            const cls =
+              "flex flex-1 items-center justify-center gap-1.5 py-2.5 text-sm";
+            return href ? (
+              <a key={s} href={href} className={`btn ${cls}`}>
+                {text}
               </a>
+            ) : (
+              <span
+                key={s}
+                className={`btn ${cls} cursor-not-allowed opacity-40`}
+                title={`${SPORTS[s].league} hadn't launched yet on ${label}`}
+                aria-disabled="true"
+              >
+                {text}
+              </span>
             );
           })}
         </div>

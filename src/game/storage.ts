@@ -65,6 +65,8 @@ export interface SportStorage {
   currentDayNumber(): number;
   /** Puzzle day number for any YYYY-MM-DD date (may be < 1 pre-launch). */
   dayNumberForDate(dateStr: string): number;
+  /** The ET calendar date a puzzle number fell on (inverse of the above) */
+  dateForDay(day: number): string;
   /** localStorage key for a day's save slot (test-mode resets need it) */
   gameKey(day: number): string;
   profileKey: string;
@@ -111,6 +113,10 @@ export function createStorage(prefix: string, launchDate: string): SportStorage 
   return {
     launchDate,
     dayNumberForDate,
+    dateForDay: (day: number) =>
+      new Date(dateToUTC(launchDate) + (day - 1) * 86_400_000)
+        .toISOString()
+        .slice(0, 10),
     currentDayNumber: () => Math.max(1, dayNumberForDate(todayET())),
     gameKey,
     profileKey,

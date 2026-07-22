@@ -46,12 +46,16 @@ const VB = { x: 655, y: 310, w: 430, h: 428 };
 const CX = 870; // chest centerline of the front view
 const INK = "#1d1a13";
 
-/** Stripe + yoke treatment per era. Tuned by eye — tweak freely. */
+/** Stripe + yoke treatment per era. Tuned by eye — tweak freely.
+ *  `labelY` drops the city code clear of the shoulder yoke: the
+ *  color-blocked eras put a contrasting inverted-V across the shoulders,
+ *  and a tricode sitting in it disappears into the secondary color. */
 const ERA = {
-  classic: { stripes: true, outerAs: "secondary", innerAs: "secondary", yokeBlock: false, collarAs: "secondary", sx: 0.95 },
-  stripes: { stripes: true, outerAs: "secondary", innerAs: "trim", yokeBlock: false, collarAs: "secondary", sx: 1.0 },
-  nineties: { stripes: true, outerAs: "trim", innerAs: "primary", yokeBlock: false, collarAs: "trim", sx: 1.0 },
-  modern: { stripes: false, outerAs: "trim", innerAs: "trim", yokeBlock: true, collarAs: "secondary", sx: 0.97 },
+  classic: { stripes: true, outerAs: "secondary", innerAs: "secondary", yokeBlock: false, collarAs: "secondary", sx: 0.95, labelY: 445 },
+  stripes: { stripes: true, outerAs: "secondary", innerAs: "trim", yokeBlock: false, collarAs: "secondary", sx: 1.0, labelY: 445 },
+  nineties: { stripes: true, outerAs: "trim", innerAs: "primary", yokeBlock: false, collarAs: "trim", sx: 1.0, labelY: 445 },
+  // the yoke bottoms out at y=431.6, so the tricode has to start below it
+  modern: { stripes: false, outerAs: "trim", innerAs: "trim", yokeBlock: true, collarAs: "secondary", sx: 0.97, labelY: 482 },
 } as const;
 
 export default function FootballJerseyRenderer({
@@ -134,10 +138,10 @@ export default function FootballJerseyRenderer({
       {label && (
         <text
           x={CX}
-          y={432}
+          y={e.labelY}
           textAnchor="middle"
           fontFamily="'Archivo Black','Arial Black',sans-serif"
-          fontSize={40}
+          fontSize={44}
           fill={secondary}
           stroke={trim}
           strokeWidth={2}
@@ -149,10 +153,10 @@ export default function FootballJerseyRenderer({
         </text>
       )}
 
-      {/* chest number — football numbers ride high, under the collar */}
+      {/* chest number — sits below the tricode, clear of the shoulder yoke */}
       <text
         x={CX}
-        y={555}
+        y={598}
         textAnchor="middle"
         fontFamily="'Archivo Black','Arial Black',sans-serif"
         fontWeight={900}

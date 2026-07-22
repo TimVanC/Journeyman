@@ -288,57 +288,55 @@ export function BatIcon(p: IconProps) {
   );
 }
 
-/* ---- sport balls: the "play the other league" buttons on the result card ---- */
+/* ---- sport balls: the "play the other league" buttons on the result card ----
+   Standard Material Symbols (Apache 2.0) rather than hand-drawn glyphs —
+   these are the icons people already recognize for each sport. They're
+   filled paths on a 960 grid, so they get their own wrapper. */
 
-/** Basketball — circle with the classic seam cross */
-export function BasketballIcon(p: IconProps) {
-  return (
-    <Base {...p}>
-      <circle cx="12" cy="12" r="9.5" />
-      <path d="M12 2.5v19M2.5 12h19" />
-      <path d="M5.2 5.2C8 8 8 16 5.2 18.8M18.8 5.2C16 8 16 16 18.8 18.8" />
-    </Base>
-  );
-}
-
-/** Football — a pointed prolate spheroid with laces. Not a `Base` icon:
- *  the laces need a thinner stroke than the outline or they merge into a
- *  blob at ~16px and the whole thing reads as an eye. */
-export function FootballIcon({ size = 15, className, title }: IconProps) {
+function BallIcon({ size = 15, className, title, d }: IconProps & { d: string }) {
   return (
     <svg
       width={size}
       height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+      viewBox="0 -960 960 960"
+      fill="currentColor"
       className={className}
       role={title ? "img" : "presentation"}
       aria-label={title}
       aria-hidden={title ? undefined : true}
       style={{ display: "inline-block", verticalAlign: "-0.15em", flexShrink: 0 }}
     >
-      {/* tilted, with sharp points at both tips — a level lens with a dark
-          centre reads as an eye no matter how the laces are drawn */}
-      <g transform="rotate(-32 12 12)">
-        <path strokeWidth={1.9} d="M2.8 12Q12 4.6 21.2 12 12 19.4 2.8 12Z" />
-        <g strokeWidth={1.25}>
-          <path d="M9.9 12h4.2" />
-          <path d="M10.9 10.8v2.4M12 10.6v2.8M13.1 10.8v2.4" />
-        </g>
-      </g>
+      <path d={d} />
     </svg>
   );
 }
 
-/** Baseball — circle with two curved seams */
+/** Basketball (Material Symbols `sports_basketball`) */
+export function BasketballIcon(p: IconProps) {
+  return (
+    <BallIcon
+      {...p}
+      d="M162-520h114q-6-38-23-71t-43-59q-18 29-30.5 61.5T162-520Zm522 0h114q-5-36-17.5-68.5T750-650q-26 26-43 59t-23 71ZM210-310q26-26 43-59t23-71H162q5 36 17.5 68.5T210-310Zm540 0q18-29 30.5-61.5T798-440H684q6 38 23 71t43 59ZM358-520h82v-278q-53 8-98.5 29.5T260-712q39 38 64.5 86.5T358-520Zm162 0h82q8-57 33.5-105.5T700-712q-36-35-81.5-56.5T520-798v278Zm-80 358v-278h-82q-8 57-33.5 105.5T260-248q36 35 81.5 56.5T440-162Zm80 0q53-8 98.5-29.5T700-248q-39-38-64.5-86.5T602-440h-82v278Zm-40-318Zm0 400q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"
+    />
+  );
+}
+
+/** Football (Material Symbols `sports_football`) */
+export function FootballIcon(p: IconProps) {
+  return (
+    <BallIcon
+      {...p}
+      d="M480-480ZM362-202 202-362q-3 38-1.5 79t7.5 73q23 7 69.5 9t84.5-1Zm96-16q59-13 106-37t82-59q34-34 58-80.5T742-500L500-742q-57 14-103 38.5T316-644q-35 35-59.5 81.5T218-458l240 240Zm-62-122-56-56 224-224 56 56-224 224Zm362-256q4-39 2.5-81t-8.5-73q-23-8-69.5-10t-84.5 2l160 162ZM310-120q-57 0-104-8.5T148-148q-11-12-19.5-60T120-314q0-119 36-220.5T258-702q66-66 169-102t223-36q58 0 104.5 8.5T812-812q11 12 19.5 60t8.5 108q0 117-36 218.5T702-258q-65 65-168 101.5T310-120Z"
+    />
+  );
+}
+
+/** Baseball (Material Symbols `sports_baseball`) */
 export function BaseballIcon(p: IconProps) {
   return (
-    <Base {...p}>
-      <circle cx="12" cy="12" r="9.5" />
-      <path d="M6 4.2C8 7 8 17 6 19.8M18 4.2C16 7 16 17 18 19.8" />
-    </Base>
+    <BallIcon
+      {...p}
+      d="M224-288q45-35 70.5-85T320-480q0-57-25.5-107T224-672q-31 42-47.5 91T160-480q0 52 16.5 101t47.5 91Zm256 128q55 0 106.5-17.5T680-230q-57-46-88.5-111.5T560-480q0-73 31.5-138.5T680-730q-42-35-93.5-52.5T480-800q-55 0-106.5 17.5T280-730q57 46 88.5 111.5T400-480q0 73-31.5 138.5T280-230q42 35 93.5 52.5T480-160Zm256-128q31-42 47.5-91T800-480q0-52-16.5-101T736-672q-45 35-70.5 85T640-480q0 57 25.5 107t70.5 85ZM480-480Zm0 400q-83 0-156-31.5T197-197q-54-54-85.5-127T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 83-31.5 156T763-197q-54 54-127 85.5T480-80Z"
+    />
   );
 }

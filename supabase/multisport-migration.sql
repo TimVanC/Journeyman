@@ -1,53 +1,100 @@
 -- ============================================================
--- MULTI-SPORT MIGRATION — run this ONCE, right before deploying
--- the multi-sport branch.
+-- MULTI-SPORT MIGRATION  —  ALREADY APPLIED (2026-07-22)
 --
--- ⚠ DO NOT run while the NBA-only build is still live: it swaps the
--- results primary key from (user_id, day) to (user_id, sport, day),
--- and the old client upserts with on_conflict=user_id,day — those
--- writes fail once the old constraint is gone. The new client always
--- sends sport and on_conflict=user_id,sport,day. Deploy order:
---   1. run this migration
---   2. deploy the multi-sport build
--- (In the minutes between, old clients' result pushes fail silently —
--- fire-and-forget by design — and re-sync on next sign-in.)
+-- Recorded here for the repo's history. It is idempotent, so re-running
+-- it is safe.
+--
+-- WHY NEW TABLES INSTEAD OF ALTERING `results`:
+-- the multi-sport client needs one row per (user, sport, day), which means
+-- the primary key has to become (user_id, sport, day). The NBA-only client
+-- that is live on main upserts with on_conflict=user_id,day — the moment
+-- that unique constraint disappears, every result it writes fails. Adding
+-- parallel tables lets both clients run at once: main keeps using
+-- results/plays, this branch uses results_v2/plays_v2, and nothing breaks
+-- while the branch sits in preview.
+--
+-- ON MERGE DAY, after main is serving the multi-sport build, top up any
+-- NBA rows the old client wrote in the meantime:
+--
+--   insert into public.results_v2
+--     (user_id, sport, day, won, revealed, score, is_archive, played_at)
+--   select user_id, 'nba', day, won, revealed, score, is_archive, played_at
+--   from public.results
+--   on conflict (user_id, sport, day) do nothing;
+--
+-- `results`, `plays` and day_score_stats(integer,integer) can be dropped
+-- once that top-up is done and no old clients remain.
 -- ============================================================
 
--- 1. results: one row per user per sport per day
-alter table public.results
-  add column if not exists sport text not null default 'nba'
-  check (sport in ('nba', 'nfl', 'mlb'));
+create table if not exists public.results_v2 (
+  user_id uuid not null references auth.users(id) on delete cascade,
+  sport text not null check (sport in ('nba','nfl','mlb')),
+  day integer not null,
+  won boolean not null,
+  revealed smallint,
+  score smallint check (score is null or (score >= 0 and score <= 1000)),
+  is_archive boolean not null default false,
+  played_at timestamptz not null default now(),
+  primary key (user_id, sport, day)
+);
 
-alter table public.results drop constraint results_pkey;
-alter table public.results add primary key (user_id, sport, day);
+create table if not exists public.plays_v2 (
+  id bigint generated always as identity primary key,
+  sport text not null check (sport in ('nba','nfl','mlb')),
+  day integer not null check (day >= 1 and day <= 8999),
+  won boolean not null,
+  revealed smallint,
+  score smallint not null check (score >= 0 and score <= 1000),
+  hard boolean not null default false,
+  is_archive boolean not null default false,
+  created_at timestamptz not null default now()
+);
 
--- 2. plays (anonymous play pool): tag every play with its sport
-alter table public.plays
-  add column if not exists sport text not null default 'nba'
-  check (sport in ('nba', 'nfl', 'mlb'));
+create index if not exists plays_v2_sport_day_idx
+  on public.plays_v2 (sport, day) where not is_archive;
 
-create index if not exists plays_sport_day_idx
-  on public.plays (sport, day)
-  where not is_archive;
+alter table public.results_v2 enable row level security;
+alter table public.plays_v2 enable row level security;
 
--- 3. day_score_stats: the percentile RPC becomes sport-aware.
---    The old 2-arg signature is dropped (new client always passes sport).
-drop function if exists public.day_score_stats(integer, integer);
+-- same rules the originals use
+drop policy if exists "own results_v2 read" on public.results_v2;
+create policy "own results_v2 read" on public.results_v2
+  for select to authenticated using ((select auth.uid()) = user_id);
 
-create or replace function public.day_score_stats(
-  p_sport text,
-  p_day integer,
-  p_score integer
+drop policy if exists "own results_v2 insert" on public.results_v2;
+create policy "own results_v2 insert" on public.results_v2
+  for insert to authenticated with check ((select auth.uid()) = user_id);
+
+drop policy if exists "own results_v2 update" on public.results_v2;
+create policy "own results_v2 update" on public.results_v2
+  for update to authenticated using ((select auth.uid()) = user_id)
+  with check ((select auth.uid()) = user_id);
+
+drop policy if exists "anyone logs a sane play v2" on public.plays_v2;
+create policy "anyone logs a sane play v2" on public.plays_v2
+  for insert to anon, authenticated with check (
+    day >= 1 and day <= 8999
+    and score >= 0 and score <= 1000
+    and (revealed is null or (revealed >= 1 and revealed <= 20))
+  );
+
+-- carry the existing NBA history over
+insert into public.results_v2 (user_id, sport, day, won, revealed, score, is_archive, played_at)
+select user_id, 'nba', day, won, revealed, score, is_archive, played_at
+from public.results
+on conflict (user_id, sport, day) do nothing;
+
+-- sport-aware percentile RPC (the original stays for the live client)
+create or replace function public.day_score_stats_v2(
+  p_sport text, p_day integer, p_score integer
 )
 returns table(total bigint, lower_scores bigint)
-language sql
-stable security definer
-set search_path to ''
+language sql stable security definer set search_path to ''
 as $$
-  select count(*)::bigint as total,
-         (count(*) filter (where score < p_score))::bigint as lower_scores
-  from public.plays
+  select count(*)::bigint,
+         (count(*) filter (where score < p_score))::bigint
+  from public.plays_v2
   where sport = p_sport and day = p_day and not is_archive;
 $$;
 
-grant execute on function public.day_score_stats(text, integer, integer) to anon, authenticated;
+grant execute on function public.day_score_stats_v2(text, integer, integer) to anon, authenticated;

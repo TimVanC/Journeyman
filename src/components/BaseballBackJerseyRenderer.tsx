@@ -146,10 +146,10 @@ export default function BaseballBackJerseyRenderer({
           y={553}
           textAnchor="middle"
           fontFamily="'Archivo Black','Arial Black',sans-serif"
-          fontSize={15}
+          fontSize={22}
           fill={secondary}
           stroke={trim}
-          strokeWidth={0.8}
+          strokeWidth={1}
           paintOrder="stroke"
           style={{ letterSpacing: "0.06em" }}
           aria-label={`Team: ${label}`}
@@ -161,7 +161,7 @@ export default function BaseballBackJerseyRenderer({
       {/* the big back number */}
       <text
         x={CX}
-        y={label ? 613 : 605}
+        y={label ? 622 : 605}
         textAnchor="middle"
         fontFamily="'Archivo Black','Arial Black',sans-serif"
         fontWeight={900}

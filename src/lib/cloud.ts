@@ -2,12 +2,15 @@ import { supabase } from "./supabase";
 import type { Sport } from "../sports/types";
 import type { SportStorage } from "../game/storage";
 
-/** One finished game as stored in Supabase (`results` table).
+/** One finished game as stored in Supabase (`results_v2` table).
  *
- *  MULTI-SPORT NOTE: every query/write here carries a `sport` column.
- *  The live database predates it — run supabase/multisport-migration.sql
- *  BEFORE deploying this branch, or cloud sync silently no-ops (every
- *  call is fire-and-forget and error-tolerant by design). */
+ *  MULTI-SPORT NOTE: this client talks to `results_v2` / `plays_v2` /
+ *  `day_score_stats_v2`, which carry a `sport` column. They're separate
+ *  tables from the originals precisely so the currently-live NBA-only
+ *  client (which upserts `results` on_conflict user_id,day) keeps working
+ *  while this branch is in preview. The migration that creates them lives
+ *  in supabase/multisport-migration.sql and has already been applied; see
+ *  that file for the merge-day top-up step. */
 export interface CloudResult {
   day: number;
   won: boolean;
@@ -34,7 +37,7 @@ export async function pushResult(
   const { data } = await supabase.auth.getSession();
   const userId = data.session?.user.id;
   if (!userId) return;
-  await supabase.from("results").upsert(
+  await supabase.from("results_v2").upsert(
     {
       user_id: userId,
       sport,
@@ -92,7 +95,7 @@ export async function syncUp(
     // plain upsert (NOT ignoreDuplicates): the local ledger is itself
     // recorded exactly once per day, so re-syncing can only backfill —
     // e.g. add a score to a row that first synced scoreless
-    await supabase.from("results").upsert(rows, { onConflict: "user_id,sport,day" });
+    await supabase.from("results_v2").upsert(rows, { onConflict: "user_id,sport,day" });
   }
 }
 
@@ -109,7 +112,7 @@ export async function logPlay(p: {
   isArchive: boolean;
 }): Promise<void> {
   if (p.day >= 9000) return; // test slots stay off the books
-  await supabase.from("plays").insert({
+  await supabase.from("plays_v2").insert({
     sport: p.sport,
     day: p.day,
     won: p.won,
@@ -133,7 +136,7 @@ export async function fetchDayStanding(
   day: number,
   score: number
 ): Promise<DayStanding | null> {
-  const { data, error } = await supabase.rpc("day_score_stats", {
+  const { data, error } = await supabase.rpc("day_score_stats_v2", {
     p_sport: sport,
     p_day: day,
     p_score: score,
@@ -151,7 +154,7 @@ export async function fetchDayStanding(
  *  archive grid. */
 export async function fetchResults(sport: Sport): Promise<CloudResult[]> {
   const { data, error } = await supabase
-    .from("results")
+    .from("results_v2")
     .select("day, won, revealed, score, is_archive")
     .eq("sport", sport)
     .order("day");
@@ -163,7 +166,7 @@ export async function fetchResults(sport: Sport): Promise<CloudResult[]> {
  *  powers the "All" tab of the stats locker. */
 export async function fetchAllResults(): Promise<CloudResult[]> {
   const { data, error } = await supabase
-    .from("results")
+    .from("results_v2")
     .select("sport, day, won, revealed, score, is_archive")
     .order("day");
   if (error || !data) return [];
