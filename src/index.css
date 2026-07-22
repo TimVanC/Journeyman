@@ -955,7 +955,10 @@ select {
 
 .account-preview-stage {
   height: 16.3rem;
+  overflow: hidden;
+  border-radius: 10px;
   perspective: 900px;
+  isolation: isolate;
 }
 
 .account-preview-carousel {
@@ -971,8 +974,20 @@ select {
 }
 
 .account-preview-face {
+  opacity: 0;
+  visibility: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+}
+
+.account-locker-preview {
+  opacity: 1;
+  visibility: visible;
+}
+
+.account-preview-carousel.is-archive .account-locker-preview {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .account-preview-archive {
@@ -984,8 +999,15 @@ select {
   background: color-mix(in srgb, var(--color-paper) 55%, white);
   padding: 0.75rem;
   transform: rotateY(180deg);
+  opacity: 0;
+  visibility: hidden;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+}
+
+.account-preview-carousel.is-archive .account-preview-archive {
+  opacity: 1;
+  visibility: visible;
 }
 
 .account-preview-tabs {

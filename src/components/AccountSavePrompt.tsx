@@ -269,7 +269,7 @@ export default function AccountSavePrompt({ onSignUp, onClose }: Props) {
               className={`account-preview-face account-preview-archive${phase === "calendar" ? " is-calendar-active" : ""}`}
               aria-hidden={phase === "stats"}
             >
-              <div className={`account-archive-view${phase === "calendar" ? " is-active" : ""}`}>
+              {phase === "calendar" && <div className="account-archive-view is-active">
                 <div className="flex items-center justify-between">
                   <p className="font-display text-lg tracking-wide">ARCHIVE</p>
                   <span className="account-save-badge">EVERY GAME</span>
@@ -297,9 +297,9 @@ export default function AccountSavePrompt({ onSignUp, onClose }: Props) {
                   <span><i className="is-partial" /> Played some</span>
                   <span><i className="is-all-lost" /> Missed</span>
                 </div>
-              </div>
+              </div>}
 
-              <div className={`account-archive-view account-archive-day${phase === "day" ? " is-active" : ""}`}>
+              {phase === "day" && <div className="account-archive-view account-archive-day is-active">
                 <p className="text-[0.58rem] font-bold text-wood-deep underline">‹ Back to archive</p>
                 <h3 className="font-display mt-1 text-lg leading-none">{archive.selectedLabel}</h3>
                 <div className="mt-3 space-y-1.5">
@@ -319,7 +319,7 @@ export default function AccountSavePrompt({ onSignUp, onClose }: Props) {
                 <p className="mt-2 text-[0.55rem] leading-relaxed text-ink-soft">
                   Archive games count in your stats but not your daily streak.
                 </p>
-              </div>
+              </div>}
             </article>
           </div>
         </div>
