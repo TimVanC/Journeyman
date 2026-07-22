@@ -32,6 +32,7 @@ const colorways = colorwaysJson as unknown as ColorwayDB;
 function eraTricode(era: ColorwayEra, franchise: string): string {
   const id = era.identity;
   if (id.startsWith("Vancouver")) return "VAN";
+  if (id.startsWith("San Francisco")) return "SFW";
   if (id.startsWith("New Jersey")) return "NJ";
   if (id.startsWith("Seattle")) return "SEA";
   if (id.startsWith("Buffalo")) return "BUF";

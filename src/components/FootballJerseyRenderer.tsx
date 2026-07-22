@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { needsOutline } from "../game/colorways";
 import {
   BASE,
   BODY,
@@ -73,6 +74,8 @@ export default function FootballJerseyRenderer({
   const numFontSize = number === null ? 96 : numText.length > 1 ? 88 : 96;
   // two-letter codes (GB, KC, SD…) get extra size — they have the room
   const labelFontSize = (label?.length ?? 3) <= 2 ? 66 : 54;
+  // lettering sits on the body, so that's what it has to stand out against
+  const outlined = needsOutline(secondary, primary);
   const clipId = `fbody-${uid}`;
   const shadeId = `fshade-${uid}`;
 
@@ -145,8 +148,8 @@ export default function FootballJerseyRenderer({
           fontFamily="'Archivo Black','Arial Black',sans-serif"
           fontSize={labelFontSize}
           fill={secondary}
-          stroke={trim}
-          strokeWidth={2}
+          stroke={outlined ? trim : "none"}
+          strokeWidth={outlined ? 2 : 0}
           paintOrder="stroke"
           style={{ letterSpacing: "0.05em" }}
           aria-label={`Team: ${label}`}
@@ -164,8 +167,8 @@ export default function FootballJerseyRenderer({
         fontWeight={900}
         fontSize={numFontSize}
         fill={secondary}
-        stroke={trim}
-        strokeWidth={3}
+        stroke={outlined ? trim : "none"}
+        strokeWidth={outlined ? 3 : 0}
         paintOrder="stroke"
         style={{ letterSpacing: "-0.02em" }}
       >

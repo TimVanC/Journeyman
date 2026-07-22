@@ -70,7 +70,7 @@ export default function BaseballBackJerseyRenderer({
   const numText = number === null ? "??" : String(number);
   const numFontSize = number === null ? 44 : numText.length > 1 ? 46 : 52;
   // two-letter codes (SD, KC, SF…) get extra size — they have the room
-  const labelFontSize = (label?.length ?? 3) <= 2 ? 36 : 30;
+  const labelFontSize = (label?.length ?? 3) <= 2 ? 32 : 26;
   const shadeId = `bbksh-${uid}`;
   const pinId = `bbkpin-${uid}`;
   const clipId = `bbkclip-${uid}`;

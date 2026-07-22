@@ -5,19 +5,26 @@ import "./index.css";
 import App from "./App";
 import { initAnalytics } from "./lib/analytics";
 
-// dev-only jersey QA sheet: ?jerseys shows every renderer × era × colorway
-const gallery =
-  import.meta.env.DEV && new URLSearchParams(location.search).has("jerseys");
+// dev-only QA pages:
+//   ?jerseys — every renderer × era × colorway, plus the icon sets
+//   ?cards   — a real JerseyCard carrying every accolade for the league
+const qaParams = new URLSearchParams(location.search);
+const qa = !import.meta.env.DEV
+  ? null
+  : qaParams.has("jerseys")
+    ? "jerseys"
+    : qaParams.has("cards")
+      ? "cards"
+      : null;
 const JerseyGallery = lazy(() => import("./components/JerseyGallery"));
+const CardPreview = lazy(() => import("./components/CardPreview"));
 
 initAnalytics();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    {gallery ? (
-      <Suspense>
-        <JerseyGallery />
-      </Suspense>
+    {qa ? (
+      <Suspense>{qa === "jerseys" ? <JerseyGallery /> : <CardPreview />}</Suspense>
     ) : (
       <App />
     )}

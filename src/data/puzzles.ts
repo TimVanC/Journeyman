@@ -2393,4 +2393,88 @@ export const puzzles: Puzzle[] = [
       college: "Oregon State",
     },
   },
+  {
+    // Puzzle 24 — Rick Barry: the game's first pre-merger answer. Verified
+    // against Basketball-Reference (per-game tables + awards, 2026-07-22):
+    // per-stint GP/MPG/PPG/RPG/APG are GP-weighted across his seasons there,
+    // uniform numbers from BR's own "Uniforms" list (#24 with both Warriors
+    // sides, #2 in Houston).
+    //
+    // His four ABA seasons (Oakland Oaks 1968, Washington Caps 1969, New
+    // York Nets 1970-71) are deliberately OMITTED: no surviving NBA
+    // franchise carries those colorways, the same call already made for
+    // Moses Malone's ABA years. That leaves the 1967-1972 gap you can see
+    // between the first two cards, and it's why the result screen calls out
+    // the 1969 ABA title.
+    id: 24,
+    pathType: "team",
+    answer: "Rick Barry",
+    accolades: [
+      "12× All-Star (8 NBA, 4 ABA)",
+      "5× All-NBA First Team",
+      "1966-67 scoring champion",
+      "1975 NBA champion & Finals MVP",
+      "1969 ABA champion",
+      "Hall of Fame (1987)",
+    ],
+    stints: [
+      {
+        franchise: "GSW",
+        displayTeam: "San Francisco Warriors",
+        startYear: 1965,
+        endYear: 1966,
+        gp: 158,
+        mpg: 39.0,
+        ppg: 30.6,
+        rpg: 9.9,
+        apg: 2.9,
+        jerseyNumber: 24,
+        accolades: [
+          { type: "roy", count: 1 },
+          { type: "all_star", count: 2 },
+          { type: "all_nba", count: 2 },
+        ],
+      },
+      {
+        franchise: "GSW",
+        displayTeam: "Golden State Warriors",
+        startYear: 1972,
+        endYear: 1977,
+        gp: 484,
+        mpg: 37.8,
+        ppg: 24.0,
+        rpg: 6.4,
+        apg: 5.8,
+        jerseyNumber: 24,
+        accolades: [
+          { type: "champion", count: 1 },
+          { type: "fmvp", count: 1 },
+          { type: "all_star", count: 6 },
+          { type: "all_nba", count: 3 },
+        ],
+      },
+      {
+        franchise: "HOU",
+        displayTeam: "Houston Rockets",
+        startYear: 1978,
+        endYear: 1979,
+        gp: 152,
+        mpg: 28.8,
+        ppg: 12.8,
+        rpg: 3.4,
+        apg: 5.1,
+        jerseyNumber: 2,
+      },
+    ],
+    // the quiet Houston twilight first; the draft-team Warriors card second;
+    // the title-and-Finals-MVP run last
+    revealOrder: [2, 0, 1],
+    hints: {
+      position: "SF",
+      height: "6'7\"",
+      draftYear: "1965",
+      draftPick: "Round 1, Pick 4",
+      college: "Miami (FL)",
+    },
+  },
 ];

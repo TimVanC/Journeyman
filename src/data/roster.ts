@@ -21,7 +21,7 @@ export const ROSTER: string[] = [
   "Antawn Jamison",
   "Vince Carter",
   "Manu Ginóbili",
-  "LeBron James",
+  "Rick Barry", // swapped with LeBron (day 95) — LeBron was not wanted here
   "Kobe Bryant",
   // ---- days 10+: queued, need stint data authored ----
   "Shaquille O'Neal",
@@ -109,7 +109,7 @@ export const ROSTER: string[] = [
   "Metta World Peace",
   "Corey Brewer",
   "Dale Ellis",
-  "Rick Barry",
+  "LeBron James", // swapped down from day 8
   "Dave Bing",
   "Nate Archibald",
   "Earl Monroe",
