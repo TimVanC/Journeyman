@@ -1,5 +1,5 @@
 {
-  "_meta": "NFL team W-L(-T) + playoff result per season, for the card backs. Only seasons the current puzzle set needs. Generated from general knowledge 2026-07-19 — VERIFY against Pro-Football-Reference before launch. po codes: WC/DIV/CONF lost that round, SB reached the Super Bowl (fw 1 = won it).",
+  "_meta": "NFL team W-L(-T) + playoff result per season, for the card backs. Only seasons the current puzzle set needs. Every row was checked row-by-row against the Wikipedia per-franchise season tables on 2026-07-22; zero corrections were needed. po codes: WC/DIV/CONF lost that round, SB reached the Super Bowl (fw 1 = won it).",
   "LAR": {
     "2005": { "w": 6, "l": 10, "po": "" },
     "2006": { "w": 8, "l": 8, "po": "" }

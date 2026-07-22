@@ -1,5 +1,5 @@
 {
-  "_meta": "MLB team W-L + playoff result per season, for the card backs. Only seasons the current puzzle set needs. Generated from general knowledge 2026-07-19 — VERIFY against Baseball-Reference before launch. po codes: WC/DS/CS lost that round, WS reached the World Series (fw 1 = won it).",
+  "_meta": "MLB team W-L + playoff result per season, for the card backs. Only seasons the current puzzle set needs. Every row was checked row-by-row against the Wikipedia per-franchise season tables on 2026-07-22; zero corrections were needed. po codes: WC/DS/CS lost that round, WS reached the World Series (fw 1 = won it).",
   "NYY": {
     "1999": { "w": 98, "l": 64, "po": "WS", "fw": 1 },
     "2000": { "w": 87, "l": 74, "po": "WS", "fw": 1 },

@@ -1,5 +1,5 @@
 {
-  "_meta": "NBA/ABA team W-L + playoff result per season, for the card backs. Only seasons the current puzzle set needs. po codes: R1/R2 lost that round, ECF/WCF lost the conference finals, \"Finals W-L\" reached the Finals (fw 1 = won the title). Seasons before 1996 and the ABA entries (OAK 1968, WSC 1969, BKN 1970-71) were sourced from the Wikipedia per-franchise season tables 2026-07-22; the pre-existing 1996+ rows are unverified.",
+  "_meta": "NBA/ABA team W-L + playoff result per season, for the card backs. Only seasons the current puzzle set needs. po codes: R1/R2 lost that round, ECF/WCF lost the conference finals, \"Finals W-L\" reached the Finals (fw 1 = won the title). Every row was checked row-by-row against the Wikipedia per-franchise season tables on 2026-07-22; zero corrections were needed.",
   "ATL": {
     "1988": { "w": 52, "l": 30, "po": "R1" },
     "1989": { "w": 41, "l": 41, "po": "" },
