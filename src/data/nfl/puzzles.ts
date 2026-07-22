@@ -55,11 +55,11 @@ export const nflPuzzles: Puzzle[] = [
         displayTeam: "Cincinnati Bengals",
         startYear: 2007,
         endYear: 2008,
-        jerseyNumber: 12,
+        jerseyNumber: 11,
         statLine: [
-          { label: "GP", value: 16 },
+          { label: "GP", value: 14 },
           { label: "Cmp%", value: "59.4" },
-          { label: "Yds", value: 1943 },
+          { label: "Yds", value: 1905 },
           { label: "TD", value: 8 },
           { label: "INT", value: 9 },
         ],
@@ -71,8 +71,8 @@ export const nflPuzzles: Puzzle[] = [
         endYear: 2012,
         jerseyNumber: 14,
         statLine: [
-          { label: "GP", value: 57 },
-          { label: "Cmp%", value: "60.2" },
+          { label: "GP", value: 55 },
+          { label: "Cmp%", value: "59.8" },
           { label: "Yds", value: 11654 },
           { label: "TD", value: 80 },
           { label: "INT", value: 64 },
@@ -114,7 +114,7 @@ export const nflPuzzles: Puzzle[] = [
         jerseyNumber: 14,
         statLine: [
           { label: "GP", value: 30 },
-          { label: "Cmp%", value: "58.1" },
+          { label: "Cmp%", value: "58.3" },
           { label: "Yds", value: 6615 },
           { label: "TD", value: 43 },
           { label: "INT", value: 32 },
@@ -127,8 +127,8 @@ export const nflPuzzles: Puzzle[] = [
         endYear: 2018,
         jerseyNumber: 14,
         statLine: [
-          { label: "GP", value: 15 },
-          { label: "Cmp%", value: "64.6" },
+          { label: "GP", value: 14 },
+          { label: "Cmp%", value: "63.6" },
           { label: "Yds", value: 3469 },
           { label: "TD", value: 24 },
           { label: "INT", value: 15 },
@@ -142,7 +142,7 @@ export const nflPuzzles: Puzzle[] = [
         jerseyNumber: 14,
         statLine: [
           { label: "GP", value: 24 },
-          { label: "Cmp%", value: "65.8" },
+          { label: "Cmp%", value: "64.2" },
           { label: "Yds", value: 5620 },
           { label: "TD", value: 33 },
           { label: "INT", value: 21 },
@@ -157,7 +157,7 @@ export const nflPuzzles: Puzzle[] = [
         statLine: [
           { label: "GP", value: 1 },
           { label: "Cmp%", value: "50.0" },
-          { label: "Yds", value: 166 },
+          { label: "Yds", value: 13 },
           { label: "TD", value: 0 },
           { label: "INT", value: 0 },
         ],
@@ -418,7 +418,7 @@ export const nflPuzzles: Puzzle[] = [
         jerseyNumber: 23,
         statLine: [
           { label: "GP", value: 48 },
-          { label: "Att", value: 774 },
+          { label: "Att", value: 784 },
           { label: "Yds", value: 2953 },
           { label: "YPC", value: "3.8" },
           { label: "TD", value: 13 },
@@ -492,7 +492,7 @@ export const nflPuzzles: Puzzle[] = [
         jerseyNumber: 15,
         accolades: [{ type: "pro_bowl", count: 2 }],
         statLine: [
-          { label: "GP", value: 57 },
+          { label: "GP", value: 61 },
           { label: "Rec", value: 327 },
           { label: "Yds", value: 4019 },
           { label: "Y/R", value: "12.3" },
@@ -542,8 +542,8 @@ export const nflPuzzles: Puzzle[] = [
         statLine: [
           { label: "GP", value: 31 },
           { label: "Rec", value: 168 },
-          { label: "Yds", value: 2215 },
-          { label: "Y/R", value: "13.2" },
+          { label: "Yds", value: 2290 },
+          { label: "Y/R", value: "13.6" },
           { label: "TD", value: 17 },
         ],
       },
@@ -856,7 +856,7 @@ export const nflPuzzles: Puzzle[] = [
         displayTeam: "Philadelphia Eagles",
         startYear: 2015,
         endYear: 2015,
-        jerseyNumber: 8,
+        jerseyNumber: 7,
         statLine: [
           { label: "GP", value: 14 },
           { label: "Cmp%", value: "65.0" },
@@ -884,7 +884,7 @@ export const nflPuzzles: Puzzle[] = [
         displayTeam: "Arizona Cardinals",
         startYear: 2018,
         endYear: 2018,
-        jerseyNumber: 8,
+        jerseyNumber: 9,
         statLine: [
           { label: "GP", value: 3 },
           { label: "Cmp%", value: "62.5" },
@@ -919,7 +919,7 @@ export const nflPuzzles: Puzzle[] = [
         jerseyNumber: 25,
         accolades: [
           { type: "pro_bowl", count: 3 },
-          { type: "all_pro", count: 1 },
+          { type: "all_pro", count: 2 },
           { type: "rushing_title", count: 1 },
         ],
         statLine: [

@@ -2699,7 +2699,7 @@ export const puzzles: Puzzle[] = [
         ppg: 4.5,
         rpg: 4.0,
         apg: 1.3,
-        jerseyNumber: 9,
+        jerseyNumber: 22,
       },
       {
         franchise: "SAC",
@@ -2735,7 +2735,7 @@ export const puzzles: Puzzle[] = [
         ppg: 3.0,
         rpg: 1.9,
         apg: 0.4,
-        jerseyNumber: 9,
+        jerseyNumber: 21,
       },
       {
         franchise: "GSW",
@@ -2747,7 +2747,7 @@ export const puzzles: Puzzle[] = [
         ppg: 8.3,
         rpg: 4.5,
         apg: 2.0,
-        jerseyNumber: 9,
+        jerseyNumber: 22,
       },
       {
         franchise: "PHX",
@@ -2759,7 +2759,7 @@ export const puzzles: Puzzle[] = [
         ppg: 10.2,
         rpg: 5.5,
         apg: 2.8,
-        jerseyNumber: 9,
+        jerseyNumber: 22,
       },
       {
         franchise: "ORL",
@@ -2771,7 +2771,7 @@ export const puzzles: Puzzle[] = [
         ppg: 8.8,
         rpg: 5.5,
         apg: 1.7,
-        jerseyNumber: 9,
+        jerseyNumber: 22,
       },
       {
         franchise: "LAL",
