@@ -75,3 +75,13 @@ export function trackShare(p: {
 }): void {
   track("share_clicked", p);
 }
+
+export type AccountCtaSource = "result" | "home" | "archive" | "stats";
+
+/** Measures which account prompt gets anonymous players to open auth. */
+export function trackAccountCta(p: {
+  source: AccountCtaSource;
+  action: "viewed" | "clicked";
+}): void {
+  track("account_cta", p);
+}

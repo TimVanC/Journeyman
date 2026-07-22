@@ -13,7 +13,8 @@ import SettingsModal from "./components/SettingsModal";
 import { FlipIcon, LockIcon } from "./components/Icons";
 import { useSession } from "./lib/useAuth";
 import { logPlay, pushResult } from "./lib/cloud";
-import { trackGameCompleted, trackGameStarted } from "./lib/analytics";
+import { trackAccountCta, trackGameCompleted, trackGameStarted } from "./lib/analytics";
+import type { AccountCtaSource } from "./lib/analytics";
 import { computeScore } from "./game/score";
 import { computeGrade } from "./game/grade";
 import { SPORT } from "./sports/active";
@@ -153,9 +154,16 @@ export default function App() {
   // where to send someone once they finish signing up/in — the archive if
   // that's what they were reaching for, otherwise just back to the page
   const [afterAuth, setAfterAuth] = useState<"archive" | null>(null);
-  const openAccount = (scope: Sport | "all", next: "archive" | null = null) => {
+  const [accountSource, setAccountSource] = useState<AccountCtaSource>("stats");
+  const openAccount = (
+    scope: Sport | "all",
+    next: "archive" | null = null,
+    source: AccountCtaSource = "stats"
+  ) => {
     setAccountScope(scope);
     setAfterAuth(next);
+    setAccountSource(source);
+    if (!session) trackAccountCta({ source, action: "clicked" });
     setShowAccount(true);
   };
   const [showArchive, setShowArchive] = useState(false);
@@ -523,6 +531,7 @@ export default function App() {
           <AccountModal
             session={session ?? null}
             defaultScope={accountScope}
+            signupContext="archive"
             onClose={() => setShowAccount(false)}
             // signing up here unlocks the archive replay behind this gate —
             // drop the form and let the board show, no stats detour
@@ -738,7 +747,7 @@ export default function App() {
           onSettings={() => setShowSettings(true)}
           onArchive={() => setShowArchive(true)}
           onStats={() => openAccount("all")}
-          onAccount={() => openAccount("all")}
+          onAccount={() => openAccount("all", null, "home")}
           signedIn={!!session}
         />
       )}
@@ -769,9 +778,11 @@ export default function App() {
           streak={profile.streak}
           hard={hard}
           canRank={testIndex === null && archiveDay === null}
+          signedIn={!!session}
           onClose={() => setShowResult(false)}
           onStats={() => openAccount(SPORT.sport)}
           onArchive={() => setShowArchive(true)}
+          onSignUp={() => openAccount(SPORT.sport, null, "result")}
           onNext={
             testIndex !== null
               ? () => {
@@ -799,7 +810,7 @@ export default function App() {
           onClose={() => setShowArchive(false)}
           onSignUp={() => {
             setShowArchive(false);
-            openAccount("all", "archive"); // come back here once they're in
+            openAccount("all", "archive", "archive"); // come back here once they're in
           }}
         />
       )}
@@ -807,6 +818,7 @@ export default function App() {
         <AccountModal
           session={session ?? null}
           defaultScope={accountScope}
+          signupContext={accountSource}
           onClose={() => setShowAccount(false)}
           onAuthed={() => {
             // finishing sign-up drops the form, never the stats panel

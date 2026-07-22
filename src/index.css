@@ -896,6 +896,82 @@ select {
   padding: 0.55rem 0.8rem;
 }
 
+/* Logged-out result conversion: show the value before asking for an account. */
+.account-save-card,
+.account-home-card {
+  border: 2px solid var(--color-ink);
+  border-radius: 12px;
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--color-wood) 18%, var(--color-card)), var(--color-card));
+  box-shadow: 0 3px 0 var(--color-wood);
+  padding: 0.9rem;
+}
+
+.account-home-card {
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: transform 140ms ease, box-shadow 140ms ease;
+}
+
+.account-home-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 0 var(--color-wood);
+}
+
+.account-save-eyebrow {
+  color: var(--color-wood-deep);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.account-save-badge {
+  border: 1.5px solid var(--color-wood-deep);
+  border-radius: 999px;
+  color: var(--color-wood-deep);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  padding: 0.2rem 0.45rem;
+}
+
+.account-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 9px;
+  background: color-mix(in srgb, var(--color-paper) 55%, white);
+}
+
+.account-preview-grid span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  padding: 0.55rem 0.25rem;
+  border-right: 1px solid var(--color-line);
+}
+
+.account-preview-grid span:last-child {
+  border-right: 0;
+}
+
+.account-preview-grid strong {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.account-preview-grid small {
+  color: var(--color-ink-soft);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 /* ------------------------------------------------------------------
    Reduced motion: kill the theatrics, keep the game
 ------------------------------------------------------------------- */

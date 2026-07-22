@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { ChartIcon, GearIcon, HelpIcon, MenuIcon, XIcon } from "./Icons";
+import { ChartIcon, GearIcon, HelpIcon, MenuIcon, UserIcon, XIcon } from "./Icons";
 
 interface Props {
   onStats: () => void;
   onRules: () => void;
   onSettings: () => void;
+  onAccount: () => void;
+  signedIn: boolean;
 }
 
 /** The home screen's hamburger. Stats, how-to-play and settings used to sit
@@ -14,7 +16,7 @@ interface Props {
  *  Every item closes the drawer before running its action: the modals these
  *  open share the drawer's stacking layer, so the two must never be up at
  *  once. */
-export default function HomeMenu({ onStats, onRules, onSettings }: Props) {
+export default function HomeMenu({ onStats, onRules, onSettings, onAccount, signedIn }: Props) {
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -75,6 +77,12 @@ export default function HomeMenu({ onStats, onRules, onSettings }: Props) {
             </div>
 
             <nav className="px-2 pb-3 pt-1.5">
+              {!signedIn && (
+                <button type="button" className="menu-item" onClick={pick(onAccount)}>
+                  <UserIcon size={17} />
+                  Create free account
+                </button>
+              )}
               <button type="button" className="menu-item" onClick={pick(onStats)}>
                 <ChartIcon size={17} />
                 Stats

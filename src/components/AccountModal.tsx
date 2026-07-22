@@ -4,6 +4,7 @@ import { SPORTS, SPORT_ORDER } from "../sports";
 import type { Sport } from "../sports/types";
 import { supabase } from "../lib/supabase";
 import { computeStats, fetchAllResults, SCORE_BUCKETS, type CloudResult } from "../lib/cloud";
+import type { AccountCtaSource } from "../lib/analytics";
 
 type StatScope = Sport | "all";
 
@@ -16,6 +17,8 @@ interface Props {
    *  the caller decides where they land (back to the archive, or just the
    *  page they came from). Signing up should never dump you into stats. */
   onAuthed?: () => void;
+  /** tailors the sign-up promise to the CTA that opened the modal */
+  signupContext?: AccountCtaSource;
 }
 
 /** Sign-up / sign-in when logged out; profile + lifetime stats when in. */
@@ -24,6 +27,7 @@ export default function AccountModal({
   defaultScope = "all",
   onClose,
   onAuthed,
+  signupContext = "stats",
 }: Props) {
   // did this modal open on the auth form rather than the locker?
   const openedSignedOut = useRef(!session);
@@ -38,7 +42,15 @@ export default function AccountModal({
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const heading = session ? "Your locker" : view === "signup" ? "Join the league" : "Sign in";
+  const signupHeading =
+    signupContext === "result"
+      ? "Save your game"
+      : signupContext === "archive"
+        ? "Unlock the archive"
+        : signupContext === "home"
+          ? "Keep your stats"
+          : "Join the league";
+  const heading = session ? "Your locker" : view === "signup" ? signupHeading : "Sign in";
 
   return (
     <div
@@ -61,7 +73,7 @@ export default function AccountModal({
         {session ? (
           <SignedIn session={session} defaultScope={defaultScope} />
         ) : (
-          <AuthForm view={view} onSwitchView={setView} />
+          <AuthForm view={view} onSwitchView={setView} signupContext={signupContext} />
         )}
       </div>
     </div>
@@ -98,9 +110,11 @@ function parseIdentifier(raw: string): { email: string } | { phone: string } | n
 function AuthForm({
   view,
   onSwitchView,
+  signupContext,
 }: {
   view: "signup" | "signin";
   onSwitchView: (v: "signup" | "signin") => void;
+  signupContext: AccountCtaSource;
 }) {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -259,9 +273,12 @@ function AuthForm({
     <div className="mt-3 space-y-3 text-sm">
       {view === "signup" && (
         <p className="leading-relaxed">
-          <strong>100% free.</strong> An account saves your streak and stats
-          across devices and unlocks the <strong>Archive</strong> — every past
-          puzzle, playable any time.
+          <strong>100% free.</strong>{" "}
+          {signupContext === "result"
+            ? "This result and the games already on this device will be added to your lifetime stats."
+            : "Save your streaks and stats across devices."}{" "}
+          You’ll also unlock the <strong>Archive</strong> — every past NBA, NFL,
+          and MLB puzzle, playable any time.
         </p>
       )}
 

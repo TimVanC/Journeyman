@@ -1,7 +1,7 @@
 import { SPORT } from "../sports/active";
 import { SPORTS, SPORT_ORDER, sportHref } from "../sports";
 import type { Sport } from "../sports/types";
-import { FlameIcon } from "./Icons";
+import { ChartIcon, FlameIcon, LockIcon } from "./Icons";
 import HomeMenu from "./HomeMenu";
 
 interface Props {
@@ -50,7 +50,13 @@ export default function StartScreen({
   return (
     <div className="start-screen" role="dialog" aria-label="Journeyman — pick a league">
       {/* stats + how-to-play + settings, tucked into the hamburger */}
-      <HomeMenu onStats={onStats} onRules={onRules} onSettings={onSettings} />
+      <HomeMenu
+        onStats={onStats}
+        onRules={onRules}
+        onSettings={onSettings}
+        onAccount={onAccount}
+        signedIn={signedIn}
+      />
 
       <div className="my-auto flex w-full max-w-sm flex-col items-center px-6 py-6 text-center">
         {/* the jersey that started it all, still swaying */}
@@ -129,10 +135,21 @@ export default function StartScreen({
         {!signedIn && (
           <button
             type="button"
-            className="mt-3.5 text-xs font-bold text-wood-deep underline underline-offset-2"
+            className="account-home-card mt-3.5 w-full text-left"
             onClick={onAccount}
           >
-            Create a free account — save your streaks and unlock the archive
+            <span className="flex items-center gap-2">
+              <ChartIcon size={18} className="text-wood-deep" />
+              <span className="font-display text-lg tracking-wide">KEEP EVERY RESULT</span>
+              <span className="account-save-badge ml-auto">FREE</span>
+            </span>
+            <span className="mt-1.5 block text-xs leading-relaxed text-ink-soft">
+              Build your lifetime stats, sync your streaks, and replay every
+              missed puzzle in the archive.
+            </span>
+            <span className="mt-2 flex items-center gap-1.5 text-xs font-bold text-wood-deep">
+              <LockIcon size={13} /> Create account to unlock →
+            </span>
           </button>
         )}
 
