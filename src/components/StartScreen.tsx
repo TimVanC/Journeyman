@@ -1,7 +1,8 @@
 import { SPORT } from "../sports/active";
 import { SPORTS, SPORT_ORDER, sportHref } from "../sports";
 import type { Sport } from "../sports/types";
-import { ChartIcon, FlameIcon, GearIcon } from "./Icons";
+import { FlameIcon } from "./Icons";
+import HomeMenu from "./HomeMenu";
 
 interface Props {
   /** enter the current league's board (or its recap if already done) */
@@ -48,40 +49,13 @@ export default function StartScreen({
 
   return (
     <div className="start-screen" role="dialog" aria-label="Journeyman — pick a league">
-      {/* stats + how-to-play + settings, same corner as the game header */}
-      <div className="absolute right-4 top-4 flex items-center gap-2">
-        <button
-          type="button"
-          className="chip cursor-pointer"
-          onClick={onStats}
-          aria-label="Your stats"
-          title="Stats"
-        >
-          <ChartIcon />
-        </button>
-        <button
-          type="button"
-          className="chip cursor-pointer font-bold"
-          onClick={onRules}
-          aria-label="How to play"
-        >
-          ?
-        </button>
-        <button
-          type="button"
-          className="chip cursor-pointer"
-          onClick={onSettings}
-          aria-label="Settings"
-          title="Settings"
-        >
-          <GearIcon />
-        </button>
-      </div>
+      {/* stats + how-to-play + settings, tucked into the hamburger */}
+      <HomeMenu onStats={onStats} onRules={onRules} onSettings={onSettings} />
 
       <div className="flex w-full max-w-sm flex-col items-center px-6 text-center">
         {/* the jersey that started it all, still swaying */}
         <div className="start-jersey" aria-hidden="true">
-          <NbaJersey size={104} />
+          <NbaJersey size={88} />
         </div>
 
         <h1 className="font-display mt-3 text-[3.4rem] leading-none tracking-wide">
@@ -90,6 +64,13 @@ export default function StartScreen({
         <p className="mt-1.5 text-sm font-medium text-ink-soft">
           A mystery journeyman's career, one jersey at a time.
         </p>
+
+        {/* the rules are also in the menu, but a first-time visitor shouldn't
+            have to go looking — this is the one thing they might need before
+            picking a league */}
+        <button type="button" className="btn btn-sm mt-3" onClick={onRules}>
+          How to play
+        </button>
 
         {/* the three daily games — one tap each, straight into play */}
         <div className="mt-5 w-full space-y-2.5">

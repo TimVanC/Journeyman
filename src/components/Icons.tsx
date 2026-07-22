@@ -100,6 +100,28 @@ export function UserIcon(p: IconProps) {
   );
 }
 
+export function MenuIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <path d="M4 6h16" />
+      <path d="M4 12h16" />
+      <path d="M4 18h16" />
+    </Base>
+  );
+}
+
+/** How to play. The header uses a bare "?" glyph, but a menu row wants a
+ *  real icon sitting on the same optical grid as the chart and the gear. */
+export function HelpIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+      <path d="M12 17h.01" />
+    </Base>
+  );
+}
+
 export function ArchiveIcon(p: IconProps) {
   return (
     <Base {...p}>
