@@ -13,7 +13,9 @@ import SettingsModal from "./components/SettingsModal";
 import { LockIcon } from "./components/Icons";
 import { useSession } from "./lib/useAuth";
 import { logPlay, pushResult } from "./lib/cloud";
+import { trackGameCompleted, trackGameStarted } from "./lib/analytics";
 import { computeScore } from "./game/score";
+import { computeGrade } from "./game/grade";
 import { SPORT } from "./sports/active";
 import { SPORTS, SPORT_ORDER, sportHref } from "./sports";
 import { rosterKey } from "./data/roster";
@@ -199,6 +201,19 @@ export default function App() {
         won: state.status === "won",
         revealed: state.status === "won" ? state.revealed : null,
         score,
+        hard,
+        isArchive: archiveDay !== null,
+      });
+      // product analytics — the core completion funnel event
+      trackGameCompleted({
+        sport: SPORT.sport,
+        day,
+        won: state.status === "won",
+        revealed: state.revealed,
+        total,
+        hints: state.hintsRevealed,
+        score,
+        grade: computeGrade(state, puzzle, SPORT.gradeLabels).label,
         hard,
         isArchive: archiveDay !== null,
       });
@@ -652,6 +667,7 @@ export default function App() {
           onPlay={() => {
             setShowStart(false);
             if (over) setShowResult(true);
+            else trackGameStarted({ sport: SPORT.sport, day });
           }}
           onRules={() => setShowHelp(true)}
           onSettings={() => setShowSettings(true)}

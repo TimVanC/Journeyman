@@ -3,6 +3,7 @@ import { SPORT } from "../sports/active";
 import { resolveColorway } from "../game/colorways";
 import { formatStintYears } from "./JerseyCard";
 import { buildShareText, copyToClipboard } from "../game/share";
+import { trackShare } from "../lib/analytics";
 import { computeGrade } from "../game/grade";
 import { computeScore } from "../game/score";
 import { fetchDayStanding, type DayStanding } from "../lib/cloud";
@@ -61,6 +62,7 @@ export default function ResultModal({
       : null;
 
   const share = async () => {
+    trackShare({ sport: SPORT.sport, day: state.day, won, score });
     const text = buildShareText({
       shareTag: SPORT.shareTag,
       jerseyEmoji: SPORT.shareEmoji,
