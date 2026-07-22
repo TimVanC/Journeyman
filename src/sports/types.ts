@@ -54,9 +54,22 @@ export interface SportConfig {
   tagline: string;
 
   puzzles: Puzzle[];
-  /** how many of the puzzles rotate as the daily fallback pool */
+  /** How day N picks its puzzle.
+   *  "roster"  — ROSTER[day-1] names the answer (NBA: a hand-curated
+   *              schedule), falling back to cycling `dailyPool` when the
+   *              named puzzle isn't authored yet.
+   *  "release" — puzzles[day-1], in authoring order: every authored puzzle
+   *              airs exactly once, brand-new ones queue for the next open
+   *              day, and nothing repeats until the pool is exhausted
+   *              (then it cycles, and the dev console counts the runway).
+   *              The puzzle array is therefore APPEND-ONLY once a day has
+   *              aired — reordering would rewrite archive history. */
+  scheduling: "roster" | "release";
+  /** roster mode only: how many puzzles cycle as the not-yet-authored
+   *  fallback pool */
   dailyPool: number;
-  /** ROSTER[day - 1] = that day's scheduled answer */
+  /** roster mode: ROSTER[day - 1] = that day's scheduled answer.
+   *  release mode: not a schedule — just the authoring wishlist. */
   roster: string[];
   /** lazily-loaded type-ahead index for this league */
   searchPlayers: PlayerSearch;

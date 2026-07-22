@@ -52,12 +52,22 @@ function docRect(el: HTMLElement): CardRect {
   };
 }
 
-/** The day's puzzle comes from the sport's ROSTER schedule: look up the
- *  day's answer and serve its authored puzzle. Roster names whose puzzles
- *  aren't built yet fall back to cycling the verified pool, so a daily
- *  never 404s — authoring a puzzle with a matching `answer` flips its day
- *  live, no other wiring needed. */
+/** The day's puzzle.
+ *
+ *  "release" sports (NFL/MLB): puzzles[day-1] in authoring order — every
+ *  puzzle airs exactly once and a freshly authored one schedules itself
+ *  for the next open day, no list curation needed. Once the pool runs dry
+ *  the days cycle it again (the dev validator counts the runway), so
+ *  authoring is what prevents repeats.
+ *
+ *  "roster" sports (NBA): ROSTER[day-1] names the answer and serves its
+ *  authored puzzle. Roster names not built yet fall back to cycling the
+ *  verified pool, so a daily never 404s — authoring a puzzle with a
+ *  matching `answer` flips its day live, no other wiring needed. */
 function puzzleForDay(day: number): (typeof puzzles)[number] {
+  if (SPORT.scheduling === "release") {
+    return puzzles[(day - 1) % puzzles.length];
+  }
   const name = SPORT.roster[day - 1];
   if (name) {
     const built = puzzles.find((p) => rosterKey(p.answer) === rosterKey(name));

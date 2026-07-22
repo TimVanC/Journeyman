@@ -14,9 +14,33 @@ function identityAt(config: SportConfig, franchise: string, year: number): strin
   return era ? baseIdentity(era.identity) : null;
 }
 
-/** Dev-only roster health: no duplicate answers, and a running count of how
- *  many scheduled days actually have an authored puzzle behind them. */
+/** Dev-only schedule health.
+ *  Roster sports: duplicate-answer check plus a count of scheduled days
+ *  with authored puzzles behind them.
+ *  Release sports: puzzles ARE the schedule — report the runway (the date
+ *  the pool runs dry and days start repeating) and flag duplicate answers
+ *  in the pool itself. */
 export function warnRosterGaps(config: SportConfig): void {
+  if (config.scheduling === "release") {
+    const tag = `[${config.sport} schedule]`;
+    const seen = new Map<string, number>();
+    config.puzzles.forEach((p, i) => {
+      const key = rosterKey(p.answer);
+      if (seen.has(key)) {
+        console.warn(`${tag} "${p.answer}" is both puzzle ${seen.get(key)} and ${i + 1} — it will air twice`);
+      } else {
+        seen.set(key, i + 1);
+      }
+    });
+    const runsDry = config.puzzles.length + 1;
+    const today = config.storage.currentDayNumber();
+    console.info(
+      `${tag} ${config.puzzles.length} puzzles authored — repeats begin day ${runsDry} ` +
+        `(${config.storage.dateForDay(runsDry)}${today >= runsDry ? ", ALREADY REPEATING" : ""})`
+    );
+    return;
+  }
+
   const tag = `[${config.sport} roster]`;
   const seen = new Map<string, number>();
   config.roster.forEach((name, i) => {

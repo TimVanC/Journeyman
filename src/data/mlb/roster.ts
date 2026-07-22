@@ -1,19 +1,25 @@
 /**
- * The MLB daily schedule: MLB_ROSTER[day - 1] is that day's answer.
+ * NOT a schedule. MLB runs "release" scheduling (sports/types.ts):
+ * puzzles.ts airs in authoring order, one puzzle per day, no repeats
+ * while the pool lasts — so the only thing that prevents repeats is
+ * authoring staying ahead of the calendar.
  *
- * Days 1-5 map to the puzzles already authored in puzzles.ts. Every later
- * name is QUEUED — it goes live automatically the moment a puzzle with that
- * exact answer lands in puzzles.ts; until then the day falls back to
- * cycling the built pool.
+ * This list is the authoring WISHLIST: names worth building next, in
+ * no binding order. Reorder or prune freely.
  */
 export const MLB_ROSTER: string[] = [
-  // ---- days 1-5: puzzles already built ----
+  // ---- days 1-5: launch set (day 1 aired 2026-07-22 — frozen) ----
   "Alfonso Soriano",
   "Carlos Beltrán",
   "Adrián Beltré",
   "Zack Greinke",
   "Javier Vázquez",
-  // ---- days 6+: queued, need stint data authored ----
+  // ---- days 6-9: the pre-war set, authored & StatsAPI-verified ----
+  "Sam Jethroe", // Negro Leagues → oldest ROY ever, at 33
+  "Babe Ruth",
+  "Monte Irvin", // Newark Eagles → '54 champion Giants
+  "Jimmie Foxx",
+  // ---- days 10+: queued, need stint data authored ----
   "Edwin Jackson", // 14 franchises — the all-time record
   "Bartolo Colón",
   "Octavio Dotel",

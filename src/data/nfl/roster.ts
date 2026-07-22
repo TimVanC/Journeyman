@@ -1,10 +1,12 @@
 /**
- * The NFL daily schedule: NFL_ROSTER[day - 1] is that day's answer.
+ * NOT a schedule. NFL runs "release" scheduling (sports/types.ts):
+ * puzzles.ts airs in authoring order, one puzzle per day, no repeats
+ * while the pool lasts — so the only thing that prevents repeats is
+ * authoring staying ahead of the calendar.
  *
- * Days 1-5 map to the puzzles already authored in puzzles.ts. Every later
- * name is QUEUED — it goes live automatically the moment a puzzle with that
- * exact answer lands in puzzles.ts; until then the day falls back to
- * cycling the built pool. QB + skill positions only (product direction).
+ * This list is the authoring WISHLIST: names worth building next, in
+ * no binding order. Reorder or prune freely. QB + skill positions only
+ * (product direction).
  */
 export const NFL_ROSTER: string[] = [
   // ---- days 1-5: puzzles already built ----

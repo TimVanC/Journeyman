@@ -3,6 +3,11 @@ import type { Puzzle } from "../../game/types";
 /**
  * MLB Phase-1 hand-written puzzle set. 5 real journeymen/stars-with-mileage.
  *
+ * ARRAY ORDER IS THE DAILY SCHEDULE (release scheduling): puzzles[day-1]
+ * airs on day N, so this file is APPEND-ONLY once a day has aired —
+ * reordering aired entries rewrites archive history. New puzzles go on
+ * the end and air on the next open day.
+ *
  * DATA PROVENANCE — generated from general knowledge (2026-07-19).
  * Stint years, uniform numbers, and stat lines are best-effort recall and
  * MUST be verified against Baseball-Reference before launch (per-stint

@@ -37,7 +37,10 @@ export const nfl: SportConfig = {
   tagline: "A mystery NFL journeyman, one jersey at a time.",
 
   puzzles: nflPuzzles,
-  dailyPool: 5,
+  // authoring order IS the schedule: each puzzle airs once, new ones
+  // queue for the next open day, nothing repeats until the pool runs dry
+  scheduling: "release",
+  dailyPool: 5, // unused in release mode
   roster: NFL_ROSTER,
   searchPlayers: createPlayerSearch(
     () => import("../data/nfl/playerIndex.json").then((m) => m.default as [string, string][])

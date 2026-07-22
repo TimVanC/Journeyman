@@ -58,6 +58,8 @@ export const nba: SportConfig = {
   tagline: "A mystery NBA journeyman, one jersey at a time.",
 
   puzzles,
+  // the hand-curated schedule — basketball is the maintainer's home turf
+  scheduling: "roster",
   /** Only the BR-verified puzzles rotate daily; 6+ are archetype test
    *  puzzles reachable through test mode. */
   dailyPool: 5,
