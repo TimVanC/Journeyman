@@ -1,7 +1,7 @@
-import type { BaseballEraStyle } from "../components/BaseballJerseyRenderer";
-import BaseballBackJerseyRenderer from "../components/BaseballBackJerseyRenderer";
+import BaseballBackJerseyRenderer, {
+  type BaseballEraStyle,
+} from "../components/BaseballBackJerseyRenderer";
 import colorwaysJson from "../data/mlb/colorways.json";
-import playerIndexJson from "../data/mlb/playerIndex.json";
 import teamSeasonsJson from "../data/mlb/teamSeasons.json";
 import { mlbPuzzles } from "../data/mlb/puzzles";
 import { MLB_ROSTER } from "../data/mlb/roster";
@@ -42,7 +42,9 @@ export const mlb: SportConfig = {
   puzzles: mlbPuzzles,
   dailyPool: 5,
   roster: MLB_ROSTER,
-  searchPlayers: createPlayerSearch(playerIndexJson as [string, string][]),
+  searchPlayers: createPlayerSearch(
+    () => import("../data/mlb/playerIndex.json").then((m) => m.default as [string, string][])
+  ),
 
   colorways,
   // MLB colorways carry per-era tricodes (MON, FLA, CAL...) directly
@@ -70,6 +72,7 @@ export const mlb: SportConfig = {
     />
   ),
   cardJerseySize: 82,
+  jerseyAspect: 166 / 142.5, // BaseballBackJerseyRenderer viewBox
 
   // MLB seasons are single calendar years
   stintYears: (s: Stint) =>

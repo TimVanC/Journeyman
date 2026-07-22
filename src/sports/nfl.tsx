@@ -1,6 +1,5 @@
 import FootballJerseyRenderer, { type FootballEraStyle } from "../components/FootballJerseyRenderer";
 import colorwaysJson from "../data/nfl/colorways.json";
-import playerIndexJson from "../data/nfl/playerIndex.json";
 import teamSeasonsJson from "../data/nfl/teamSeasons.json";
 import { nflPuzzles } from "../data/nfl/puzzles";
 import { NFL_ROSTER } from "../data/nfl/roster";
@@ -39,7 +38,9 @@ export const nfl: SportConfig = {
   puzzles: nflPuzzles,
   dailyPool: 5,
   roster: NFL_ROSTER,
-  searchPlayers: createPlayerSearch(playerIndexJson as [string, string][]),
+  searchPlayers: createPlayerSearch(
+    () => import("../data/nfl/playerIndex.json").then((m) => m.default as [string, string][])
+  ),
 
   colorways,
   // NFL colorways carry per-era tricodes (OAK, SD, STL...) directly
@@ -66,6 +67,7 @@ export const nfl: SportConfig = {
     />
   ),
   cardJerseySize: 96,
+  jerseyAspect: 428 / 430, // FootballJerseyRenderer viewBox
 
   // NFL seasons are single calendar years
   stintYears: (s: Stint) =>

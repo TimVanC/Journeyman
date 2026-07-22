@@ -301,13 +301,35 @@ export function BasketballIcon(p: IconProps) {
   );
 }
 
-/** Football — a pointed ellipse with laces */
-export function FootballIcon(p: IconProps) {
+/** Football — a pointed prolate spheroid with laces. Not a `Base` icon:
+ *  the laces need a thinner stroke than the outline or they merge into a
+ *  blob at ~16px and the whole thing reads as an eye. */
+export function FootballIcon({ size = 15, className, title }: IconProps) {
   return (
-    <Base {...p}>
-      <path d="M4 12c0-4 3.5-7.5 8-7.5s8 3.5 8 7.5-3.5 7.5-8 7.5-8-3.5-8-7.5Z" />
-      <path d="M9.5 12h5M11 10v4M13 10v4" />
-    </Base>
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      role={title ? "img" : "presentation"}
+      aria-label={title}
+      aria-hidden={title ? undefined : true}
+      style={{ display: "inline-block", verticalAlign: "-0.15em", flexShrink: 0 }}
+    >
+      {/* tilted, with sharp points at both tips — a level lens with a dark
+          centre reads as an eye no matter how the laces are drawn */}
+      <g transform="rotate(-32 12 12)">
+        <path strokeWidth={1.9} d="M2.8 12Q12 4.6 21.2 12 12 19.4 2.8 12Z" />
+        <g strokeWidth={1.25}>
+          <path d="M9.9 12h4.2" />
+          <path d="M10.9 10.8v2.4M12 10.6v2.8M13.1 10.8v2.4" />
+        </g>
+      </g>
+    </svg>
   );
 }
 

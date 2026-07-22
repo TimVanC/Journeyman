@@ -1,6 +1,5 @@
 import JerseyRenderer, { type EraStyle } from "../components/JerseyRenderer";
 import colorwaysJson from "../data/colorways.json";
-import playerIndexJson from "../data/playerIndex.json";
 import teamSeasonsJson from "../data/teamSeasons.json";
 import { puzzles } from "../data/puzzles";
 import { ROSTER } from "../data/roster";
@@ -59,7 +58,9 @@ export const nba: SportConfig = {
    *  puzzles reachable through test mode. */
   dailyPool: 5,
   roster: ROSTER,
-  searchPlayers: createPlayerSearch(playerIndexJson as [string, string][]),
+  searchPlayers: createPlayerSearch(
+    () => import("../data/playerIndex.json").then((m) => m.default as [string, string][])
+  ),
 
   colorways,
   eraTricode,
@@ -85,6 +86,7 @@ export const nba: SportConfig = {
     />
   ),
   cardJerseySize: 70,
+  jerseyAspect: 306 / 190, // JerseyRenderer viewBox
 
   // season START years: a 1996-2000 stint reads "1996–2001"
   stintYears: (s: Stint) => `${s.startYear}–${s.endYear + 1}`,

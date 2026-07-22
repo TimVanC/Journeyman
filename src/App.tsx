@@ -721,11 +721,10 @@ export default function App() {
       {showArchive && (
         <ArchiveModal
           session={session ?? null}
-          today={realToday}
           onClose={() => setShowArchive(false)}
           onSignUp={() => {
             setShowArchive(false);
-            setShowAccount(true);
+            openAccount("all");
           }}
         />
       )}

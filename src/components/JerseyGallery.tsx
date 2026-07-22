@@ -1,7 +1,9 @@
 import JerseyRenderer, { type EraStyle } from "./JerseyRenderer";
 import FootballJerseyRenderer, { type FootballEraStyle } from "./FootballJerseyRenderer";
-import { type BaseballEraStyle } from "./BaseballJerseyRenderer";
-import BaseballBackJerseyRenderer from "./BaseballBackJerseyRenderer";
+import BaseballBackJerseyRenderer, {
+  type BaseballEraStyle,
+} from "./BaseballBackJerseyRenderer";
+import { SPORTS, SPORT_ORDER } from "../sports";
 
 /**
  * Dev-only jersey QA sheet (?jerseys) — every renderer across its era
@@ -31,6 +33,20 @@ export default function JerseyGallery() {
   return (
     <div className="min-h-dvh p-6">
       <h1 className="font-display text-2xl">Jersey QA sheet</h1>
+
+      <h2 className="font-display mt-4 text-lg">Sport ball icons</h2>
+      <div className="flex items-end gap-6">
+        {SPORT_ORDER.map((s) => {
+          const Ball = SPORTS[s].ballIcon;
+          return (
+            <div key={s} className="text-center">
+              <Ball size={64} />
+              <Ball size={17} />
+              <p className="text-[0.6rem]">{s}</p>
+            </div>
+          );
+        })}
+      </div>
 
       <h2 className="font-display mt-6 text-lg">NFL</h2>
       {SAMPLES.map((c) => (

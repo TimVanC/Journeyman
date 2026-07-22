@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { ColorwayDB, ColorwayEra } from "../game/colorways";
 import type { AccoladeType, Puzzle, StatCell, Stint } from "../game/types";
 import type { SportStorage } from "../game/storage";
-import type { IndexedPlayer } from "../data/playerSearch";
+import type { PlayerSearch } from "../data/playerSearch";
 
 export type Sport = "nba" | "nfl" | "mlb";
 
@@ -58,7 +58,8 @@ export interface SportConfig {
   dailyPool: number;
   /** ROSTER[day - 1] = that day's scheduled answer */
   roster: string[];
-  searchPlayers: (query: string, limit?: number) => IndexedPlayer[];
+  /** lazily-loaded type-ahead index for this league */
+  searchPlayers: PlayerSearch;
 
   colorways: ColorwayDB;
   /** era-correct city code for a stint's colorway era */
@@ -74,6 +75,10 @@ export interface SportConfig {
   DeckJersey: (p: { size?: number }) => ReactNode;
   /** rendered width (px) of the jersey art on a card front */
   cardJerseySize: number;
+  /** the jersey art's height ÷ width. Each sport's silhouette has its own
+   *  proportions, so anywhere jerseys sit side by side (the home hub) this
+   *  converts a target HEIGHT into the width each renderer needs. */
+  jerseyAspect: number;
 
   /** card-title year range: NBA seasons span years ("1996–2001"),
    *  NFL/MLB are single calendar seasons ("2010" / "2005–2014") */

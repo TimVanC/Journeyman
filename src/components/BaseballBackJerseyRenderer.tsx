@@ -1,28 +1,32 @@
 import { useId } from "react";
 import {
-  BODY_PANELS,
-  COLLAR_LEFT_WHITE,
-  COLLAR_TOP_WHITE,
-  COLLAR_WHITES,
-  HEM_BAND,
-  INNER_STRIPES_WHITE,
-  PLACKET_WHITE,
+  BODY,
+  COLLAR_TOP,
+  HEM,
+  OUTLINE,
+  OUTLINE_DX,
   SLEEVE_BANDS,
-  SLEEVE_STRIPE_WHITE,
+  SLEEVE_STRIPES,
   SLEEVES,
-} from "./baseballJerseyPaths";
-import type { BaseballEraStyle } from "./BaseballJerseyRenderer";
+} from "./baseballBackPaths";
+/**
+ * Era treatment for a baseball jersey:
+ *   flannel  — pre-'72: chunky one-color bands
+ *   pullover — '72-'86: sansabelt, waistband, no buttons
+ *   buttoned — '87-'05: two-tone bands
+ *   modern   — '06+: thinner accents
+ */
+export type BaseballEraStyle = "flannel" | "pullover" | "buttoned" | "modern";
 
 /**
- * BaseballBackJerseyRenderer — the BACK of a generic MLB jersey.
+ * BaseballBackJerseyRenderer — the BACK of a generic MLB jersey, drawn
+ * from the vendor sheet's own back view (bottom row of "Baseball Jersey
+ * 1.svg"). Baseball numbers live on the back, so this is what the game
+ * renders: no placket, no buttons, one clean torso panel.
  *
- * Baseball numbers live on the back (big and centered), so this is what
- * the game uses. Synthesized from the same front artwork
- * (baseballJerseyPaths): the two body panels + placket strip + collar
- * whites all fill the body color into one solid back (the faint center
- * line reads as a normal back seam), the raglan sleeves + era bands carry
- * over unchanged, and the front's V-placket / buttons are dropped. A plain
- * crew collar band is drawn at the neck.
+ * Regions: torso (primary, the pinstripe canvas), raglan sleeve/yoke arch
+ * (secondary), cuff bands + their inner stripe, and a hem band for the
+ * pullover era. The sheet's black line art is overlaid on top.
  *
  * The era tricode sits high on the back like a nameplate surname; the
  * number is large and centered below it.
@@ -39,8 +43,9 @@ export interface BaseballBackJerseyProps {
   label?: string | null;
 }
 
-const VB = { x: 128, y: 323, w: 142.5, h: 166 };
-const CX = 199.25;
+/** the back view's slot on the source sheet, with a little margin */
+const VB = { x: 128, y: 494, w: 142.5, h: 166 };
+const CX = 199.25; // chest/back centerline
 const INK = "#1d1a13";
 
 const ERA = {
@@ -49,15 +54,6 @@ const ERA = {
   buttoned: { hem: false, sleeveStripe: "trim" },
   modern: { hem: false, sleeveStripe: "primary" },
 } as const;
-
-const BODY_FILLS = [
-  ...BODY_PANELS,
-  ...PLACKET_WHITE,
-  ...INNER_STRIPES_WHITE,
-  ...COLLAR_WHITES,
-  ...COLLAR_TOP_WHITE,
-  ...COLLAR_LEFT_WHITE,
-];
 
 export default function BaseballBackJerseyRenderer({
   primary,
@@ -72,10 +68,10 @@ export default function BaseballBackJerseyRenderer({
   const uid = useId();
   const e = ERA[eraStyle];
   const numText = number === null ? "??" : String(number);
-  const numFontSize = number === null ? 46 : numText.length > 1 ? 50 : 56;
-  const clipId = `bbk-${uid}`;
+  const numFontSize = number === null ? 44 : numText.length > 1 ? 46 : 52;
   const shadeId = `bbksh-${uid}`;
   const pinId = `bbkpin-${uid}`;
+  const clipId = `bbkclip-${uid}`;
 
   const pick = (which: "primary" | "secondary" | "trim") =>
     which === "primary" ? primary : which === "secondary" ? secondary : trim;
@@ -94,90 +90,63 @@ export default function BaseballBackJerseyRenderer({
           <stop offset="0.5" stopColor="#ffffff" stopOpacity="0" />
           <stop offset="1" stopColor="#000000" stopOpacity="0.12" />
         </linearGradient>
+        {/* pinstripes only ever run down the torso panel */}
         <clipPath id={pinId}>
-          {BODY_PANELS.map((d, i) => (
-            <path key={i} d={d} />
-          ))}
-          {PLACKET_WHITE.map((d, i) => (
-            <path key={`p${i}`} d={d} />
-          ))}
-          {INNER_STRIPES_WHITE.map((d, i) => (
-            <path key={`s${i}`} d={d} />
-          ))}
+          <path d={BODY} />
         </clipPath>
         <clipPath id={clipId}>
-          {BODY_PANELS.map((d, i) => (
-            <path key={i} d={d} />
-          ))}
-          {SLEEVES.map((d, i) => (
-            <path key={`s${i}`} d={d} />
-          ))}
+          <path d={BODY} />
+          <path d={SLEEVES} />
         </clipPath>
       </defs>
 
-      {/* solid back body (panels + placket + collar whites), body color */}
-      {BODY_FILLS.map((d, i) => (
-        <path key={`b${i}`} d={d} fill={primary} stroke={primary} strokeWidth={0.6} />
-      ))}
+      {/* torso */}
+      <path d={BODY} fill={primary} stroke={primary} strokeWidth={0.6} />
 
-      {/* pinstripes clipped to the body */}
       {pinstripe && (
         <g clipPath={`url(#${pinId})`}>
-          {Array.from({ length: 16 }, (_, i) => {
-            const x = 158 + i * 5.5;
-            return <rect key={i} x={x} y={VB.y} width={0.9} height={VB.h} fill={secondary} opacity={0.85} />;
+          {Array.from({ length: 15 }, (_, i) => {
+            const x = 160 + i * 5.5;
+            return (
+              <rect key={i} x={x} y={VB.y} width={0.9} height={VB.h} fill={secondary} opacity={0.85} />
+            );
           })}
         </g>
       )}
 
-      {/* raglan sleeves + era end-bands */}
-      {SLEEVES.map((d, i) => (
-        <path key={`sl${i}`} d={d} fill={secondary} stroke={secondary} strokeWidth={0.6} />
-      ))}
+      {/* raglan sleeves + shoulder yoke (carries the collar band) */}
+      <path d={SLEEVES} fill={secondary} stroke={secondary} strokeWidth={0.6} />
+      <path d={COLLAR_TOP} fill={primary} stroke={primary} strokeWidth={0.4} />
+
+      {/* cuff bands + their contrast stripe */}
       {SLEEVE_BANDS.map((d, i) => (
         <path key={`sb${i}`} d={d} fill={secondary} stroke={secondary} strokeWidth={0.4} />
       ))}
-      {SLEEVE_STRIPE_WHITE.map((d, i) => (
+      {SLEEVE_STRIPES.map((d, i) => (
         <path key={`ss${i}`} d={d} fill={pick(e.sleeveStripe)} />
       ))}
 
       {/* pullover-era waistband */}
-      {e.hem &&
-        HEM_BAND.map((d, i) => (
-          <path key={`h${i}`} d={d} fill={secondary} stroke={secondary} strokeWidth={0.4} />
-        ))}
-
-      {/* plain crew collar band across the top of the back */}
-      <path
-        d="M183.5 330.5 Q199.25 344 215 330.5 L215 335.5 Q199.25 349.5 183.5 335.5 Z"
-        fill={secondary}
-        stroke={trim}
-        strokeWidth={0.5}
-      />
-
-      {/* faint back seam + outer edge so flat fills read as fabric */}
-      <g fill="none" stroke={INK} strokeWidth={1.1} opacity={0.85}>
-        {BODY_PANELS.map((d, i) => (
-          <path key={`e${i}`} d={d} />
-        ))}
-        {SLEEVES.map((d, i) => (
-          <path key={`es${i}`} d={d} />
-        ))}
-      </g>
+      {e.hem && <path d={HEM} fill={secondary} stroke={secondary} strokeWidth={0.4} />}
 
       {/* fabric shading */}
       <g clipPath={`url(#${clipId})`}>
         <rect x={VB.x} y={VB.y} width={VB.w} height={VB.h} fill={`url(#${shadeId})`} />
       </g>
 
-      {/* nameplate: era tricode arched high on the back like a surname */}
+      {/* the sheet's own line art, shifted onto the colored art */}
+      <g transform={`translate(${OUTLINE_DX} 0)`}>
+        <path d={OUTLINE} fill={INK} opacity={0.9} />
+      </g>
+
+      {/* nameplate: era tricode across the upper back, like a surname */}
       {label && (
         <text
           x={CX}
-          y={368}
+          y={553}
           textAnchor="middle"
           fontFamily="'Archivo Black','Arial Black',sans-serif"
-          fontSize={16}
+          fontSize={15}
           fill={secondary}
           stroke={trim}
           strokeWidth={0.8}
@@ -189,10 +158,10 @@ export default function BaseballBackJerseyRenderer({
         </text>
       )}
 
-      {/* big back number, centered */}
+      {/* the big back number */}
       <text
         x={CX}
-        y={number === null ? 438 : 442}
+        y={label ? 613 : 605}
         textAnchor="middle"
         fontFamily="'Archivo Black','Arial Black',sans-serif"
         fontWeight={900}

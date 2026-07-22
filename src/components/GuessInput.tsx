@@ -1,8 +1,6 @@
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { SPORT } from "../sports/active";
 import type { IndexedPlayer } from "../data/playerSearch";
-
-const searchPlayers = SPORT.searchPlayers;
 
 interface Props {
   disabled: boolean;
@@ -18,15 +16,27 @@ export default function GuessInput({ disabled, alreadyGuessed, onGuess }: Props)
   const [query, setQuery] = useState("");
   const [open, setOpen] = useState(false);
   const [highlight, setHighlight] = useState(0);
+  // the league's player index is a separate chunk — pull it in as soon as
+  // the board mounts, well before anyone finishes typing a name
+  const [indexReady, setIndexReady] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const listboxId = useId();
 
+  useEffect(() => {
+    let alive = true;
+    SPORT.searchPlayers.load().then(() => alive && setIndexReady(true));
+    return () => {
+      alive = false;
+    };
+  }, []);
+
   const guessedLower = alreadyGuessed.map((g) => g.toLowerCase());
-  const results = open
-    ? searchPlayers(query).filter(
-        (p) => !guessedLower.includes(p.name.toLowerCase())
-      )
-    : [];
+  const results =
+    open && indexReady
+      ? SPORT.searchPlayers
+          .search(query)
+          .filter((p) => !guessedLower.includes(p.name.toLowerCase()))
+      : [];
 
   const commit = (player: IndexedPlayer) => {
     setQuery("");

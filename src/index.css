@@ -683,6 +683,9 @@ select {
 /* home hub: one tappable card per league */
 .home-card {
   cursor: pointer;
+  border: 2px solid var(--color-ink);
+  border-radius: 12px;
+  background: var(--color-card);
   box-shadow: 0 2px 0 0 var(--color-wood);
   transition: transform 140ms ease, box-shadow 140ms ease;
 }

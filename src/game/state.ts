@@ -1,3 +1,4 @@
+import { normalizeName } from "../data/playerSearch";
 import type { GamePhase, GameState, Puzzle } from "./types";
 
 export const HINT_COUNT = 5;
@@ -51,8 +52,11 @@ export function reducer(state: GameState, action: GameAction): GameState {
   }
 
   // ---- guess ----
+  // accent- and punctuation-blind: the search index and the puzzle data
+  // come from different sources that disagree on diacritics, and picking
+  // the right player must never score as a miss
   const correct =
-    action.name.toLowerCase() === action.puzzle.answer.toLowerCase();
+    normalizeName(action.name) === normalizeName(action.puzzle.answer);
   if (correct) {
     return { ...state, status: "won", trail: [...state.trail, "solve"] };
   }

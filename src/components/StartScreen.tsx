@@ -14,8 +14,12 @@ interface Props {
   signedIn: boolean;
 }
 
+/** every league's jersey is drawn to the same height on the hub, so the
+ *  rows line up no matter how differently the silhouettes are proportioned */
+const ICON_H = 46;
+
 /** Today's standing for one league, read straight from its own storage —
- *  so the home hub shows Play / Continue / Recap per sport at a glance. */
+ *  so the hub shows Play / Continue / Recap per sport at a glance. */
 function homeStatus(s: Sport) {
   const st = SPORTS[s].storage;
   const day = st.currentDayNumber();
@@ -40,6 +44,8 @@ export default function StartScreen({
   onAccount,
   signedIn,
 }: Props) {
+  const NbaJersey = SPORTS.nba.DeckJersey;
+
   return (
     <div className="start-screen" role="dialog" aria-label="Journeyman — pick a league">
       {/* stats + how-to-play + settings, same corner as the game header */}
@@ -73,34 +79,41 @@ export default function StartScreen({
       </div>
 
       <div className="flex w-full max-w-sm flex-col items-center px-6 text-center">
-        <h1 className="font-display mt-2 text-[3.4rem] leading-none tracking-wide">
+        {/* the jersey that started it all, still swaying */}
+        <div className="start-jersey" aria-hidden="true">
+          <NbaJersey size={104} />
+        </div>
+
+        <h1 className="font-display mt-3 text-[3.4rem] leading-none tracking-wide">
           JOURNEYMAN
         </h1>
-        <p className="mt-2 text-sm font-medium text-ink-soft">
+        <p className="mt-1.5 text-sm font-medium text-ink-soft">
           A mystery journeyman's career, one jersey at a time.
-          <br />
-          Three games — pick your league.
         </p>
 
         {/* the three daily games — one tap each, straight into play */}
-        <div className="mt-6 w-full space-y-2.5">
+        <div className="mt-5 w-full space-y-2.5">
           {SPORT_ORDER.map((s) => {
             const info = homeStatus(s);
             const isCurrent = s === SPORT.sport;
             const Jersey = SPORTS[s].DeckJersey;
             const inner = (
               <>
-                <span className="shrink-0" aria-hidden="true">
-                  <Jersey size={40} />
+                <span
+                  className="flex shrink-0 items-end justify-center"
+                  style={{ width: 52, height: ICON_H }}
+                  aria-hidden="true"
+                >
+                  <Jersey size={ICON_H / SPORTS[s].jerseyAspect} />
                 </span>
                 <span className="flex-1 text-left">
                   <span className="font-display block text-lg leading-none tracking-wide">
                     {SPORTS[s].league}
                   </span>
-                  <span className="mt-0.5 flex items-center gap-1.5 text-[0.7rem] text-ink-soft">
+                  <span className="mt-1 flex items-center gap-1.5 text-[0.7rem] leading-none text-ink-soft">
                     No. {info.day}
                     {info.done && (
-                      <span className={info.won ? "font-bold text-[#2e7d43]" : "text-ink-soft"}>
+                      <span className={info.won ? "font-bold text-[#2e7d43]" : ""}>
                         · {info.won ? "Solved" : "Done"}
                       </span>
                     )}
@@ -115,8 +128,7 @@ export default function StartScreen({
                 <span className="home-card-cta shrink-0">{info.cta}</span>
               </>
             );
-            const cls =
-              "home-card flex w-full items-center gap-3 rounded-xl border-2 border-ink bg-card px-3 py-3 text-left";
+            const cls = "home-card flex w-full items-center gap-3 px-3 py-2.5 text-left";
             return isCurrent ? (
               <button key={s} type="button" className={cls} onClick={onPlay}>
                 {inner}
@@ -129,21 +141,21 @@ export default function StartScreen({
           })}
         </div>
 
-        <button type="button" className="btn mt-4 w-full" onClick={onArchive}>
-          {SPORT.league} Archive
+        <button type="button" className="btn mt-3.5 w-full py-2.5" onClick={onArchive}>
+          Archive
         </button>
 
         {!signedIn && (
           <button
             type="button"
-            className="mt-4 text-xs font-bold text-wood-deep underline underline-offset-2"
+            className="mt-3.5 text-xs font-bold text-wood-deep underline underline-offset-2"
             onClick={onAccount}
           >
             Create a free account — save your streaks and unlock the archive
           </button>
         )}
 
-        <p className="mt-8 text-[0.65rem] text-ink-soft">
+        <p className="mt-6 text-[0.65rem] text-ink-soft">
           New puzzles at midnight ET · Not affiliated with the NBA/NFL/MLB
         </p>
       </div>
