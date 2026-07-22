@@ -9,7 +9,7 @@ import { computeGrade } from "../game/grade";
 import { computeScore } from "../game/score";
 import { fetchDayStanding, type DayStanding } from "../lib/cloud";
 import type { GameState, Puzzle } from "../game/types";
-import { FlameIcon } from "./Icons";
+import { ArchiveIcon, FlameIcon } from "./Icons";
 
 /** only claim a percentile once there's a real crowd to compare against */
 const MIN_CROWD = 5;
@@ -24,6 +24,8 @@ interface Props {
   onClose: () => void;
   /** open the stats locker for this league */
   onStats: () => void;
+  /** open the cross-sport archive */
+  onArchive: () => void;
   /** test mode only: jump to the next puzzle */
   onNext?: () => void;
   /** test mode only: wipe this slot and play it again */
@@ -38,6 +40,7 @@ export default function ResultModal({
   canRank,
   onClose,
   onStats,
+  onArchive,
   onNext,
   onReplay,
 }: Props) {
@@ -253,6 +256,14 @@ export default function ResultModal({
             );
           })}
         </div>
+
+        <button
+          type="button"
+          className="btn mt-2 flex w-full items-center justify-center gap-2 py-2.5 text-sm"
+          onClick={onArchive}
+        >
+          <ArchiveIcon size={16} /> More in the archive
+        </button>
 
         {(onNext || onReplay) && (
           <div className="mt-2 flex gap-2">

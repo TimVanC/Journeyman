@@ -51,11 +51,11 @@ const INK = "#1d1a13";
  *  color-blocked eras put a contrasting inverted-V across the shoulders,
  *  and a tricode sitting in it disappears into the secondary color. */
 const ERA = {
-  classic: { stripes: true, outerAs: "secondary", innerAs: "secondary", yokeBlock: false, collarAs: "secondary", sx: 0.95, labelY: 445 },
-  stripes: { stripes: true, outerAs: "secondary", innerAs: "trim", yokeBlock: false, collarAs: "secondary", sx: 1.0, labelY: 445 },
-  nineties: { stripes: true, outerAs: "trim", innerAs: "primary", yokeBlock: false, collarAs: "trim", sx: 1.0, labelY: 445 },
+  classic: { stripes: true, outerAs: "secondary", innerAs: "secondary", yokeBlock: false, collarAs: "secondary", sx: 0.95, labelY: 470 },
+  stripes: { stripes: true, outerAs: "secondary", innerAs: "trim", yokeBlock: false, collarAs: "secondary", sx: 1.0, labelY: 470 },
+  nineties: { stripes: true, outerAs: "trim", innerAs: "primary", yokeBlock: false, collarAs: "trim", sx: 1.0, labelY: 470 },
   // the yoke bottoms out at y=431.6, so the tricode has to start below it
-  modern: { stripes: false, outerAs: "trim", innerAs: "trim", yokeBlock: true, collarAs: "secondary", sx: 0.97, labelY: 482 },
+  modern: { stripes: false, outerAs: "trim", innerAs: "trim", yokeBlock: true, collarAs: "secondary", sx: 0.97, labelY: 508 },
 } as const;
 
 export default function FootballJerseyRenderer({
@@ -71,6 +71,8 @@ export default function FootballJerseyRenderer({
   const e = ERA[eraStyle];
   const numText = number === null ? "??" : String(number);
   const numFontSize = number === null ? 96 : numText.length > 1 ? 88 : 96;
+  // two-letter codes (GB, KC, SD…) get extra size — they have the room
+  const labelFontSize = (label?.length ?? 3) <= 2 ? 66 : 54;
   const clipId = `fbody-${uid}`;
   const shadeId = `fshade-${uid}`;
 
@@ -141,7 +143,7 @@ export default function FootballJerseyRenderer({
           y={e.labelY}
           textAnchor="middle"
           fontFamily="'Archivo Black','Arial Black',sans-serif"
-          fontSize={44}
+          fontSize={labelFontSize}
           fill={secondary}
           stroke={trim}
           strokeWidth={2}
@@ -156,7 +158,7 @@ export default function FootballJerseyRenderer({
       {/* chest number — sits below the tricode, clear of the shoulder yoke */}
       <text
         x={CX}
-        y={598}
+        y={640}
         textAnchor="middle"
         fontFamily="'Archivo Black','Arial Black',sans-serif"
         fontWeight={900}

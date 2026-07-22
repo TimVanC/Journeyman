@@ -112,14 +112,15 @@ export default function JerseyCard({
   // would fight the ghost's own flight animation
   const suppressScroll = useRef(hidden);
 
-  /** 2D squeeze flip — no 3D layers, so text stays crisp on mobile */
-  const toggleFlip = () => {
-    if (hard) return; // hard mode: the season record stays face-down
+  /** 2D squeeze flip — no 3D layers, so text stays crisp on mobile.
+   *  `next` picks the face to land on; omit it to just toggle. */
+  const runFlip = (next?: boolean) => {
     if (animating.current) return;
     const el = flipRef.current;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const swap = () => setShowBack((b) => next ?? !b);
     if (!el || reduce) {
-      setShowBack((b) => !b);
+      swap();
       return;
     }
     animating.current = true;
@@ -133,7 +134,7 @@ export default function JerseyCard({
     );
     squeeze.finished
       .then(() => {
-        setShowBack((b) => !b);
+        swap();
         const open = el.animate(
           [{ transform: "scaleX(0.04)" }, { transform: "scaleX(1)" }],
           { duration: 250, easing: "ease-out" }
@@ -141,13 +142,23 @@ export default function JerseyCard({
         squeeze.cancel(); // `open` now owns the transform; drop the held frame
         return open.finished;
       })
-      .catch(() => {
-        setShowBack((b) => !b);
-      })
+      .catch(swap)
       .finally(() => {
         animating.current = false;
       });
   };
+
+  const toggleFlip = () => {
+    if (hard) return; // hard mode: the season record stays face-down
+    runFlip();
+  };
+
+  // switching to hard mode mid-game must not strand cards face-up showing
+  // the very thing hard mode hides — flip them back, with the same animation
+  useEffect(() => {
+    if (hard && showBack) runFlip(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- runFlip is stable enough here
+  }, [hard]);
 
   // the flip is the moment of the game — make sure it happens on screen
   // (skip during the end-of-game cascade, where many cards land at once)

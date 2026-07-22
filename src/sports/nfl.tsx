@@ -118,5 +118,6 @@ export const nfl: SportConfig = {
   getStintSeasons: createSeasonDB(teamSeasonsJson as unknown as SeasonJSON),
   seasonLabel: plainYearLabel,
 
-  storage: createStorage("journeyman:nfl", "2026-07-20"),
+  // public launch day: puzzle #1 (Fitzpatrick) lands here
+  storage: createStorage("journeyman:nfl", "2026-07-22"),
 };

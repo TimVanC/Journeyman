@@ -69,6 +69,8 @@ export default function BaseballBackJerseyRenderer({
   const e = ERA[eraStyle];
   const numText = number === null ? "??" : String(number);
   const numFontSize = number === null ? 44 : numText.length > 1 ? 46 : 52;
+  // two-letter codes (SD, KC, SF…) get extra size — they have the room
+  const labelFontSize = (label?.length ?? 3) <= 2 ? 36 : 30;
   const shadeId = `bbksh-${uid}`;
   const pinId = `bbkpin-${uid}`;
   const clipId = `bbkclip-${uid}`;
@@ -146,7 +148,7 @@ export default function BaseballBackJerseyRenderer({
           y={553}
           textAnchor="middle"
           fontFamily="'Archivo Black','Arial Black',sans-serif"
-          fontSize={22}
+          fontSize={labelFontSize}
           fill={secondary}
           stroke={trim}
           strokeWidth={1}

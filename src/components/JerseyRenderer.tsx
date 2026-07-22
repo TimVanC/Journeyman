@@ -65,6 +65,8 @@ export default function JerseyRenderer({
   // unknown number → big double "?" reading like a mystery jersey number
   const numText = number === null ? "??" : String(number);
   const numFontSize = number === null ? 92 : numText.length > 1 ? 60 : 70;
+  // two-letter codes (NJ, SEA…) get extra size — they have the room
+  const labelFontSize = (label?.length ?? 3) <= 2 ? 64 : 54;
   const clipId = `jbody-${uid}`;
   const shadeId = `jshade-${uid}`;
 
@@ -133,10 +135,10 @@ export default function JerseyRenderer({
       {label && (
         <text
           x={CX}
-          y={CY + 3}
+          y={CY - 7}
           textAnchor="middle"
           fontFamily="'Archivo Black','Arial Black',sans-serif"
-          fontSize={46}
+          fontSize={labelFontSize}
           fill={secondary}
           stroke={trim}
           strokeWidth={2}
@@ -151,7 +153,7 @@ export default function JerseyRenderer({
       {/* number — block athletic style, centered on the chest */}
       <text
         x={CX}
-        y={CY + 71}
+        y={CY + 83}
         textAnchor="middle"
         fontFamily="'Archivo Black','Arial Black',sans-serif"
         fontWeight={900}

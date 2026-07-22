@@ -125,5 +125,6 @@ export const mlb: SportConfig = {
   getStintSeasons: createSeasonDB(teamSeasonsJson as unknown as SeasonJSON),
   seasonLabel: plainYearLabel,
 
-  storage: createStorage("journeyman:mlb", "2026-07-20"),
+  // public launch day: puzzle #1 (Soriano) lands here
+  storage: createStorage("journeyman:mlb", "2026-07-22"),
 };

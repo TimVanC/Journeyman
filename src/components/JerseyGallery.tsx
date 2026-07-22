@@ -61,7 +61,7 @@ export default function JerseyGallery() {
                 number={12}
                 eraStyle={era}
                 size={120}
-                label="GB"
+                label={c.name.startsWith("royal") || c.name.startsWith("green") ? "GB" : "SEA"}
               />
               <p className="text-[0.6rem]">{era}</p>
             </div>
@@ -83,7 +83,7 @@ export default function JerseyGallery() {
                 eraStyle={era}
                 pinstripe={c.pinstripe}
                 size={110}
-                label="NYY"
+                label={c.name.startsWith("white") || c.name.startsWith("powder") ? "NYY" : "SD"}
               />
               <p className="text-[0.6rem]">{era}</p>
             </div>

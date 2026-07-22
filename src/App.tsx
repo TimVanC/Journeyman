@@ -509,6 +509,7 @@ export default function App() {
         streak={streak}
         onHelp={() => setShowHelp(true)}
         onStats={() => openAccount(SPORT.sport)}
+        onArchive={() => setShowArchive(true)}
         onSettings={() => setShowSettings(true)}
       />
 
@@ -711,16 +712,6 @@ export default function App() {
           onClose={() => setShowSettings(false)}
         />
       )}
-      {showArchive && (
-        <ArchiveModal
-          session={session ?? null}
-          onClose={() => setShowArchive(false)}
-          onSignUp={() => {
-            setShowArchive(false);
-            openAccount("all");
-          }}
-        />
-      )}
       {showResult && over && (
         <ResultModal
           puzzle={puzzle}
@@ -730,6 +721,7 @@ export default function App() {
           canRank={testIndex === null && archiveDay === null}
           onClose={() => setShowResult(false)}
           onStats={() => openAccount(SPORT.sport)}
+          onArchive={() => setShowArchive(true)}
           onNext={
             testIndex !== null
               ? () => {
@@ -749,8 +741,18 @@ export default function App() {
           }
         />
       )}
-      {/* rendered last so the locker stacks ABOVE the result card — the
-          result card's own Stats button opens it from underneath */}
+      {/* archive and locker render after the result card so the buttons on
+          it open them on TOP rather than underneath */}
+      {showArchive && (
+        <ArchiveModal
+          session={session ?? null}
+          onClose={() => setShowArchive(false)}
+          onSignUp={() => {
+            setShowArchive(false);
+            openAccount("all");
+          }}
+        />
+      )}
       {showAccount && (
         <AccountModal
           session={session ?? null}
