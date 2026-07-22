@@ -2400,12 +2400,10 @@ export const puzzles: Puzzle[] = [
     // uniform numbers from BR's own "Uniforms" list (#24 with both Warriors
     // sides, #2 in Houston).
     //
-    // His four ABA seasons (Oakland Oaks 1968, Washington Caps 1969, New
-    // York Nets 1970-71) are deliberately OMITTED: no surviving NBA
-    // franchise carries those colorways, the same call already made for
-    // Moses Malone's ABA years. That leaves the 1967-1972 gap you can see
-    // between the first two cards, and it's why the result screen calls out
-    // the 1969 ABA title.
+    // Now that the colorways file carries the ABA, his four red-white-and-blue
+    // seasons are IN: Oakland Oaks 1968, Washington Caps 1969, and the New
+    // York Nets 1970-71. That closes what used to be a 1967-1972 gap. He sat
+    // out 1967-68 entirely in the contract fight, so that year has no card.
     id: 24,
     pathType: "team",
     answer: "Rick Barry",
@@ -2434,6 +2432,45 @@ export const puzzles: Puzzle[] = [
           { type: "all_star", count: 2 },
           { type: "all_nba", count: 2 },
         ],
+      },
+      {
+        franchise: "OAK",
+        displayTeam: "Oakland Oaks",
+        startYear: 1968,
+        endYear: 1968,
+        gp: 35,
+        mpg: 38.9,
+        ppg: 34.0,
+        rpg: 9.4,
+        apg: 3.9,
+        jerseyNumber: 24,
+        accolades: [{ type: "all_star", count: 1 }],
+      },
+      {
+        franchise: "WSC",
+        displayTeam: "Washington Caps",
+        startYear: 1969,
+        endYear: 1969,
+        gp: 52,
+        mpg: 35.6,
+        ppg: 27.7,
+        rpg: 7.0,
+        apg: 3.4,
+        jerseyNumber: 24,
+        accolades: [{ type: "all_star", count: 1 }],
+      },
+      {
+        franchise: "BKN",
+        displayTeam: "New York Nets",
+        startYear: 1970,
+        endYear: 1971,
+        gp: 139,
+        mpg: 44.0,
+        ppg: 30.6,
+        rpg: 7.2,
+        apg: 4.5,
+        jerseyNumber: 24,
+        accolades: [{ type: "all_star", count: 2 }],
       },
       {
         franchise: "GSW",
@@ -2466,9 +2503,10 @@ export const puzzles: Puzzle[] = [
         jerseyNumber: 2,
       },
     ],
-    // the quiet Houston twilight first; the draft-team Warriors card second;
-    // the title-and-Finals-MVP run last
-    revealOrder: [2, 0, 1],
+    // Houston's twilight first, then the two one-season ABA stops; the
+    // draft-team Warriors card second-to-last and the title-and-Finals-MVP
+    // Golden State run last
+    revealOrder: [5, 2, 1, 3, 0, 4],
     hints: {
       position: "SF",
       height: "6'7\"",

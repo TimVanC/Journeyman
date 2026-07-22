@@ -1,4 +1,5 @@
 import { useId } from "react";
+import { needsOutline } from "../game/colorways";
 import {
   BODY_PATHS,
   SECONDARY_PATHS,
@@ -67,6 +68,10 @@ export default function JerseyRenderer({
   const numFontSize = number === null ? 92 : numText.length > 1 ? 60 : 70;
   // two-letter codes (NJ, SEA…) get extra size — they have the room
   const labelFontSize = (label?.length ?? 3) <= 2 ? 52 : 44;
+  // lettering sits on the body, so that's what it has to stand out against.
+  // Silver on a black Spurs jersey already separates; the trim outline just
+  // muddies it (same call as the football renderer).
+  const outlined = needsOutline(secondary, primary);
   const clipId = `jbody-${uid}`;
   const shadeId = `jshade-${uid}`;
 
@@ -140,8 +145,8 @@ export default function JerseyRenderer({
           fontFamily="'Archivo Black','Arial Black',sans-serif"
           fontSize={labelFontSize}
           fill={secondary}
-          stroke={trim}
-          strokeWidth={2}
+          stroke={outlined ? trim : "none"}
+          strokeWidth={outlined ? 2 : 0}
           paintOrder="stroke"
           style={{ letterSpacing: "0.05em" }}
           aria-label={`Team: ${label}`}
@@ -159,8 +164,8 @@ export default function JerseyRenderer({
         fontWeight={900}
         fontSize={numFontSize}
         fill={secondary}
-        stroke={trim}
-        strokeWidth={2.5}
+        stroke={outlined ? trim : "none"}
+        strokeWidth={outlined ? 2.5 : 0}
         paintOrder="stroke"
         style={{ letterSpacing: "-0.02em" }}
       >

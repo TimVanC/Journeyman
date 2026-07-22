@@ -9,7 +9,8 @@
       "eraStyle": "silhouette hint for renderer: classic (short/tight 70s-80s), nineties (looser, bold trim), baggy (2000s), modern (2010s+ minimal)",
       "confidence": "high | medium | low"
     },
-    "relocations": "Franchises keyed by MODERN tricode. Historical identities (SEA, NJN, VAN, NOH, KC Kings, San Diego Clippers, Washington Bullets, Charlotte original Hornets) are separate era entries under the modern franchise with a 'identity' label so the renderer can note era city if you ever want it."
+    "relocations": "Franchises keyed by MODERN tricode. Historical identities (SEA, NJN, VAN, NOH, KC Kings, San Diego Clippers, Washington Bullets, Charlotte original Hornets) are separate era entries under the modern franchise with a 'identity' label so the renderer can note era city if you ever want it.",
+    "aba": "ABA seasons (1967-1975 start years) are included so pre-merger careers render. Surviving franchises carry their ABA years under the modern key (IND/BKN/DEN/SAS); defunct clubs get their own keys (OAK, WSC, VIR, KEN, UTS, SPI, CAR, MMP, PIT, FLA, SDA, ANA, MNM, NOB, HSM). Colours are from the Wikipedia team infoboxes; VERIFY against bballjerseys.com/aba-* before launch — the ABA is the least reliable data in this file."
   },
   "franchises": {
     "ATL": [
@@ -108,6 +109,34 @@
       }
     ],
     "BKN": [
+      {
+        "key": "BKN_ABA_1967",
+        "years": [
+          1967,
+          1967
+        ],
+        "identity": "New Jersey Americans",
+        "tricode": "NJA",
+        "primary": "#D50032",
+        "secondary": "#FFFFFF",
+        "trim": "#0032A0",
+        "eraStyle": "classic",
+        "confidence": "low"
+      },
+      {
+        "key": "BKN_ABA_1968",
+        "years": [
+          1968,
+          1975
+        ],
+        "identity": "New York Nets (ABA)",
+        "tricode": "NYA",
+        "primary": "#D50032",
+        "secondary": "#FFFFFF",
+        "trim": "#0032A0",
+        "eraStyle": "classic",
+        "confidence": "low"
+      },
       {
         "key": "BKN_1977",
         "years": [
@@ -300,6 +329,34 @@
       }
     ],
     "DEN": [
+      {
+        "key": "DEN_ABA_1967",
+        "years": [
+          1967,
+          1973
+        ],
+        "identity": "Denver Rockets",
+        "tricode": "DEN",
+        "primary": "#0E2240",
+        "secondary": "#FEC524",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "low"
+      },
+      {
+        "key": "DEN_ABA_1974",
+        "years": [
+          1974,
+          1975
+        ],
+        "identity": "Denver Nuggets (ABA)",
+        "tricode": "DEN",
+        "primary": "#0E2240",
+        "secondary": "#FEC524",
+        "trim": "#8B2131",
+        "eraStyle": "classic",
+        "confidence": "low"
+      },
       {
         "key": "DEN_1976",
         "years": [
@@ -503,6 +560,20 @@
       }
     ],
     "IND": [
+      {
+        "key": "IND_ABA_1967",
+        "years": [
+          1967,
+          1975
+        ],
+        "identity": "Indiana Pacers (ABA)",
+        "tricode": "IND",
+        "primary": "#0C2340",
+        "secondary": "#FFD520",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
       {
         "key": "IND_1976",
         "years": [
@@ -1080,6 +1151,34 @@
     ],
     "SAS": [
       {
+        "key": "SAS_ABA_1967",
+        "years": [
+          1967,
+          1972
+        ],
+        "identity": "Dallas Chaparrals",
+        "tricode": "DAL",
+        "primary": "#D50032",
+        "secondary": "#FFFFFF",
+        "trim": "#0032A0",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
+      {
+        "key": "SAS_ABA_1973",
+        "years": [
+          1973,
+          1975
+        ],
+        "identity": "San Antonio Spurs (ABA)",
+        "tricode": "SAS",
+        "primary": "#000000",
+        "secondary": "#C4CED4",
+        "trim": "#D50032",
+        "eraStyle": "classic",
+        "confidence": "low"
+      },
+      {
         "key": "SAS_1976",
         "years": [
           1976,
@@ -1279,6 +1378,428 @@
         "trim": "#C4CED4",
         "eraStyle": "modern",
         "confidence": "high"
+      }
+    ],
+    "OAK": [
+      {
+        "key": "OAK_1967",
+        "years": [
+          1967,
+          1968
+        ],
+        "identity": "Oakland Oaks",
+        "tricode": "OAK",
+        "primary": "#228B22",
+        "secondary": "#FFD700",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "low"
+      }
+    ],
+    "WSC": [
+      {
+        "key": "WSC_1969",
+        "years": [
+          1969,
+          1969
+        ],
+        "identity": "Washington Caps",
+        "tricode": "WSC",
+        "primary": "#228B22",
+        "secondary": "#FFD700",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      }
+    ],
+    "VIR": [
+      {
+        "key": "VIR_1970",
+        "years": [
+          1970,
+          1973
+        ],
+        "identity": "Virginia Squires",
+        "tricode": "VIR",
+        "primary": "#053CA4",
+        "secondary": "#D50032",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
+      {
+        "key": "VIR_1974",
+        "years": [
+          1974,
+          1974
+        ],
+        "identity": "Virginia Squires (orange & brown)",
+        "tricode": "VIR",
+        "primary": "#FC8100",
+        "secondary": "#382E2C",
+        "trim": "#D40332",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
+      {
+        "key": "VIR_1975",
+        "years": [
+          1975,
+          1975
+        ],
+        "identity": "Virginia Squires (blue & orange)",
+        "tricode": "VIR",
+        "primary": "#00339F",
+        "secondary": "#FA4517",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      }
+    ],
+    "KEN": [
+      {
+        "key": "KEN_1967",
+        "years": [
+          1967,
+          1969
+        ],
+        "identity": "Kentucky Colonels (chartreuse)",
+        "tricode": "KEN",
+        "primary": "#009A44",
+        "secondary": "#FFFFFF",
+        "trim": "#000000",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
+      {
+        "key": "KEN_1970",
+        "years": [
+          1970,
+          1973
+        ],
+        "identity": "Kentucky Colonels",
+        "tricode": "KEN",
+        "primary": "#012F6B",
+        "secondary": "#FFFFFF",
+        "trim": "#CC3433",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
+      {
+        "key": "KEN_1974",
+        "years": [
+          1974,
+          1975
+        ],
+        "identity": "Kentucky Colonels",
+        "tricode": "KEN",
+        "primary": "#0E3386",
+        "secondary": "#CC3433",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      }
+    ],
+    "UTS": [
+      {
+        "key": "UTS_1970",
+        "years": [
+          1970,
+          1974
+        ],
+        "identity": "Utah Stars",
+        "tricode": "UTS",
+        "primary": "#1034A6",
+        "secondary": "#D0103A",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      }
+    ],
+    "SPI": [
+      {
+        "key": "SPI_1974",
+        "years": [
+          1974,
+          1975
+        ],
+        "identity": "Spirits of St. Louis",
+        "tricode": "SPI",
+        "primary": "#BE3A34",
+        "secondary": "#FFFFFF",
+        "trim": "#000000",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      }
+    ],
+    "CAR": [
+      {
+        "key": "CAR_1969",
+        "years": [
+          1969,
+          1970
+        ],
+        "identity": "Carolina Cougars",
+        "tricode": "CAR",
+        "primary": "#7BAFD4",
+        "secondary": "#DC143C",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
+      {
+        "key": "CAR_1971",
+        "years": [
+          1971,
+          1972
+        ],
+        "identity": "Carolina Cougars (green)",
+        "tricode": "CAR",
+        "primary": "#005F30",
+        "secondary": "#1560BD",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
+      {
+        "key": "CAR_1973",
+        "years": [
+          1973,
+          1973
+        ],
+        "identity": "Carolina Cougars (blue)",
+        "tricode": "CAR",
+        "primary": "#012F6B",
+        "secondary": "#009744",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      }
+    ],
+    "MMP": [
+      {
+        "key": "MMP_1970",
+        "years": [
+          1970,
+          1971
+        ],
+        "identity": "Memphis Pros",
+        "tricode": "MEM",
+        "primary": "#041E42",
+        "secondary": "#D50032",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
+      {
+        "key": "MMP_1972",
+        "years": [
+          1972,
+          1973
+        ],
+        "identity": "Memphis Tams",
+        "tricode": "MEM",
+        "primary": "#FFC62C",
+        "secondary": "#007A33",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
+      {
+        "key": "MMP_1974",
+        "years": [
+          1974,
+          1974
+        ],
+        "identity": "Memphis Sounds",
+        "tricode": "MEM",
+        "primary": "#D50032",
+        "secondary": "#FFFFFF",
+        "trim": "#041E42",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      }
+    ],
+    "PIT": [
+      {
+        "key": "PIT_1967",
+        "years": [
+          1967,
+          1969
+        ],
+        "identity": "Pittsburgh Pipers",
+        "tricode": "PIT",
+        "primary": "#0047AB",
+        "secondary": "#F87217",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
+      {
+        "key": "PIT_1970",
+        "years": [
+          1970,
+          1971
+        ],
+        "identity": "Pittsburgh Condors",
+        "tricode": "PIT",
+        "primary": "#CA0E2E",
+        "secondary": "#C89A69",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      }
+    ],
+    "FLA": [
+      {
+        "key": "FLA_1968",
+        "years": [
+          1968,
+          1969
+        ],
+        "identity": "Miami Floridians",
+        "tricode": "MIA",
+        "primary": "#E35205",
+        "secondary": "#1777CD",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
+      {
+        "key": "FLA_1970",
+        "years": [
+          1970,
+          1971
+        ],
+        "identity": "The Floridians",
+        "tricode": "FLA",
+        "primary": "#000000",
+        "secondary": "#FF0090",
+        "trim": "#FF8C00",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      }
+    ],
+    "SDA": [
+      {
+        "key": "SDA_1972",
+        "years": [
+          1972,
+          1974
+        ],
+        "identity": "San Diego Conquistadors",
+        "tricode": "SDA",
+        "primary": "#FFC62C",
+        "secondary": "#C60B1C",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
+      {
+        "key": "SDA_1975",
+        "years": [
+          1975,
+          1975
+        ],
+        "identity": "San Diego Sails",
+        "tricode": "SDA",
+        "primary": "#FFFFFF",
+        "secondary": "#003EA4",
+        "trim": "#038444",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      }
+    ],
+    "ANA": [
+      {
+        "key": "ANA_1967",
+        "years": [
+          1967,
+          1967
+        ],
+        "identity": "Anaheim Amigos",
+        "tricode": "ANA",
+        "primary": "#000000",
+        "secondary": "#F87217",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "low"
+      },
+      {
+        "key": "ANA_1968",
+        "years": [
+          1968,
+          1969
+        ],
+        "identity": "Los Angeles Stars",
+        "tricode": "LAS",
+        "primary": "#CF0630",
+        "secondary": "#428FDF",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      }
+    ],
+    "MNM": [
+      {
+        "key": "MNM_1967",
+        "years": [
+          1967,
+          1967
+        ],
+        "identity": "Minnesota Muskies",
+        "tricode": "MNM",
+        "primary": "#1034A6",
+        "secondary": "#D4AF37",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      },
+      {
+        "key": "MNM_1968",
+        "years": [
+          1968,
+          1968
+        ],
+        "identity": "Minnesota Pipers",
+        "tricode": "MNP",
+        "primary": "#0047AB",
+        "secondary": "#F87217",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "low"
+      }
+    ],
+    "NOB": [
+      {
+        "key": "NOB_1967",
+        "years": [
+          1967,
+          1969
+        ],
+        "identity": "New Orleans Buccaneers",
+        "tricode": "NOB",
+        "primary": "#000080",
+        "secondary": "#ED1C24",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
+      }
+    ],
+    "HSM": [
+      {
+        "key": "HSM_1967",
+        "years": [
+          1967,
+          1968
+        ],
+        "identity": "Houston Mavericks",
+        "tricode": "HSM",
+        "primary": "#003DA5",
+        "secondary": "#FFC72C",
+        "trim": "#FFFFFF",
+        "eraStyle": "classic",
+        "confidence": "medium"
       }
     ]
   }

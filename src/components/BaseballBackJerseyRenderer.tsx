@@ -68,7 +68,9 @@ export default function BaseballBackJerseyRenderer({
   const uid = useId();
   const e = ERA[eraStyle];
   const numText = number === null ? "??" : String(number);
-  const numFontSize = number === null ? 44 : numText.length > 1 ? 46 : 52;
+  // the torso panel runs y 510-652, so a baseline of 600 sits the number's
+  // visual mass on the middle of the back rather than low on it
+  const numFontSize = number === null ? 40 : numText.length > 1 ? 38 : 42;
   // two-letter codes (SD, KC, SF…) get extra size — they have the room
   const labelFontSize = (label?.length ?? 3) <= 2 ? 32 : 26;
   const shadeId = `bbksh-${uid}`;
@@ -145,7 +147,7 @@ export default function BaseballBackJerseyRenderer({
       {label && (
         <text
           x={CX}
-          y={553}
+          y={545}
           textAnchor="middle"
           fontFamily="'Archivo Black','Arial Black',sans-serif"
           fontSize={labelFontSize}
@@ -163,7 +165,7 @@ export default function BaseballBackJerseyRenderer({
       {/* the big back number */}
       <text
         x={CX}
-        y={label ? 622 : 605}
+        y={label ? 600 : 592}
         textAnchor="middle"
         fontFamily="'Archivo Black','Arial Black',sans-serif"
         fontWeight={900}

@@ -30,6 +30,9 @@ const colorways = colorwaysJson as unknown as ColorwayDB;
  * predates the per-era `tricode` field the NFL/MLB files carry.)
  */
 function eraTricode(era: ColorwayEra, franchise: string): string {
+  // ABA entries carry their own code (NYA, DAL, UTS…); the older NBA
+  // entries predate that field and are mapped by identity below
+  if (era.tricode) return era.tricode;
   const id = era.identity;
   if (id.startsWith("Vancouver")) return "VAN";
   if (id.startsWith("San Francisco")) return "SFW";
