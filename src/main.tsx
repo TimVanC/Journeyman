@@ -21,16 +21,27 @@ const qa = !qaAllowed
     ? "jerseys"
     : qaParams.has("cards")
       ? "cards"
-      : null;
+      : qaParams.has("playercards")
+        ? "playercards"
+        : null;
 const JerseyGallery = lazy(() => import("./components/JerseyGallery"));
 const CardPreview = lazy(() => import("./components/CardPreview"));
+const PlayerCardsPreview = lazy(() => import("./components/PlayerCardsPreview"));
 
 initAnalytics();
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     {qa ? (
-      <Suspense>{qa === "jerseys" ? <JerseyGallery /> : <CardPreview />}</Suspense>
+      <Suspense>
+        {qa === "jerseys" ? (
+          <JerseyGallery />
+        ) : qa === "playercards" ? (
+          <PlayerCardsPreview />
+        ) : (
+          <CardPreview />
+        )}
+      </Suspense>
     ) : (
       <App />
     )}

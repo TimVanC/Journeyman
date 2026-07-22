@@ -2,3 +2,6 @@ node_modules/
 dist/
 *.local
 .DS_Store
+
+# playercards render temp bundle
+scripts/.render.mjs

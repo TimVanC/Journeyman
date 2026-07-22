@@ -6,6 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
+    "build:og": "node scripts/build-og.mjs",
+    "build:playercards": "esbuild scripts/render-player-jerseys.tsx --bundle --platform=node --format=esm --jsx=automatic --loader:.json=json --external:react --external:react-dom --external:@resvg/resvg-js --outfile=scripts/.render.mjs && node scripts/.render.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -16,10 +18,12 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.1.4",
     "@types/react": "^19.1.0",
     "@types/react-dom": "^19.1.0",
     "@vitejs/plugin-react": "^4.4.0",
+    "sharp": "^0.35.3",
     "tailwindcss": "^4.1.4",
     "typescript": "~5.8.3",
     "vite": "^6.3.0"
