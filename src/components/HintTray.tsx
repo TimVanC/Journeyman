@@ -6,6 +6,18 @@ import { LockIcon } from "./Icons";
 // in bats/throws, debut year, and birthplace
 const LADDER = SPORT.hintLadder;
 
+/** Short coded values — "R / R", "2B / LF", "PF/SF", "6'11\"" — are ONE fact,
+ *  and browsers happily break them at the slash or the spaces around it. On a
+ *  narrow screen the label "Bats / Throws" wraps to two lines and the value
+ *  used to follow it down, reading as two separate answers. Values this short
+ *  always fit their cell, so pinning them is safe; anything longer is prose
+ *  (colleges, birthplaces) and still has to wrap. */
+const ATOMIC_MAX = 8;
+
+function valueClass(value: unknown): string {
+  return `hint-value${String(value).length <= ATOMIC_MAX ? " hint-value-atomic" : ""}`;
+}
+
 interface Props {
   hints: PuzzleHints;
   revealedCount: number;
@@ -44,7 +56,7 @@ export default function HintTray({
             >
               <span className="hint-label">{h.label}</span>
               {i < revealedCount ? (
-                <span className="hint-value">{hints[h.key]}</span>
+                <span className={valueClass(hints[h.key])}>{hints[h.key]}</span>
               ) : (
                 <LockIcon size={11} />
               )}
@@ -66,7 +78,7 @@ export default function HintTray({
               className={`player-file-cell ${i === revealedCount - 1 ? "chip-in" : ""}`}
             >
               <span className="hint-label">{h.label}</span>
-              <span className="hint-value">{hints[h.key]}</span>
+              <span className={valueClass(hints[h.key])}>{hints[h.key]}</span>
             </li>
           ) : (
             <li

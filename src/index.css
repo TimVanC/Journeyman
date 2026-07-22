@@ -339,24 +339,25 @@ select {
   animation: chip-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-/* turn the whole spread over at once — sits on the counter line above the
-   cards, so it inherits that line's tiny uppercase tracking */
+/* turn the whole spread over at once — icon-only round button sitting on the
+   counter line above the cards */
 .flip-all {
   display: inline-flex;
   align-items: center;
-  padding: 0.12rem 0.5rem;
+  justify-content: center;
+  /* comfortably past the 44px tap target once the line-height around it is
+     counted; the visible circle stays small so it reads as a quiet control */
+  padding: 0.3rem;
   border: 1.5px solid var(--color-ink-soft);
   border-radius: 999px;
-  font: inherit;
-  /* the counter line's 0.2em tracking is for a label; a control wants less */
-  letter-spacing: 0.08em;
   color: var(--color-ink);
   background: var(--color-card);
   cursor: pointer;
-  transition: background 120ms ease, color 120ms ease;
+  transition: background 120ms ease, color 120ms ease, border-color 120ms ease;
 }
 
-.flip-all:hover {
+.flip-all:hover,
+.flip-all[aria-pressed="true"] {
   background: var(--color-ink);
   border-color: var(--color-ink);
   color: var(--color-card);
@@ -648,6 +649,12 @@ select {
   text-align: center;
   line-height: 1.2;
   max-width: 12rem;
+}
+
+/* one short coded fact ("R / R") — never split it across lines, even when the
+   label beside it wraps */
+.hint-value-atomic {
+  white-space: nowrap;
 }
 
 .hint-locked {

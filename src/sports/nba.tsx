@@ -13,12 +13,12 @@ import {
   CrownIcon,
   FirstTeamIcon,
   FmvpIcon,
-  LarryOBrienIcon,
   MedalIcon,
   RoyIcon,
   ShieldIcon,
   SixthManIcon,
   StarIcon,
+  TrophyIcon,
 } from "../components/Icons";
 import type { SportConfig } from "./types";
 
@@ -106,7 +106,7 @@ export const nba: SportConfig = {
 
   accoladeMeta: {
     all_star: { Icon: StarIcon, label: "All-Star" },
-    champion: { Icon: LarryOBrienIcon, label: "Champion" },
+    champion: { Icon: TrophyIcon, label: "Champion" },
     mvp: { Icon: CrownIcon, label: "MVP" },
     fmvp: { Icon: FmvpIcon, label: "Finals MVP", wordmark: true },
     dpoy: { Icon: ShieldIcon, label: "DPOY" },

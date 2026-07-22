@@ -136,6 +136,19 @@ export function JerseyIcon(p: IconProps) {
   );
 }
 
+/** Turn every revealed card over — the standard horizontal-flip glyph
+ *  (two shapes mirrored across an axis), which happens to match what the
+ *  cards actually do: a 2D squeeze about their vertical centre line. */
+export function FlipIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <path d="M12 3v18" />
+      <path d="M8.5 7.5 4 12l4.5 4.5z" />
+      <path d="M15.5 7.5 20 12l-4.5 4.5z" />
+    </Base>
+  );
+}
+
 /** headstone for a DNF (custom) */
 export function GraveIcon(p: IconProps) {
   return (
@@ -304,21 +317,6 @@ export function LombardiIcon(p: IconProps) {
       <path d="M10.3 9.9h3.4" />
       <path d="M9.6 17.5h4.8l1.3 2.7H8.3l1.3-2.7Z" />
       <path d="M6.4 22h11.2" />
-    </Base>
-  );
-}
-
-/** NBA title — the Larry O'Brien: a ball tipped on the mouth of a funnel
- *  that flares down to a plinth. Same construction as the Lombardi (ball,
- *  stem, plinth, floor line) so the three leagues' rings look like a set. */
-export function LarryOBrienIcon(p: IconProps) {
-  return (
-    <Base {...p}>
-      <circle cx="12" cy="6.6" r="3.5" />
-      <path d="M6.2 8c.8 4.2 2.5 7.4 4.1 9.4h3.4c1.6-2 3.3-5.2 4.1-9.4" />
-      <path d="M6.6 9.1c1.5 1.4 3.3 2.1 5.4 2.1s3.9-.7 5.4-2.1" />
-      <path d="M8.6 17.4h6.8l1 2.9H7.6l1-2.9Z" />
-      <path d="M5.4 22h13.2" />
     </Base>
   );
 }

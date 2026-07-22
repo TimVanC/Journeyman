@@ -10,7 +10,7 @@ import Confetti from "./components/Confetti";
 import AccountModal from "./components/AccountModal";
 import ArchiveModal from "./components/ArchiveModal";
 import SettingsModal from "./components/SettingsModal";
-import { LockIcon } from "./components/Icons";
+import { FlipIcon, LockIcon } from "./components/Icons";
 import { useSession } from "./lib/useAuth";
 import { logPlay, pushResult } from "./lib/cloud";
 import { trackGameCompleted, trackGameStarted } from "./lib/analytics";
@@ -554,14 +554,19 @@ export default function App() {
           </span>
           {/* reading every card back one tap at a time is the tedious part —
               this turns the whole spread over at once. Two cards minimum:
-              below that it's the same work as tapping the card. */}
+              below that it's the same work as tapping the card.
+              Icon only, deliberately: the "Show backs"/"Show fronts" label
+              pair is parked, not lost — see _brief/flip-all-control.md. */}
           {!hard && state.revealed > 1 && (
             <button
               type="button"
               className="flip-all"
+              aria-pressed={flipAll.back}
+              aria-label={flipAll.back ? "Turn all cards face up" : "Turn all cards over"}
+              title={flipAll.back ? "Turn all cards face up" : "Turn all cards over"}
               onClick={() => setFlipAll((f) => ({ back: !f.back, n: f.n + 1 }))}
             >
-              {flipAll.back ? "Show fronts" : "Show backs"}
+              <FlipIcon size={16} />
             </button>
           )}
         </p>

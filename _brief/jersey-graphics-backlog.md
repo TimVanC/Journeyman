@@ -57,17 +57,40 @@ Decomposing *supplied* vector art is reliable — three for three on this projec
 (the NBA sheet, the NovaeMakersMart football, the baseball back once the right
 sheet row was found). Handing over an SVG of a comet is close to a solved path.
 
-Freehand vector illustration is NOT reliable. The football icon took three
-attempts and still read as an eye; the fix was pulling Material Symbols
-instead. The hand-drawn glove and bat were likewise replaced with real icon
-sets. `CyYoungIcon` and `LombardiIcon` in `src/components/Icons.tsx` are
-hand-drawn and were never visually verified — check them before trusting them.
+Freehand vector illustration is NOT reliable *without seeing the result*. The
+football icon took three attempts and still read as an eye; the fix was pulling
+Material Symbols instead. The hand-drawn glove and bat were likewise replaced
+with real icon sets.
 
-**Prerequisite for any Tier 2 work: a working preview.** Much of the late
-2026-07-22 work was verified only geometrically (valid paths, no collisions,
-correct bounding boxes) because the browser pane was backgrounded and
-screenshots timed out. That is sufficient for Tier 1 and nowhere near
-sufficient for anything illustrative.
+With a working preview it becomes tractable, and the second 2026-07-22 pass is
+the evidence: `CommissionersTrophyIcon` took three drafts (v1 read as a chair
+back, v2 as a drum) and `FlipIcon` was picked from five candidates rendered
+side by side. Both were judged at 110px AND at their true ~14px, which is the
+step that matters — a `LarryOBrienIcon` that looked fine large read as a chess
+pawn small, and was eventually dropped anyway. `LombardiIcon` has now been
+verified by eye and is fine. `CyYoungIcon` no longer exists as a drawing; it is
+a `WordMark` reading "CY".
+
+**Prerequisite for any Tier 2 work: a working preview — and there is one.**
+The browser pane's own screenshots time out because the tab is backgrounded
+(`document.visibilityState === "hidden"`), which also stalls any WAAPI
+animation, so card flips never resolve. Both are avoidable:
+
+```
+chrome --headless=new --disable-gpu --hide-scrollbars \
+  --virtual-time-budget=40000 --run-all-compositor-stages-before-draw \
+  --force-prefers-reduced-motion --force-device-scale-factor=2.5 \
+  --screenshot=out.png --window-size=390,900 http://localhost:PORT/...
+```
+
+`--run-all-compositor-stages-before-draw` is what stops it capturing a blank
+page; `--force-prefers-reduced-motion` makes the app take its own synchronous
+no-animation path, so flipped states actually appear (virtual time does NOT
+settle the animated path). `--force-device-scale-factor` is how you inspect a
+14px glyph. To drive the app first — reveal jerseys, open a card — serve a
+throwaway page from `public/` that iframes it and clicks, same-origin, then
+delete it. The browser pane's `javascript_tool` still works for reading the DOM
+even while screenshots do not, which is enough to assert structure.
 
 ## Verification
 
