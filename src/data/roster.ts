@@ -22,8 +22,8 @@ export const ROSTER: string[] = [
   "Vince Carter",
   "Manu Ginóbili",
   "Robert Horry", // day 8 — seven rings, never an All-Star
-  "Jim Jackson", // day 9 — 12 franchises (swapped up from day 19)
-  "Tony Massenburg", // day 10 — 15 franchises (swapped up from day 22)
+  "Baron Davis", // day 9 — 6 franchises, the "We Believe" Warrior
+  "Matt Barnes", // day 10 — 9 franchises, a ring at the very end
   "Chauncey Billups",
   "Jamal Crawford",
   "Ish Smith", // 13 franchises on day 13
@@ -37,7 +37,7 @@ export const ROSTER: string[] = [
   "Rasheed Wallace",
   "Shaquille O'Neal", // day 22 — swapped down from day 10
   "Gary Payton",
-  "Baron Davis",
+  "Jim Jackson", // 12 franchises (moved from day 9 to make room for Baron Davis)
   "Joe Smith",
   "Dominique Wilkins",
   "Stephon Marbury",
@@ -79,7 +79,7 @@ export const ROSTER: string[] = [
   "Stephen Jackson",
   "Eddie House",
   "Russell Westbrook",
-  "Matt Barnes",
+  "Tony Massenburg", // 15 franchises (moved from day 10 to make room for Matt Barnes)
   "Brevin Knight",
   "Chris Paul",
   "Shaun Livingston",
