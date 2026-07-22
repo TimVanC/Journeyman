@@ -1,7 +1,9 @@
 import type { Puzzle } from "../../game/types";
 
 /**
- * MLB Phase-1 hand-written puzzle set. 5 real journeymen/stars-with-mileage.
+ * MLB puzzle set — 15 journeymen/stars-with-mileage. Puzzles 1-5 are the
+ * original hand-written set; 6-15 (pre-war set + modern journeymen) are
+ * StatsAPI-verified (see the batch notes further down).
  *
  * ARRAY ORDER IS THE DAILY SCHEDULE (release scheduling): puzzles[day-1]
  * airs on day N, so this file is APPEND-ONLY once a day has aired —
@@ -593,17 +595,471 @@ export const mlbPuzzles: Puzzle[] = [
       born: "Ponce, Puerto Rico",
     },
   },
-
-  /* ------------------------------------------------------------------
-     Puzzles 6-9 — the pre-war set (2026-07-22). Unlike 1-5, these are
-     NOT best-effort recall: every stat line is machine-summed from the
-     official MLB StatsAPI year-by-year rows (which since 2024 include
-     the recognized Negro Leagues), and every season W-L in
-     teamSeasons.json comes from the same API's standings endpoint.
-     jerseyNumber null = the uniform genuinely had no number (pre-1929,
-     and most Negro League clubs) OR the number isn't reliably
-     documented — we render a blank back rather than invent one.
-  ------------------------------------------------------------------ */
+  {
+    // Puzzle 10 - Adam Dunn: Big Donkey. Eight Reds years of three-true-outcomes
+    // slugging, then a nomadic tail that bottomed out at .201 in Chicago.
+    id: 10,
+    pathType: "team",
+    answer: "Adam Dunn",
+    accolades: ["2× All-Star", "462 career HR", "4× NL walks leader"],
+    stints: [
+      {
+        franchise: "CIN",
+        displayTeam: "Cincinnati Reds",
+        startYear: 2001,
+        endYear: 2008,
+        jerseyNumber: 44,
+        accolades: [
+          { type: "all_star", count: 1 },
+        ],
+        statLine: [
+          { label: "G", value: 1087 },
+          { label: "AVG", value: ".247" },
+          { label: "HR", value: 270 },
+          { label: "RBI", value: 646 },
+          { label: "SB", value: 58 },
+        ],
+      },
+      {
+        franchise: "ARI",
+        displayTeam: "Arizona Diamondbacks",
+        startYear: 2008,
+        endYear: 2008,
+        jerseyNumber: 32,
+        statLine: [
+          { label: "G", value: 44 },
+          { label: "AVG", value: ".243" },
+          { label: "HR", value: 8 },
+          { label: "RBI", value: 26 },
+          { label: "SB", value: 1 },
+        ],
+      },
+      {
+        franchise: "WSH",
+        displayTeam: "Washington Nationals",
+        startYear: 2009,
+        endYear: 2010,
+        jerseyNumber: 44,
+        statLine: [
+          { label: "G", value: 317 },
+          { label: "AVG", value: ".264" },
+          { label: "HR", value: 76 },
+          { label: "RBI", value: 208 },
+          { label: "SB", value: 0 },
+        ],
+      },
+      {
+        franchise: "CHW",
+        displayTeam: "Chicago White Sox",
+        startYear: 2011,
+        endYear: 2014,
+        jerseyNumber: 44,
+        accolades: [
+          { type: "all_star", count: 1 },
+        ],
+        statLine: [
+          { label: "G", value: 528 },
+          { label: "AVG", value: ".201" },
+          { label: "HR", value: 106 },
+          { label: "RBI", value: 278 },
+          { label: "SB", value: 4 },
+        ],
+      },
+      {
+        franchise: "OAK",
+        displayTeam: "Oakland Athletics",
+        startYear: 2014,
+        endYear: 2014,
+        jerseyNumber: 10,
+        statLine: [
+          { label: "G", value: 25 },
+          { label: "AVG", value: ".212" },
+          { label: "HR", value: 2 },
+          { label: "RBI", value: 10 },
+          { label: "SB", value: 0 },
+        ],
+      },
+    ],
+    revealOrder: [4, 1, 3, 2, 0],
+    hints: {
+      position: "LF / 1B",
+      batsThrows: "L / R",
+      height: "6'6\"",
+      debutYear: "2001",
+      born: "Houston, Texas",
+    },
+  },
+  {
+    // Puzzle 11 - Jason Giambi: an Oakland MVP who became a Yankee, then spent a
+    // long veteran coda bouncing back west and around the AL.
+    id: 11,
+    pathType: "team",
+    answer: "Jason Giambi",
+    accolades: ["2000 AL MVP", "5× All-Star", "2× Silver Slugger"],
+    stints: [
+      {
+        franchise: "OAK",
+        displayTeam: "Oakland Athletics",
+        startYear: 1995,
+        endYear: 2001,
+        jerseyNumber: 16,
+        accolades: [
+          { type: "mvp", count: 1 },
+          { type: "all_star", count: 2 },
+          { type: "silver_slugger", count: 1 },
+        ],
+        statLine: [
+          { label: "G", value: 953 },
+          { label: "AVG", value: ".308" },
+          { label: "HR", value: 187 },
+          { label: "RBI", value: 675 },
+          { label: "SB", value: 9 },
+        ],
+      },
+      {
+        franchise: "NYY",
+        displayTeam: "New York Yankees",
+        startYear: 2002,
+        endYear: 2008,
+        jerseyNumber: 25,
+        accolades: [
+          { type: "all_star", count: 3 },
+          { type: "silver_slugger", count: 1 },
+        ],
+        statLine: [
+          { label: "G", value: 897 },
+          { label: "AVG", value: ".260" },
+          { label: "HR", value: 209 },
+          { label: "RBI", value: 604 },
+          { label: "SB", value: 9 },
+        ],
+      },
+      {
+        franchise: "OAK",
+        displayTeam: "Oakland Athletics",
+        startYear: 2009,
+        endYear: 2009,
+        jerseyNumber: 16,
+        statLine: [
+          { label: "G", value: 83 },
+          { label: "AVG", value: ".193" },
+          { label: "HR", value: 11 },
+          { label: "RBI", value: 40 },
+          { label: "SB", value: 0 },
+        ],
+      },
+      {
+        franchise: "COL",
+        displayTeam: "Colorado Rockies",
+        startYear: 2009,
+        endYear: 2012,
+        jerseyNumber: 23,
+        statLine: [
+          { label: "G", value: 230 },
+          { label: "AVG", value: ".248" },
+          { label: "HR", value: 22 },
+          { label: "RBI", value: 86 },
+          { label: "SB", value: 2 },
+        ],
+      },
+      {
+        franchise: "CLE",
+        displayTeam: "Cleveland Indians",
+        startYear: 2013,
+        endYear: 2014,
+        jerseyNumber: 25,
+        statLine: [
+          { label: "G", value: 97 },
+          { label: "AVG", value: ".171" },
+          { label: "HR", value: 11 },
+          { label: "RBI", value: 36 },
+          { label: "SB", value: 0 },
+        ],
+      },
+    ],
+    revealOrder: [2, 4, 3, 1, 0],
+    hints: {
+      position: "1B / DH",
+      batsThrows: "L / R",
+      height: "6'3\"",
+      debutYear: "1995",
+      born: "West Covina, California",
+    },
+  },
+  {
+    // Puzzle 8 — Sam Jethroe: Negro League star to NL Rookie of the Year
+    // at 33 — the oldest ROY ever. Opens on a one-game 1938 cup of coffee.
+    id: 8,
+    pathType: "team",
+    answer: "Sam Jethroe",
+    accolades: [
+      "1950 NL Rookie of the Year",
+      "2× NAL batting champion",
+      "1945 Negro World Series champion",
+      "2× NL stolen-base leader",
+    ],
+    stints: [
+      {
+        franchise: "IND",
+        displayTeam: "Indianapolis ABCs",
+        startYear: 1938,
+        endYear: 1938,
+        jerseyNumber: null,
+        statLine: [
+          { label: "G", value: 1 },
+          { label: "AVG", value: ".333" },
+          { label: "HR", value: 0 },
+          { label: "RBI", value: 0 },
+          { label: "SB", value: 0 },
+        ],
+      },
+      {
+        // 1942 in Cincinnati, Cleveland from 1943 — the Buckeyes moved with
+        // him on the roster; one identity keeps it to one jersey
+        franchise: "CLB",
+        displayTeam: "Cleveland Buckeyes",
+        startYear: 1942,
+        endYear: 1948,
+        jerseyNumber: null,
+        accolades: [
+          { type: "champion", count: 1 }, // 1945 Negro World Series, swept the Grays
+          { type: "batting_title", count: 2 }, // 1944, 1945 NAL
+        ],
+        statLine: [
+          { label: "G", value: 182 },
+          { label: "AVG", value: ".315" },
+          { label: "HR", value: 10 },
+          { label: "RBI", value: 101 },
+          { label: "SB", value: 37 },
+        ],
+      },
+      {
+        franchise: "ATL",
+        displayTeam: "Boston Braves",
+        startYear: 1950,
+        endYear: 1952,
+        jerseyNumber: 5,
+        accolades: [{ type: "roy", count: 1 }],
+        statLine: [
+          { label: "G", value: 440 },
+          { label: "AVG", value: ".261" },
+          { label: "HR", value: 49 },
+          { label: "RBI", value: 181 },
+          { label: "SB", value: 98 },
+        ],
+      },
+      {
+        franchise: "PIT",
+        displayTeam: "Pittsburgh Pirates",
+        startYear: 1954,
+        endYear: 1954,
+        jerseyNumber: null, // number not reliably documented
+        statLine: [
+          { label: "G", value: 2 },
+          { label: "AVG", value: ".000" },
+          { label: "HR", value: 0 },
+          { label: "RBI", value: 0 },
+          { label: "SB", value: 0 },
+        ],
+      },
+    ],
+    revealOrder: [0, 3, 1, 2],
+    hints: {
+      position: "CF",
+      batsThrows: "S / R",
+      height: "6'1\"",
+      debutYear: "1950",
+      born: "Lowndes County, Mississippi",
+    },
+  },
+  {
+    // Puzzle 12 - Carlos Lee: El Caballo. A steady 30-homer bat that traveled
+    // from the South Side to Milwaukee to a big Houston payday.
+    id: 12,
+    pathType: "team",
+    answer: "Carlos Lee",
+    accolades: ["3× All-Star", "2× Silver Slugger", "358 career HR"],
+    stints: [
+      {
+        franchise: "CHW",
+        displayTeam: "Chicago White Sox",
+        startYear: 1999,
+        endYear: 2004,
+        jerseyNumber: 45,
+        statLine: [
+          { label: "G", value: 880 },
+          { label: "AVG", value: ".288" },
+          { label: "HR", value: 152 },
+          { label: "RBI", value: 552 },
+          { label: "SB", value: 64 },
+        ],
+      },
+      {
+        franchise: "MIL",
+        displayTeam: "Milwaukee Brewers",
+        startYear: 2005,
+        endYear: 2006,
+        jerseyNumber: 45,
+        accolades: [
+          { type: "all_star", count: 2 },
+          { type: "silver_slugger", count: 1 },
+        ],
+        statLine: [
+          { label: "G", value: 264 },
+          { label: "AVG", value: ".273" },
+          { label: "HR", value: 60 },
+          { label: "RBI", value: 195 },
+          { label: "SB", value: 25 },
+        ],
+      },
+      {
+        franchise: "TEX",
+        displayTeam: "Texas Rangers",
+        startYear: 2006,
+        endYear: 2006,
+        jerseyNumber: 45,
+        statLine: [
+          { label: "G", value: 59 },
+          { label: "AVG", value: ".322" },
+          { label: "HR", value: 9 },
+          { label: "RBI", value: 35 },
+          { label: "SB", value: 7 },
+        ],
+      },
+      {
+        franchise: "HOU",
+        displayTeam: "Houston Astros",
+        startYear: 2007,
+        endYear: 2012,
+        jerseyNumber: 45,
+        accolades: [
+          { type: "all_star", count: 1 },
+          { type: "silver_slugger", count: 1 },
+        ],
+        statLine: [
+          { label: "G", value: 815 },
+          { label: "AVG", value: ".286" },
+          { label: "HR", value: 133 },
+          { label: "RBI", value: 533 },
+          { label: "SB", value: 26 },
+        ],
+      },
+      {
+        franchise: "MIA",
+        displayTeam: "Miami Marlins",
+        startYear: 2012,
+        endYear: 2012,
+        jerseyNumber: 45,
+        statLine: [
+          { label: "G", value: 81 },
+          { label: "AVG", value: ".243" },
+          { label: "HR", value: 4 },
+          { label: "RBI", value: 48 },
+          { label: "SB", value: 3 },
+        ],
+      },
+    ],
+    revealOrder: [2, 4, 1, 3, 0],
+    hints: {
+      position: "LF",
+      batsThrows: "R / R",
+      height: "6'2\"",
+      debutYear: "1999",
+      born: "Aguadulce, Panama",
+    },
+  },
+  {
+    // Puzzle 13 - Carl Pavano: a Marlins World Series arm whose big Yankees deal
+    // became a byword for the disabled list, then a durable Twins reinvention.
+    id: 13,
+    pathType: "team",
+    answer: "Carl Pavano",
+    accolades: ["2003 World Series champion", "All-Star (2004)"],
+    stints: [
+      {
+        franchise: "WSH",
+        displayTeam: "Montreal Expos",
+        startYear: 1998,
+        endYear: 2002,
+        jerseyNumber: 45,
+        statLine: [
+          { label: "G", value: 81 },
+          { label: "W-L", value: "24-35" },
+          { label: "ERA", value: "4.83" },
+          { label: "SO", value: 304 },
+          { label: "WHIP", value: "1.44" },
+        ],
+      },
+      {
+        franchise: "MIA",
+        displayTeam: "Florida Marlins",
+        startYear: 2002,
+        endYear: 2004,
+        jerseyNumber: 45,
+        accolades: [
+          { type: "champion", count: 1 },
+          { type: "all_star", count: 1 },
+        ],
+        statLine: [
+          { label: "G", value: 86 },
+          { label: "W-L", value: "33-23" },
+          { label: "ERA", value: "3.64" },
+          { label: "SO", value: 313 },
+          { label: "WHIP", value: "1.25" },
+        ],
+      },
+      {
+        franchise: "NYY",
+        displayTeam: "New York Yankees",
+        startYear: 2005,
+        endYear: 2008,
+        jerseyNumber: 45,
+        statLine: [
+          { label: "G", value: 26 },
+          { label: "W-L", value: "9-8" },
+          { label: "ERA", value: "5.00" },
+          { label: "SO", value: 75 },
+          { label: "WHIP", value: "1.46" },
+        ],
+      },
+      {
+        franchise: "CLE",
+        displayTeam: "Cleveland Indians",
+        startYear: 2009,
+        endYear: 2009,
+        jerseyNumber: 44,
+        statLine: [
+          { label: "G", value: 21 },
+          { label: "W-L", value: "9-8" },
+          { label: "ERA", value: "5.37" },
+          { label: "SO", value: 88 },
+          { label: "WHIP", value: "1.38" },
+        ],
+      },
+      {
+        franchise: "MIN",
+        displayTeam: "Minnesota Twins",
+        startYear: 2009,
+        endYear: 2012,
+        jerseyNumber: 48,
+        statLine: [
+          { label: "G", value: 88 },
+          { label: "W-L", value: "33-33" },
+          { label: "ERA", value: "4.32" },
+          { label: "SO", value: 311 },
+          { label: "WHIP", value: "1.30" },
+        ],
+      },
+    ],
+    revealOrder: [3, 2, 0, 4, 1],
+    hints: {
+      position: "SP",
+      batsThrows: "R / R",
+      height: "6'5\"",
+      debutYear: "1998",
+      born: "New Britain, Connecticut",
+    },
+  },
   {
     // Puzzle 6 — Babe Ruth: the game's whole premise in one card — most
     // people forget both the pitching years AND the 1935 Braves farewell.
@@ -671,6 +1127,114 @@ export const mlbPuzzles: Puzzle[] = [
       height: "6'2\"",
       debutYear: "1914",
       born: "Baltimore, Maryland",
+    },
+  },
+  {
+    // Puzzle 14 - Ted Lilly: a crafty lefty who made two All-Star teams a decade
+    // apart while working through six organizations.
+    id: 14,
+    pathType: "team",
+    answer: "Ted Lilly",
+    accolades: ["2× All-Star", "1,000+ strikeouts", "six franchises"],
+    stints: [
+      {
+        franchise: "WSH",
+        displayTeam: "Montreal Expos",
+        startYear: 1999,
+        endYear: 1999,
+        jerseyNumber: 28,
+        statLine: [
+          { label: "G", value: 9 },
+          { label: "W-L", value: "0-1" },
+          { label: "ERA", value: "7.61" },
+          { label: "SO", value: 28 },
+          { label: "WHIP", value: "1.65" },
+        ],
+      },
+      {
+        franchise: "NYY",
+        displayTeam: "New York Yankees",
+        startYear: 2000,
+        endYear: 2002,
+        jerseyNumber: 45,
+        statLine: [
+          { label: "G", value: 49 },
+          { label: "W-L", value: "8-12" },
+          { label: "ERA", value: "4.65" },
+          { label: "SO", value: 182 },
+          { label: "WHIP", value: "1.32" },
+        ],
+      },
+      {
+        franchise: "OAK",
+        displayTeam: "Oakland Athletics",
+        startYear: 2002,
+        endYear: 2003,
+        jerseyNumber: 31,
+        statLine: [
+          { label: "G", value: 38 },
+          { label: "W-L", value: "14-11" },
+          { label: "ERA", value: "4.37" },
+          { label: "SO", value: 165 },
+          { label: "WHIP", value: "1.32" },
+        ],
+      },
+      {
+        franchise: "TOR",
+        displayTeam: "Toronto Blue Jays",
+        startYear: 2004,
+        endYear: 2006,
+        jerseyNumber: 31,
+        accolades: [
+          { type: "all_star", count: 1 },
+        ],
+        statLine: [
+          { label: "G", value: 89 },
+          { label: "W-L", value: "37-34" },
+          { label: "ERA", value: "4.52" },
+          { label: "SO", value: 424 },
+          { label: "WHIP", value: "1.41" },
+        ],
+      },
+      {
+        franchise: "CHC",
+        displayTeam: "Chicago Cubs",
+        startYear: 2007,
+        endYear: 2010,
+        jerseyNumber: 30,
+        accolades: [
+          { type: "all_star", count: 1 },
+        ],
+        statLine: [
+          { label: "G", value: 113 },
+          { label: "W-L", value: "47-34" },
+          { label: "ERA", value: "3.70" },
+          { label: "SO", value: 598 },
+          { label: "WHIP", value: "1.14" },
+        ],
+      },
+      {
+        franchise: "LAD",
+        displayTeam: "Los Angeles Dodgers",
+        startYear: 2010,
+        endYear: 2013,
+        jerseyNumber: 29,
+        statLine: [
+          { label: "G", value: 58 },
+          { label: "W-L", value: "24-21" },
+          { label: "ERA", value: "3.83" },
+          { label: "SO", value: 284 },
+          { label: "WHIP", value: "1.15" },
+        ],
+      },
+    ],
+    revealOrder: [0, 2, 1, 5, 3, 4],
+    hints: {
+      position: "SP",
+      batsThrows: "L / L",
+      height: "6'0\"",
+      debutYear: "1999",
+      born: "Torrance, California",
     },
   },
   {
@@ -761,89 +1325,122 @@ export const mlbPuzzles: Puzzle[] = [
     },
   },
   {
-    // Puzzle 8 — Sam Jethroe: Negro League star to NL Rookie of the Year
-    // at 33 — the oldest ROY ever. Opens on a one-game 1938 cup of coffee.
-    id: 8,
+    // Puzzle 15 - Kevin Millwood: an Atlanta workhorse (and 2003 no-hitter) whose
+    // free-agent years turned into a seven-team farewell tour.
+    id: 15,
     pathType: "team",
-    answer: "Sam Jethroe",
-    accolades: [
-      "1950 NL Rookie of the Year",
-      "2× NAL batting champion",
-      "1945 Negro World Series champion",
-      "2× NL stolen-base leader",
-    ],
+    answer: "Kevin Millwood",
+    accolades: ["All-Star (1999)", "2005 AL ERA title", "no-hitter (2003)"],
     stints: [
       {
-        franchise: "IND",
-        displayTeam: "Indianapolis ABCs",
-        startYear: 1938,
-        endYear: 1938,
-        jerseyNumber: null,
-        statLine: [
-          { label: "G", value: 1 },
-          { label: "AVG", value: ".333" },
-          { label: "HR", value: 0 },
-          { label: "RBI", value: 0 },
-          { label: "SB", value: 0 },
-        ],
-      },
-      {
-        // 1942 in Cincinnati, Cleveland from 1943 — the Buckeyes moved with
-        // him on the roster; one identity keeps it to one jersey
-        franchise: "CLB",
-        displayTeam: "Cleveland Buckeyes",
-        startYear: 1942,
-        endYear: 1948,
-        jerseyNumber: null,
-        accolades: [
-          { type: "champion", count: 1 }, // 1945 Negro World Series, swept the Grays
-          { type: "batting_title", count: 2 }, // 1944, 1945 NAL
-        ],
-        statLine: [
-          { label: "G", value: 182 },
-          { label: "AVG", value: ".315" },
-          { label: "HR", value: 10 },
-          { label: "RBI", value: 101 },
-          { label: "SB", value: 37 },
-        ],
-      },
-      {
         franchise: "ATL",
-        displayTeam: "Boston Braves",
-        startYear: 1950,
-        endYear: 1952,
-        jerseyNumber: 5,
-        accolades: [{ type: "roy", count: 1 }],
+        displayTeam: "Atlanta Braves",
+        startYear: 1997,
+        endYear: 2002,
+        jerseyNumber: 34,
+        accolades: [
+          { type: "all_star", count: 1 },
+        ],
         statLine: [
-          { label: "G", value: 440 },
-          { label: "AVG", value: ".261" },
-          { label: "HR", value: 49 },
-          { label: "RBI", value: 181 },
-          { label: "SB", value: 98 },
+          { label: "G", value: 168 },
+          { label: "W-L", value: "75-46" },
+          { label: "ERA", value: "3.73" },
+          { label: "SO", value: 840 },
+          { label: "WHIP", value: "1.22" },
         ],
       },
       {
-        franchise: "PIT",
-        displayTeam: "Pittsburgh Pirates",
-        startYear: 1954,
-        endYear: 1954,
-        jerseyNumber: null, // number not reliably documented
+        franchise: "PHI",
+        displayTeam: "Philadelphia Phillies",
+        startYear: 2003,
+        endYear: 2004,
+        jerseyNumber: 34,
         statLine: [
-          { label: "G", value: 2 },
-          { label: "AVG", value: ".000" },
-          { label: "HR", value: 0 },
-          { label: "RBI", value: 0 },
-          { label: "SB", value: 0 },
+          { label: "G", value: 60 },
+          { label: "W-L", value: "23-18" },
+          { label: "ERA", value: "4.34" },
+          { label: "SO", value: 294 },
+          { label: "WHIP", value: "1.33" },
+        ],
+      },
+      {
+        franchise: "CLE",
+        displayTeam: "Cleveland Indians",
+        startYear: 2005,
+        endYear: 2005,
+        jerseyNumber: 34,
+        statLine: [
+          { label: "G", value: 30 },
+          { label: "W-L", value: "9-11" },
+          { label: "ERA", value: "2.86" },
+          { label: "SO", value: 146 },
+          { label: "WHIP", value: "1.22" },
+        ],
+      },
+      {
+        franchise: "TEX",
+        displayTeam: "Texas Rangers",
+        startYear: 2006,
+        endYear: 2009,
+        jerseyNumber: 33,
+        statLine: [
+          { label: "G", value: 125 },
+          { label: "W-L", value: "48-46" },
+          { label: "ERA", value: "4.57" },
+          { label: "SO", value: 528 },
+          { label: "WHIP", value: "1.45" },
+        ],
+      },
+      {
+        franchise: "BAL",
+        displayTeam: "Baltimore Orioles",
+        startYear: 2010,
+        endYear: 2010,
+        jerseyNumber: 34,
+        statLine: [
+          { label: "G", value: 31 },
+          { label: "W-L", value: "4-16" },
+          { label: "ERA", value: "5.10" },
+          { label: "SO", value: 132 },
+          { label: "WHIP", value: "1.51" },
+        ],
+      },
+      {
+        franchise: "COL",
+        displayTeam: "Colorado Rockies",
+        startYear: 2011,
+        endYear: 2011,
+        jerseyNumber: 40,
+        statLine: [
+          { label: "G", value: 9 },
+          { label: "W-L", value: "4-3" },
+          { label: "ERA", value: "3.98" },
+          { label: "SO", value: 36 },
+          { label: "WHIP", value: "1.21" },
+        ],
+      },
+      {
+        franchise: "SEA",
+        displayTeam: "Seattle Mariners",
+        startYear: 2012,
+        endYear: 2012,
+        jerseyNumber: 25,
+        statLine: [
+          { label: "G", value: 28 },
+          { label: "W-L", value: "6-12" },
+          { label: "ERA", value: "4.25" },
+          { label: "SO", value: 107 },
+          { label: "WHIP", value: "1.39" },
         ],
       },
     ],
-    revealOrder: [0, 3, 1, 2],
+    revealOrder: [5, 4, 6, 2, 1, 3, 0],
     hints: {
-      position: "CF",
-      batsThrows: "S / R",
-      height: "6'1\"",
-      debutYear: "1950",
-      born: "Lowndes County, Mississippi",
+      position: "SP",
+      batsThrows: "R / R",
+      height: "6'4\"",
+      debutYear: "1997",
+      born: "Gastonia, North Carolina",
     },
   },
   {
