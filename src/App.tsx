@@ -814,9 +814,6 @@ export default function App() {
       )}
       {showSavePrompt && (
         <AccountSavePrompt
-          score={computeScore(state, hard)}
-          won={state.status === "won"}
-          streak={profile.streak}
           onClose={() => {
             setShowSavePrompt(false);
             setOfferAccountAfterResult(false);

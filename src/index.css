@@ -944,40 +944,113 @@ select {
   padding: 0.2rem 0.45rem;
 }
 
-.account-preview-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  overflow: hidden;
+.account-locker-preview {
   border: 1px solid var(--color-line);
-  border-radius: 9px;
+  border-radius: 10px;
   background: color-mix(in srgb, var(--color-paper) 55%, white);
+  padding: 0.75rem;
 }
 
-.account-preview-grid span {
+.account-preview-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.3rem;
+}
+
+.account-preview-tabs span {
+  border: 1px solid var(--color-ink);
+  border-radius: 999px;
+  padding: 0.25rem 0.1rem;
+  font-size: 0.55rem;
+  font-weight: 800;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.account-preview-tabs .is-active {
+  background: var(--color-ink);
+  color: var(--color-card);
+}
+
+.account-preview-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-block: 1px solid var(--color-line);
+  padding-block: 0.55rem;
+}
+
+.account-preview-metrics span {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.1rem;
-  padding: 0.55rem 0.25rem;
-  border-right: 1px solid var(--color-line);
+  min-width: 0;
 }
 
-.account-preview-grid span:last-child {
-  border-right: 0;
-}
-
-.account-preview-grid strong {
+.account-preview-metrics strong {
   font-family: var(--font-display);
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   line-height: 1;
 }
 
-.account-preview-grid small {
+.account-preview-metrics small {
   color: var(--color-ink-soft);
-  font-size: 0.58rem;
+  font-size: 0.48rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.04em;
+  text-align: center;
   text-transform: uppercase;
+}
+
+.account-preview-heading {
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.account-preview-bar-row {
+  display: grid;
+  grid-template-columns: 2.2rem 1fr;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.58rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.account-preview-bar-track {
+  position: relative;
+  height: 0.78rem;
+  overflow: hidden;
+  border-radius: 3px;
+  background: color-mix(in srgb, var(--color-line) 55%, transparent);
+}
+
+.account-preview-bar-fill {
+  position: absolute;
+  inset: 0;
+  background: #9a693b;
+  transform: scaleX(var(--preview-fill));
+  transform-origin: left;
+  animation: preview-bar-fill 900ms cubic-bezier(0.22, 1, 0.36, 1) 220ms both;
+}
+
+.account-preview-bar-fill.is-dnf {
+  background: #706958;
+}
+
+.account-preview-bar-track b {
+  position: absolute;
+  inset: 0.08rem 0.25rem auto auto;
+  z-index: 1;
+  color: var(--color-ink);
+  font-size: 0.55rem;
+}
+
+@keyframes preview-bar-fill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(var(--preview-fill)); }
 }
 
 /* ------------------------------------------------------------------
@@ -993,6 +1066,9 @@ select {
   .shake,
   .start-jersey,
   .confetti i {
+    animation: none;
+  }
+  .account-preview-bar-fill {
     animation: none;
   }
   .jersey-card,
