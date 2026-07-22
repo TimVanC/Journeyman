@@ -74,12 +74,16 @@ function ArchiveCalendar() {
     m: Number(todayStr.slice(5, 7)) - 1, // 0-based month
   }));
 
-  // any recorded result (won or DNF) marks the day as played
-  const played = new Set<number>();
-  for (const d of Object.keys({ ...loadProfile().history, ...loadArchiveResults() })) {
-    played.add(Number(d));
+  // day → won? true = solved (green), false = DNF (red), absent = unplayed
+  const outcome = new Map<number, boolean>();
+  for (const [d, res] of Object.entries({
+    ...loadProfile().history,
+    ...loadArchiveResults(),
+  })) {
+    outcome.set(Number(d), res !== "DNF");
   }
-  for (const r of cloud ?? []) played.add(r.day);
+  // the cloud is the source of truth once signed in
+  for (const r of cloud ?? []) outcome.set(r.day, r.won);
 
   const launchYm = ym(Number(launchDate.slice(0, 4)), Number(launchDate.slice(5, 7)) - 1);
   const todayYm = ym(Number(todayStr.slice(0, 4)), Number(todayStr.slice(5, 7)) - 1);
@@ -159,16 +163,20 @@ function ArchiveCalendar() {
             );
           }
           if (playable) {
-            const done = played.has(dayNum);
+            const won = outcome.get(dayNum); // undefined = unplayed
+            const status =
+              won === true ? " · solved" : won === false ? " · missed" : "";
             return (
               <a
                 key={d}
                 href={sportHref(SPORT.sport, { d: dayNum })}
-                title={`Puzzle #${dayNum}${done ? " · played" : ""}`}
+                title={`Puzzle #${dayNum}${status}`}
                 className={`${cellBase} ${
-                  done
-                    ? "bg-[#b3362a] font-bold text-[#faf6ec]"
-                    : "border border-line font-medium hover:border-ink"
+                  won === true
+                    ? "bg-[#2e7d43] font-bold text-[#faf6ec]"
+                    : won === false
+                      ? "bg-[#b3362a] font-bold text-[#faf6ec]"
+                      : "border border-line font-medium hover:border-ink"
                 }`}
               >
                 {d}
@@ -183,9 +191,14 @@ function ArchiveCalendar() {
         })}
       </div>
 
-      <p className="mt-3 text-xs text-ink-soft">
-        <span className="mr-1 inline-block h-2.5 w-2.5 rounded-full bg-[#b3362a] align-middle" />{" "}
-        played · Archive games count in your stats but not your daily streak.
+      <p className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-soft">
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#2e7d43]" /> solved
+        </span>
+        <span className="flex items-center gap-1">
+          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[#b3362a]" /> missed
+        </span>
+        <span>Archive games count in your stats but not your daily streak.</span>
       </p>
     </div>
   );

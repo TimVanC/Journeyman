@@ -14,6 +14,7 @@ import {
   ComebackIcon,
   CrownIcon,
   FmvpIcon,
+  FootballIcon,
   MedalIcon,
   OpoyIcon,
   RoyIcon,
@@ -29,6 +30,7 @@ const cells = (s: Stint): StatCell[] => s.statLine ?? [];
 export const nfl: SportConfig = {
   sport: "nfl",
   league: "NFL",
+  ballIcon: FootballIcon,
   brandTag: "NFL",
   shareTag: "Journeyman NFL",
   shareEmoji: "🏈",
@@ -55,9 +57,9 @@ export const nfl: SportConfig = {
   ),
   DeckJersey: ({ size }) => (
     <FootballJerseyRenderer
-      primary="#f2e7d2"
-      secondary="#8a5f3c"
-      trim="#3a2c1c"
+      primary="#e8d3ad"
+      secondary="#9c6b3a"
+      trim="#5b3f27"
       number={null}
       eraStyle="stripes"
       size={size}

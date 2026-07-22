@@ -71,7 +71,7 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
             Solve daily to build your <FlameIcon size={13} className="text-wood-deep" /> streak.
             New puzzle at midnight ET.
             <br />
-            Not affiliated with the {SPORT.league}.
+            Not affiliated with the NBA/NFL/MLB.
           </p>
         </div>
       </div>

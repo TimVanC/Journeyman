@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { SPORT } from "../sports/active";
+import { SPORTS, otherSports, sportHref } from "../sports";
 import { resolveColorway } from "../game/colorways";
 import { formatStintYears } from "./JerseyCard";
 import { buildShareText, copyToClipboard } from "../game/share";
@@ -105,6 +106,21 @@ export default function ResultModal({
             {hard && " · Hard"}
           </p>
           <div className="flex items-center gap-2">
+            {/* jump straight into another league's puzzle */}
+            {otherSports(SPORT.sport).map((s) => {
+              const Ball = SPORTS[s].ballIcon;
+              return (
+                <a
+                  key={s}
+                  href={sportHref(s, { play: 1 })}
+                  className="chip cursor-pointer"
+                  title={`Play ${SPORTS[s].league}`}
+                  aria-label={`Play today's ${SPORTS[s].league} puzzle`}
+                >
+                  <Ball size={16} />
+                </a>
+              );
+            })}
             {/* long careers push the main share button way down — this one
                 stays in reach at the top */}
             <button type="button" className="btn btn-primary btn-sm" onClick={share}>
@@ -192,6 +208,23 @@ export default function ResultModal({
         >
           {copied ? "Copied to clipboard!" : "Share result"}
         </button>
+
+        {/* keep the streak going in another league */}
+        <div className="mt-2 flex gap-2">
+          {otherSports(SPORT.sport).map((s) => {
+            const Ball = SPORTS[s].ballIcon;
+            return (
+              <a
+                key={s}
+                href={sportHref(s, { play: 1 })}
+                className="btn flex flex-1 items-center justify-center gap-2 py-2.5 text-sm"
+              >
+                <Ball size={17} /> Play {SPORTS[s].league}
+              </a>
+            );
+          })}
+        </div>
+
         {(onNext || onReplay) && (
           <div className="mt-2 flex gap-2">
             {onReplay && (

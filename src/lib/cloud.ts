@@ -16,6 +16,9 @@ export interface CloudResult {
   /** 0-1000 points; null on rows recorded before scoring existed */
   score: number | null;
   is_archive: boolean;
+  /** set only by fetchAllResults (the "All" stats view); per-sport
+   *  fetchResults omits it since every row is the one sport */
+  sport?: Sport;
 }
 
 /** Fire-and-forget: record a finished game for the signed-in user.
@@ -151,6 +154,17 @@ export async function fetchResults(sport: Sport): Promise<CloudResult[]> {
     .from("results")
     .select("day, won, revealed, score, is_archive")
     .eq("sport", sport)
+    .order("day");
+  if (error || !data) return [];
+  return data as CloudResult[];
+}
+
+/** Every sport's results in one shot (each row tagged with its sport) —
+ *  powers the "All" tab of the stats locker. */
+export async function fetchAllResults(): Promise<CloudResult[]> {
+  const { data, error } = await supabase
+    .from("results")
+    .select("sport, day, won, revealed, score, is_archive")
     .order("day");
   if (error || !data) return [];
   return data as CloudResult[];

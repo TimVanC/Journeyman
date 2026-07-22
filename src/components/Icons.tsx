@@ -287,3 +287,36 @@ export function BatIcon(p: IconProps) {
     </Base>
   );
 }
+
+/* ---- sport balls: the "play the other league" buttons on the result card ---- */
+
+/** Basketball — circle with the classic seam cross */
+export function BasketballIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <circle cx="12" cy="12" r="9.5" />
+      <path d="M12 2.5v19M2.5 12h19" />
+      <path d="M5.2 5.2C8 8 8 16 5.2 18.8M18.8 5.2C16 8 16 16 18.8 18.8" />
+    </Base>
+  );
+}
+
+/** Football — a pointed ellipse with laces */
+export function FootballIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <path d="M4 12c0-4 3.5-7.5 8-7.5s8 3.5 8 7.5-3.5 7.5-8 7.5-8-3.5-8-7.5Z" />
+      <path d="M9.5 12h5M11 10v4M13 10v4" />
+    </Base>
+  );
+}
+
+/** Baseball — circle with two curved seams */
+export function BaseballIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <circle cx="12" cy="12" r="9.5" />
+      <path d="M6 4.2C8 7 8 17 6 19.8M18 4.2C16 7 16 17 18 19.8" />
+    </Base>
+  );
+}

@@ -7,6 +7,11 @@ export const SPORTS: Record<Sport, SportConfig> = { nba, nfl, mlb };
 
 export const SPORT_ORDER: Sport[] = ["nba", "nfl", "mlb"];
 
+/** the other two leagues, in display order — for "play another game" links */
+export function otherSports(sport: Sport): Sport[] {
+  return SPORT_ORDER.filter((s) => s !== sport);
+}
+
 const LAST_SPORT_KEY = "journeyman:sport:v1";
 
 function isSport(s: string | null): s is Sport {

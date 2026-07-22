@@ -1,5 +1,5 @@
 import { SPORT } from "../sports/active";
-import { SPORT_ORDER, sportHref } from "../sports";
+import { sportHref } from "../sports";
 import { ChartIcon, FlameIcon, GearIcon } from "./Icons";
 
 interface Props {
@@ -9,6 +9,10 @@ interface Props {
   onSettings: () => void;
 }
 
+/** Lean header — just the wordmark and the same four controls `main`
+ *  shipped. Sport is implied by the game you're in (switching happens on
+ *  the home screen and the result card), so no league tag or switcher
+ *  here: that overflowed the bar on phones. */
 export default function Header({ streak, onHelp, onStats, onSettings }: Props) {
   return (
     <header className="baseline-rule relative z-10 bg-paper/80 backdrop-blur-sm">
@@ -16,36 +20,13 @@ export default function Header({ streak, onHelp, onStats, onSettings }: Props) {
         <a
           href={sportHref(SPORT.sport)}
           className="flex items-end gap-2"
-          aria-label={`Journeyman ${SPORT.league} — today's puzzle`}
+          aria-label="Journeyman — today's puzzle"
         >
-          <span aria-hidden="true" className="-mb-0.5">
-            <SPORT.DeckJersey size={18} />
-          </span>
           <h1 className="font-display text-[1.65rem] leading-none tracking-wide">
             JOURNEYMAN
           </h1>
-          {SPORT.brandTag && (
-            <span className="font-display -ml-0.5 text-[0.95rem] leading-none tracking-wide text-wood-deep">
-              {SPORT.brandTag}
-            </span>
-          )}
         </a>
         <div className="flex items-center gap-2">
-          {/* the three games — each sport is its own puzzle, streak, archive */}
-          <nav className="flex items-center gap-1" aria-label="Choose your league">
-            {SPORT_ORDER.map((s) => (
-              <a
-                key={s}
-                href={sportHref(s)}
-                className={`chip !px-1.5 text-[0.62rem] font-bold uppercase ${
-                  s === SPORT.sport ? "chip-active" : ""
-                }`}
-                aria-current={s === SPORT.sport ? "page" : undefined}
-              >
-                {s.toUpperCase()}
-              </a>
-            ))}
-          </nav>
           <span
             className="chip tabular-nums"
             title="Current streak"
@@ -55,7 +36,7 @@ export default function Header({ streak, onHelp, onStats, onSettings }: Props) {
           </span>
           <button
             type="button"
-            className="chip cursor-pointer max-sm:hidden"
+            className="chip cursor-pointer"
             onClick={onStats}
             aria-label="Your stats"
             title="Stats"
@@ -64,7 +45,7 @@ export default function Header({ streak, onHelp, onStats, onSettings }: Props) {
           </button>
           <button
             type="button"
-            className="chip cursor-pointer font-bold max-sm:hidden"
+            className="chip cursor-pointer font-bold"
             onClick={onHelp}
             aria-label="How to play"
           >

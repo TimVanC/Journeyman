@@ -11,6 +11,7 @@ import type { ColorwayDB, ColorwayEra } from "../game/colorways";
 import type { Stint } from "../game/types";
 import {
   AllNbaIcon,
+  BasketballIcon,
   CrownIcon,
   FmvpIcon,
   MedalIcon,
@@ -47,6 +48,7 @@ function eraTricode(era: ColorwayEra, franchise: string): string {
 export const nba: SportConfig = {
   sport: "nba",
   league: "NBA",
+  ballIcon: BasketballIcon,
   brandTag: null, // the original — no suffix on the wordmark
   shareTag: "Journeyman",
   shareEmoji: "🎽",
@@ -74,9 +76,9 @@ export const nba: SportConfig = {
   ),
   DeckJersey: ({ size }) => (
     <JerseyRenderer
-      primary="#f2e7d2"
-      secondary="#8a5f3c"
-      trim="#3a2c1c"
+      primary="#e8d3ad"
+      secondary="#9c6b3a"
+      trim="#5b3f27"
       number={null}
       eraStyle="nineties"
       size={size}

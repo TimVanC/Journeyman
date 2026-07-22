@@ -1,4 +1,5 @@
-import BaseballJerseyRenderer, { type BaseballEraStyle } from "../components/BaseballJerseyRenderer";
+import type { BaseballEraStyle } from "../components/BaseballJerseyRenderer";
+import BaseballBackJerseyRenderer from "../components/BaseballBackJerseyRenderer";
 import colorwaysJson from "../data/mlb/colorways.json";
 import playerIndexJson from "../data/mlb/playerIndex.json";
 import teamSeasonsJson from "../data/mlb/teamSeasons.json";
@@ -10,6 +11,7 @@ import { createStorage } from "../game/storage";
 import type { ColorwayDB } from "../game/colorways";
 import type { StatCell, Stint } from "../game/types";
 import {
+  BaseballIcon,
   BatIcon,
   BattingTitleIcon,
   CrownIcon,
@@ -31,6 +33,7 @@ const cells = (s: Stint): StatCell[] => s.statLine ?? [];
 export const mlb: SportConfig = {
   sport: "mlb",
   league: "MLB",
+  ballIcon: BaseballIcon,
   brandTag: "MLB",
   shareTag: "Journeyman MLB",
   shareEmoji: "⚾",
@@ -45,7 +48,7 @@ export const mlb: SportConfig = {
   // MLB colorways carry per-era tricodes (MON, FLA, CAL...) directly
   eraTricode: (era, franchise) => era.tricode ?? franchise,
   Jersey: ({ era, number, size, label }) => (
-    <BaseballJerseyRenderer
+    <BaseballBackJerseyRenderer
       primary={era.primary}
       secondary={era.secondary}
       trim={era.trim}
@@ -57,10 +60,10 @@ export const mlb: SportConfig = {
     />
   ),
   DeckJersey: ({ size }) => (
-    <BaseballJerseyRenderer
-      primary="#f2e7d2"
-      secondary="#8a5f3c"
-      trim="#3a2c1c"
+    <BaseballBackJerseyRenderer
+      primary="#e8d3ad"
+      secondary="#9c6b3a"
+      trim="#5b3f27"
       number={null}
       eraStyle="buttoned"
       size={size}

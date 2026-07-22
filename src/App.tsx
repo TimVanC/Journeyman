@@ -18,12 +18,13 @@ import { computeScore } from "./game/score";
 import { computeGrade } from "./game/grade";
 import { SPORT } from "./sports/active";
 import { SPORTS, SPORT_ORDER, sportHref } from "./sports";
+import type { Sport } from "./sports/types";
 import { rosterKey } from "./data/roster";
 import { warnPuzzleData, warnRosterGaps } from "./data/validatePuzzles";
 import { eggFor } from "./game/easterEggs";
 import { getPhase, initialState, reducer, HINT_COUNT } from "./game/state";
 import type { Stint } from "./game/types";
-import { loadMode, saveMode, todayET, type GameMode } from "./game/storage";
+import { loadMode, saveMode, type GameMode } from "./game/storage";
 
 const storage = SPORT.storage;
 const puzzles = SPORT.puzzles;
@@ -127,14 +128,39 @@ function resetTestSlots() {
   location.reload();
 }
 
+/** `?play=1` (from a home sport-card or a result-card "Play NFL" link)
+ *  drops you straight onto the board, skipping this sport's start screen. */
+const AUTO_PLAY = new URLSearchParams(location.search).has("play");
+
 export default function App() {
   const { day, puzzle, testIndex, archiveDay } = resolveGame();
   const total = puzzle.stints.length;
   const realToday = storage.currentDayNumber();
   const session = useSession(); // undefined = loading, null = signed out
   const [showAccount, setShowAccount] = useState(false);
+  // which league's stats to open the locker on: the current game, or "all"
+  // when opened from the multi-sport home screen
+  const [accountScope, setAccountScope] = useState<Sport | "all">(SPORT.sport);
+  const openAccount = (scope: Sport | "all") => {
+    setAccountScope(scope);
+    setShowAccount(true);
+  };
   const [showArchive, setShowArchive] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+
+  // scrub ?play from the address bar so a refresh doesn't re-skip the
+  // start screen and the URL stays clean; also log the started game (the
+  // player never hit the start screen's Play button that normally logs it)
+  useEffect(() => {
+    if (!AUTO_PLAY) return;
+    const url = new URL(location.href);
+    url.searchParams.delete("play");
+    history.replaceState(null, "", url);
+    if (testIndex === null && archiveDay === null && state.status === "playing") {
+      trackGameStarted({ sport: SPORT.sport, day });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only
+  }, []);
 
   const [state, dispatch] = useReducer(reducer, day, (d) => {
     const saved = storage.loadGameState(d);
@@ -147,8 +173,10 @@ export default function App() {
   // difficulty: hard = no card backs, no accolade hardware anywhere
   const [mode, setMode] = useState<GameMode>(loadMode);
   const hard = mode === "hard";
-  // test mode and archive replays go straight to the board — no start screen
-  const [showStart, setShowStart] = useState(testIndex === null && archiveDay === null);
+  // test mode, archive replays, and ?play links go straight to the board
+  const [showStart, setShowStart] = useState(
+    testIndex === null && archiveDay === null && !AUTO_PLAY
+  );
   const [showResult, setShowResult] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
@@ -422,17 +450,6 @@ export default function App() {
   const showProfile = over || phase === "hints" || phase === "final";
   const profileRevealed = over ? HINT_COUNT : state.hintsRevealed;
   const profileInGrid = total % 3 !== 0;
-  const dateLabel = new Date(`${todayET()}T12:00:00`).toLocaleDateString("en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-  });
-
-  const startCta = over
-    ? "See result"
-    : state.trail.length > 1 || state.wrongGuesses.length > 0
-      ? "Continue"
-      : "Play";
 
   const revealLabel =
     phase === "jerseys"
@@ -477,7 +494,7 @@ export default function App() {
         {showAccount && (
           <AccountModal
             session={session ?? null}
-            today={realToday}
+            defaultScope={accountScope}
             onClose={() => setShowAccount(false)}
           />
         )}
@@ -491,7 +508,7 @@ export default function App() {
       <Header
         streak={streak}
         onHelp={() => setShowHelp(true)}
-        onStats={() => setShowAccount(true)}
+        onStats={() => openAccount(SPORT.sport)}
         onSettings={() => setShowSettings(true)}
       />
 
@@ -661,9 +678,6 @@ export default function App() {
 
       {showStart && (
         <StartScreen
-          day={day}
-          cta={startCta}
-          dateLabel={dateLabel}
           onPlay={() => {
             setShowStart(false);
             if (over) setShowResult(true);
@@ -672,7 +686,8 @@ export default function App() {
           onRules={() => setShowHelp(true)}
           onSettings={() => setShowSettings(true)}
           onArchive={() => setShowArchive(true)}
-          onAccount={() => setShowAccount(true)}
+          onStats={() => openAccount("all")}
+          onAccount={() => openAccount("all")}
           signedIn={!!session}
         />
       )}
@@ -691,7 +706,7 @@ export default function App() {
           }}
           onAccount={() => {
             setShowSettings(false);
-            setShowAccount(true);
+            openAccount(SPORT.sport);
           }}
           onClose={() => setShowSettings(false)}
         />
@@ -699,7 +714,7 @@ export default function App() {
       {showAccount && (
         <AccountModal
           session={session ?? null}
-          today={realToday}
+          defaultScope={accountScope}
           onClose={() => setShowAccount(false)}
         />
       )}

@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
-import { SPORT } from "../sports/active";
+import { SPORTS, SPORT_ORDER } from "../sports";
+import type { Sport } from "../sports/types";
 import { supabase } from "../lib/supabase";
-import { computeStats, fetchResults, SCORE_BUCKETS, type Stats } from "../lib/cloud";
+import { computeStats, fetchAllResults, SCORE_BUCKETS, type CloudResult } from "../lib/cloud";
+
+type StatScope = Sport | "all";
 
 interface Props {
   session: Session | null;
-  /** current daily puzzle number (for streak math) */
-  today: number;
+  /** which league's stats to show first: the current game, or "all" */
+  defaultScope?: StatScope;
   onClose: () => void;
 }
 
 /** Sign-up / sign-in when logged out; profile + lifetime stats when in. */
-export default function AccountModal({ session, today, onClose }: Props) {
+export default function AccountModal({ session, defaultScope = "all", onClose }: Props) {
   const [view, setView] = useState<"signup" | "signin">("signup");
 
   useEffect(() => {
@@ -42,7 +45,7 @@ export default function AccountModal({ session, today, onClose }: Props) {
         </div>
 
         {session ? (
-          <SignedIn session={session} today={today} />
+          <SignedIn session={session} defaultScope={defaultScope} />
         ) : (
           <AuthForm view={view} onSwitchView={setView} />
         )}
@@ -327,52 +330,129 @@ function AuthForm({
 
 /* ------------------------------------------------------------------ */
 
-function SignedIn({ session, today }: { session: Session; today: number }) {
-  const [stats, setStats] = useState<Stats | null>(null);
+const SCOPES: StatScope[] = ["all", ...SPORT_ORDER];
+const scopeLabel = (s: StatScope) => (s === "all" ? "All" : SPORTS[s].league);
+
+function SignedIn({
+  session,
+  defaultScope,
+}: {
+  session: Session;
+  defaultScope: StatScope;
+}) {
+  // one fetch of every sport's rows; each tab slices/aggregates locally
+  const [rows, setRows] = useState<CloudResult[] | null>(null);
+  const [scope, setScope] = useState<StatScope>(defaultScope);
 
   useEffect(() => {
-    fetchResults(SPORT.sport).then((rows) => setStats(computeStats(rows, today)));
-  }, [today]);
+    fetchAllResults().then(setRows);
+  }, []);
 
-  // one shared scale so the bars compare honestly, DNF included
-  const maxBar = stats ? Math.max(1, ...stats.scoreDist, stats.dnf) : 1;
+  // per-sport stats (each with its own "today" for correct streaks)
+  const perSport = SPORT_ORDER.map((s) => ({
+    sport: s,
+    stats: rows
+      ? computeStats(rows.filter((r) => r.sport === s), SPORTS[s].storage.currentDayNumber())
+      : null,
+  }));
+
+  // the "All" view aggregates totals across sports; streaks are shown
+  // per-league below (a cross-sport streak isn't a real thing). today=0
+  // is fine here — we never read the aggregate's streak fields.
+  const allStats = rows ? computeStats(rows, 0) : null;
+
+  const active =
+    scope === "all" ? allStats : perSport.find((p) => p.sport === scope)?.stats ?? null;
+  const maxBar = active ? Math.max(1, ...active.scoreDist, active.dnf) : 1;
 
   return (
     <div className="mt-3 space-y-4 text-sm">
-      <p className="text-xs text-ink-soft">
-        {session.user.email ?? session.user.phone} · {SPORT.league} stats
-      </p>
+      <p className="text-xs text-ink-soft">{session.user.email ?? session.user.phone}</p>
 
-      {stats === null ? (
+      {/* league picker: All · NBA · NFL · MLB */}
+      <div className="flex gap-1.5" role="tablist" aria-label="Stats by league">
+        {SCOPES.map((s) => (
+          <button
+            key={s}
+            type="button"
+            role="tab"
+            aria-selected={scope === s}
+            className={`chip flex-1 justify-center py-1.5 text-xs font-bold uppercase tracking-wide ${
+              scope === s ? "chip-active" : "cursor-pointer"
+            }`}
+            onClick={() => setScope(s)}
+          >
+            {scopeLabel(s)}
+          </button>
+        ))}
+      </div>
+
+      {rows === null || active === null ? (
         <p className="text-ink-soft">Loading stats…</p>
       ) : (
         <>
-          <div className="grid grid-cols-4 border-y border-line py-3 text-center">
-            <StatCell label="Played" value={stats.played} />
-            <StatCell label="Win %" value={stats.winPct} />
-            <StatCell label="Current Streak" value={stats.currentStreak} />
-            <StatCell label="Max Streak" value={stats.maxStreak} />
-          </div>
-          <div className="-mt-4 grid grid-cols-2 border-b border-line py-3 text-center">
-            <StatCell label="Perfect Games" value={stats.perfect} />
-            <StatCell label="Avg Score" value={stats.avgScore ?? "—"} />
-          </div>
+          {scope === "all" ? (
+            <>
+              <div className="grid grid-cols-4 border-y border-line py-3 text-center">
+                <StatCell label="Played" value={active.played} />
+                <StatCell label="Win %" value={active.winPct} />
+                <StatCell label="Perfect" value={active.perfect} />
+                <StatCell label="Avg Score" value={active.avgScore ?? "—"} />
+              </div>
+              {/* streaks are per-league */}
+              <div>
+                <p className="mb-1.5 text-[0.68rem] font-bold uppercase tracking-widest">
+                  Streaks by league
+                </p>
+                <div className="space-y-1">
+                  {perSport.map(({ sport, stats }) => (
+                    <div
+                      key={sport}
+                      className="flex items-center justify-between border-b border-line py-1 text-xs"
+                    >
+                      <span className="font-bold uppercase tracking-wide">
+                        {SPORTS[sport].league}
+                      </span>
+                      <span className="tabular-nums text-ink-soft">
+                        current <strong className="text-ink">{stats?.currentStreak ?? 0}</strong>
+                        {"  ·  "}
+                        max <strong className="text-ink">{stats?.maxStreak ?? 0}</strong>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="grid grid-cols-4 border-y border-line py-3 text-center">
+                <StatCell label="Played" value={active.played} />
+                <StatCell label="Win %" value={active.winPct} />
+                <StatCell label="Current Streak" value={active.currentStreak} />
+                <StatCell label="Max Streak" value={active.maxStreak} />
+              </div>
+              <div className="-mt-4 grid grid-cols-2 border-b border-line py-3 text-center">
+                <StatCell label="Perfect Games" value={active.perfect} />
+                <StatCell label="Avg Score" value={active.avgScore ?? "—"} />
+              </div>
+            </>
+          )}
 
           <div>
             <p className="mb-1.5 text-[0.68rem] font-bold uppercase tracking-widest">
-              Score distribution
+              Score distribution{scope === "all" ? " (all leagues)" : ""}
             </p>
             <div className="space-y-1">
               {SCORE_BUCKETS.map((b, i) => (
-                <DistBar key={b.label} label={b.label} count={stats.scoreDist[i]} max={maxBar} />
+                <DistBar key={b.label} label={b.label} count={active.scoreDist[i]} max={maxBar} />
               ))}
-              <DistBar label="0" count={stats.dnf} max={maxBar} muted />
+              <DistBar label="0" count={active.dnf} max={maxBar} muted />
             </div>
           </div>
 
-          {stats.archivePlayed > 0 && (
+          {active.archivePlayed > 0 && (
             <p className="text-xs text-ink-soft">
-              Archive: {stats.archiveWins}/{stats.archivePlayed} solved
+              Archive: {active.archiveWins}/{active.archivePlayed} solved
             </p>
           )}
         </>

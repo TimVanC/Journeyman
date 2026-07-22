@@ -1,6 +1,7 @@
 import JerseyRenderer, { type EraStyle } from "./JerseyRenderer";
 import FootballJerseyRenderer, { type FootballEraStyle } from "./FootballJerseyRenderer";
-import BaseballJerseyRenderer, { type BaseballEraStyle } from "./BaseballJerseyRenderer";
+import { type BaseballEraStyle } from "./BaseballJerseyRenderer";
+import BaseballBackJerseyRenderer from "./BaseballBackJerseyRenderer";
 
 /**
  * Dev-only jersey QA sheet (?jerseys) — every renderer across its era
@@ -58,7 +59,7 @@ export default function JerseyGallery() {
           <span className="w-28 text-xs">{c.name}</span>
           {mlbEras.map((era) => (
             <div key={era} className="text-center">
-              <BaseballJerseyRenderer
+              <BaseballBackJerseyRenderer
                 primary={c.primary}
                 secondary={c.secondary}
                 trim={c.trim}

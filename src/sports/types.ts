@@ -42,6 +42,8 @@ export interface SportConfig {
   sport: Sport;
   /** "NBA" — used in copy ("Not affiliated with the NBA") */
   league: string;
+  /** sport-ball glyph for the "play the other league" buttons */
+  ballIcon: (p: { size?: number; className?: string }) => ReactNode;
   /** header/start-screen brand suffix; NBA (the original) shows none */
   brandTag: string | null;
   /** share-line prefix: "Journeyman" / "Journeyman NFL" / "Journeyman MLB" */
