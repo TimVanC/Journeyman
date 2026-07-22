@@ -201,19 +201,19 @@ export function MedalIcon(p: IconProps) {
   );
 }
 
-/** letter/number badge — ROY, All-NBA First Team, Cy Young... Multi-char
- *  glyphs shrink to stay inside the ring at phone sizes. */
+/** Single-letter badge — ROY, All-Pro First Team, Finals/Series MVP.
+ *  Deliberately one character only: at the ~14px these render at on a card,
+ *  two or three letters inside a ring turn to mush. Anything that needs more
+ *  than a letter gets a real pictogram instead. */
 function BadgeIcon({ glyph, ...p }: IconProps & { glyph: string }) {
-  const fontSize = glyph.length >= 3 ? 6.5 : glyph.length === 2 ? 8.5 : 12;
-  const y = glyph.length >= 3 ? 14.4 : glyph.length === 2 ? 15 : 16.4;
   return (
     <Base {...p}>
       <circle cx="12" cy="12" r="9.5" />
       <text
         x="12"
-        y={y}
+        y="16.8"
         textAnchor="middle"
-        fontSize={fontSize}
+        fontSize="14"
         fontFamily="'Archivo Black','Arial Black',sans-serif"
         fill="currentColor"
         stroke="none"
@@ -221,6 +221,25 @@ function BadgeIcon({ glyph, ...p }: IconProps & { glyph: string }) {
         {glyph}
       </text>
     </Base>
+  );
+}
+
+/** Wrapper for the filled 512-grid pictograms borrowed from icon sets. */
+function SolidIcon({ size = 15, className, title, d, box = 512 }: IconProps & { d: string; box?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox={`0 0 ${box} ${box}`}
+      fill="currentColor"
+      className={className}
+      role={title ? "img" : "presentation"}
+      aria-label={title}
+      aria-hidden={title ? undefined : true}
+      style={{ display: "inline-block", verticalAlign: "-0.15em", flexShrink: 0 }}
+    >
+      <path d={d} />
+    </svg>
   );
 }
 
@@ -263,12 +282,50 @@ export function SixthManIcon({ size = 15, className, title }: IconProps) {
 export const RoyIcon = (p: IconProps) => <BadgeIcon glyph="R" {...p} />;
 export const AllNbaIcon = (p: IconProps) => <BadgeIcon glyph="1" {...p} />;
 export const FmvpIcon = (p: IconProps) => <BadgeIcon glyph="F" {...p} />;
-// NFL/MLB accolade badges (same letter-badge family as ROY/All-NBA)
+// NFL letter badges (same single-letter family as ROY / All-Pro)
 export const OpoyIcon = (p: IconProps) => <BadgeIcon glyph="O" {...p} />;
 export const ComebackIcon = (p: IconProps) => <BadgeIcon glyph="C" {...p} />;
-export const CyYoungIcon = (p: IconProps) => <BadgeIcon glyph="CY" {...p} />;
-export const BattingTitleIcon = (p: IconProps) => <BadgeIcon glyph="AVG" {...p} />;
-export const RelieverIcon = (p: IconProps) => <BadgeIcon glyph="SV" {...p} />;
+
+/** Cy Young — the trophy's motif: a hand cradling a baseball. */
+export function CyYoungIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <circle cx="12" cy="8.4" r="4.6" />
+      <path d="M4.8 14.1c0 4 3.2 6.9 7.2 6.9s7.2-2.9 7.2-6.9" />
+      <path d="M7.4 14v2.1M12 14.7v2.3M16.6 14v2.1" />
+    </Base>
+  );
+}
+
+/** Reliever of the Year — a pitcher mid-delivery
+ *  (game-icons.net `throwing-ball` by Delapouite, CC BY 3.0). */
+export const RelieverIcon = (p: IconProps) => (
+  <SolidIcon
+    {...p}
+    d="M222.4 21.66c-2.3 0-4.5.35-6.7 1-8.9 2.62-16 10.11-20.4 21.67-4.4 11.52-5.4 26.73-1.6 42.27 3.8 15.5 11.6 28.1 20.6 35.6 9 7.6 18.6 10.1 27.4 7.5 8.8-2.6 16-10.1 20.3-21.7 4.4-11.45 5.4-26.66 1.7-42.21-3.8-15.55-11.6-28.13-20.6-35.65-6.8-5.69-13.9-8.52-20.7-8.48zM94.28 28.94c-21.65 0-39 17.35-39 39s17.35 38.96 39 38.96c21.72 0 39.02-17.31 39.02-38.96 0-21.65-17.3-39-39.02-39zm-54.27 56.4l-21.49 8.71C29.24 138.8 65.03 188 108.1 208.9c33.3-2.4 51.3-11 87.5-27.5 24.8 68.1 32.5 116.5 4.8 192.7l-108.26 64-7.29 52.2 157.45-78c22.2-32.3 38-55.9 48.1-92.2l91.3 23.5c20.7 45.5 27.4 84.3 32.3 137.3l43.1-36.3c-7.5-51.6-17.6-92.5-36.8-142.1-31.3-18.9-75-37.8-105.5-48 8.7-40.6 3.9-70.9-8-110.2 65.2-3.1 100.7 5.5 163.8 23.3l22.9-23.4c-39.1-18.2-131.6-47.85-211.9-40.4-.9 3.5-1.9 6.9-3.1 10.2-5.9 15.7-17.2 28.6-32.5 33.2-15.4 4.5-31.1-.4-43.2-10.7-3-2.5-5.8-5.3-8.5-8.4-32.8 13.5-64.9 29.7-80.7 40-24.29-10.7-37.35-30.1-47.34-50.6-12.33-7-21.83-18.45-26.25-32.16z"
+  />
+);
+
+/** Batting title — bat meeting ball (Font Awesome `baseball-bat-ball`,
+ *  CC BY 4.0). The plain bat is Silver Slugger; this one keeps the ball. */
+export const BattingTitleIcon = (p: IconProps) => (
+  <SolidIcon
+    {...p}
+    d="M424 0c-12.4 0-24.2 4.9-33 13.7L233.5 171.2c-10.5 10.5-19.8 22.1-27.7 34.6L132.7 321.6c-7.3 11.5-15.8 22.2-25.5 31.9L69.9 390.7l51.3 51.3 37.3-37.3c9.6-9.6 20.3-18.2 31.9-25.5l115.8-73.1c12.5-7.9 24.1-17.2 34.6-27.7L498.3 121c8.7-8.7 13.7-20.6 13.7-33s-4.9-24.2-13.7-33L457 13.7C448.2 4.9 436.4 0 424 0zm88 432a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM15 399c-9.4 9.4-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9L49 399c-9.4-9.4-24.6-9.4-33.9 0z"
+  />
+);
+
+/** Super Bowl — the Lombardi trophy: a football standing on a plinth. */
+export function LombardiIcon(p: IconProps) {
+  return (
+    <Base {...p}>
+      <path d="M12 2.3c2.7 2.4 4.1 5.2 4.1 7.6s-1.4 5.2-4.1 7.6c-2.7-2.4-4.1-5.2-4.1-7.6S9.3 4.7 12 2.3Z" />
+      <path d="M10.3 9.9h3.4" />
+      <path d="M9.6 17.5h4.8l1.3 2.7H8.3l1.3-2.7Z" />
+      <path d="M6.4 22h11.2" />
+    </Base>
+  );
+}
 
 /** Gold Glove — a fielder's mitt silhouette */
 export function GloveIcon(p: IconProps) {
@@ -279,25 +336,14 @@ export function GloveIcon(p: IconProps) {
   );
 }
 
-/** Silver Slugger — bat and ball (Font Awesome `baseball-bat-ball`,
- *  CC BY 4.0). A filled glyph on a 512 grid, so it gets its own wrapper. */
-export function BatIcon({ size = 15, className, title }: IconProps) {
-  return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 512 512"
-      fill="currentColor"
-      className={className}
-      role={title ? "img" : "presentation"}
-      aria-label={title}
-      aria-hidden={title ? undefined : true}
-      style={{ display: "inline-block", verticalAlign: "-0.15em", flexShrink: 0 }}
-    >
-      <path d="M424 0c-12.4 0-24.2 4.9-33 13.7L233.5 171.2c-10.5 10.5-19.8 22.1-27.7 34.6L132.7 321.6c-7.3 11.5-15.8 22.2-25.5 31.9L69.9 390.7l51.3 51.3 37.3-37.3c9.6-9.6 20.3-18.2 31.9-25.5l115.8-73.1c12.5-7.9 24.1-17.2 34.6-27.7L498.3 121c8.7-8.7 13.7-20.6 13.7-33s-4.9-24.2-13.7-33L457 13.7C448.2 4.9 436.4 0 424 0zm88 432a80 80 0 1 0 -160 0 80 80 0 1 0 160 0zM15 399c-9.4 9.4-9.4 24.6 0 33.9l64 64c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9L49 399c-9.4-9.4-24.6-9.4-33.9 0z" />
-    </svg>
-  );
-}
+/** Silver Slugger — just the bat
+ *  (game-icons.net `baseball-bat` by Delapouite, CC BY 3.0). */
+export const BatIcon = (p: IconProps) => (
+  <SolidIcon
+    {...p}
+    d="M429.725 54.54c-3.023.094-5.838 1.16-8.16 3.48l-.055.056-.057.055s-115.29 111.285-169.37 169.364c-28.277 30.37-56.8 65.693-88.448 102.922l17.726 17.73c37.02-31.78 72.285-60.387 103.388-88.236 58.86-52.703 169.174-169.187 169.174-169.187l.084-.09.088-.088c11.49-11.49-7.83-35.118-23.063-35.988-.438-.025-.874-.032-1.305-.018zM151.89 344.13c-17.598 20.413-36.214 41.272-56.33 62.114l10.327 10.248c20.79-20.14 41.52-38.848 61.828-56.54l-15.824-15.823zm-80.21 63.776l-9.9 9.9 32.652 32.4 9.9-9.9-32.652-32.4z"
+  />
+);
 
 /* ---- sport balls: the "play the other league" buttons on the result card ----
    Standard Material Symbols (Apache 2.0) rather than hand-drawn glyphs —

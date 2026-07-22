@@ -14,6 +14,7 @@ import {
   CrownIcon,
   FmvpIcon,
   FootballIcon,
+  LombardiIcon,
   MedalIcon,
   OpoyIcon,
   RoyIcon,
@@ -87,13 +88,17 @@ export const nfl: SportConfig = {
 
   accoladeMeta: {
     pro_bowl: { Icon: StarIcon, label: "Pro Bowl" },
-    champion: { Icon: TrophyIcon, label: "Super Bowl champ" },
+    champion: { Icon: LombardiIcon, label: "Super Bowl champ" },
     mvp: { Icon: CrownIcon, label: "MVP" },
     sb_mvp: { Icon: FmvpIcon, label: "Super Bowl MVP" },
     all_pro: { Icon: AllNbaIcon, label: "First-Team All-Pro" },
     roy: { Icon: RoyIcon, label: "Off. ROY" },
     opoy: { Icon: OpoyIcon, label: "Off. Player of the Year" },
     comeback: { Icon: ComebackIcon, label: "Comeback Player" },
+    // the Lombardi covers the ring, so the plain trophy is free for
+    // the two statistical crowns
+    rushing_title: { Icon: TrophyIcon, label: "Rushing title" },
+    receiving_title: { Icon: TrophyIcon, label: "Receiving title" },
     olympic_gold: { Icon: MedalIcon, label: "Olympic gold" },
   },
 

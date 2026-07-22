@@ -34,6 +34,26 @@ export default function JerseyGallery() {
     <div className="min-h-dvh p-6">
       <h1 className="font-display text-2xl">Jersey QA sheet</h1>
 
+      {/* every accolade, at the size it actually renders on a card (14px)
+          plus a blown-up copy for checking the drawing */}
+      <h2 className="font-display mt-4 text-lg">Accolades</h2>
+      {SPORT_ORDER.map((s) => (
+        <div key={s} className="mb-2">
+          <p className="text-[0.65rem] font-bold uppercase">{SPORTS[s].league}</p>
+          <div className="flex flex-wrap gap-4">
+            {Object.entries(SPORTS[s].accoladeMeta).map(([key, meta]) => (
+              <div key={key} className="w-24 text-center">
+                <div className="flex items-center justify-center gap-2 text-wood-deep">
+                  <meta.Icon size={14} />
+                  <meta.Icon size={40} />
+                </div>
+                <p className="text-[0.55rem] leading-tight">{meta.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+
       <h2 className="font-display mt-4 text-lg">Sport ball icons</h2>
       <div className="flex items-end gap-6">
         {SPORT_ORDER.map((s) => {

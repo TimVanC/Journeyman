@@ -233,7 +233,7 @@ export default function JerseyCard({
                 if (!meta) return null;
                 return (
                   <li key={a.type} className="flex items-center gap-1 text-[0.62rem] font-bold leading-tight">
-                    <meta.Icon size={12} className="shrink-0 text-wood-deep" />
+                    <meta.Icon size={14} className="shrink-0 text-wood-deep" />
                     {a.count > 1 ? `${a.count}× ` : ""}
                     {meta.label}
                   </li>
@@ -289,7 +289,7 @@ function AccoladeChip({ accolade }: { accolade: StintAccolade }) {
   if (!meta) return null;
   return (
     <span className="inline-flex items-center gap-0.5" title={meta.label}>
-      <meta.Icon size={12} className="text-wood-deep" />
+      <meta.Icon size={14} className="text-wood-deep" />
       {accolade.count > 1 && <span className="tabular-nums">×{accolade.count}</span>}
       <span className="sr-only">{meta.label}</span>
     </span>

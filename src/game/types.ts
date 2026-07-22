@@ -19,6 +19,8 @@ export type AccoladeType =
   | "sb_mvp"
   | "opoy"
   | "comeback"
+  | "rushing_title"
+  | "receiving_title"
   // MLB (champion = World Series ring, all_star/mvp/roy shared)
   | "cy_young"
   | "ws_mvp"
