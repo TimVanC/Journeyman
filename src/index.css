@@ -896,8 +896,7 @@ select {
   padding: 0.55rem 0.8rem;
 }
 
-/* Logged-out result conversion: show the value before asking for an account. */
-.account-save-card,
+/* Account conversion surfaces: show the value before asking for an account. */
 .account-home-card {
   border: 2px solid var(--color-ink);
   border-radius: 12px;
@@ -905,6 +904,15 @@ select {
     linear-gradient(145deg, color-mix(in srgb, var(--color-wood) 18%, var(--color-card)), var(--color-card));
   box-shadow: 0 3px 0 var(--color-wood);
   padding: 0.9rem;
+}
+
+.account-prompt-backdrop {
+  z-index: 55;
+  background: rgba(29, 26, 19, 0.68);
+}
+
+.account-prompt-panel {
+  max-width: 23rem;
 }
 
 .account-home-card {

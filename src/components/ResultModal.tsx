@@ -4,7 +4,7 @@ import { SPORTS, otherSports, sportHref } from "../sports";
 import { resolveColorway } from "../game/colorways";
 import { formatStintYears } from "./JerseyCard";
 import { buildShareText, copyToClipboard } from "../game/share";
-import { trackAccountCta, trackShare } from "../lib/analytics";
+import { trackShare } from "../lib/analytics";
 import { computeGrade } from "../game/grade";
 import { computeScore } from "../game/score";
 import { todayET } from "../game/storage";
@@ -22,15 +22,11 @@ interface Props {
   hard: boolean;
   /** daily game (not test, not archive) — eligible for today's leaderboard pool */
   canRank: boolean;
-  /** anonymous daily players see a contextual save-your-game pitch */
-  signedIn: boolean;
   onClose: () => void;
   /** open the stats locker for this league */
   onStats: () => void;
   /** open the cross-sport archive */
   onArchive: () => void;
-  /** open account creation from the post-game save prompt */
-  onSignUp: () => void;
   /** test mode only: jump to the next puzzle */
   onNext?: () => void;
   /** test mode only: wipe this slot and play it again */
@@ -43,11 +39,9 @@ export default function ResultModal({
   streak,
   hard,
   canRank,
-  signedIn,
   onClose,
   onStats,
   onArchive,
-  onSignUp,
   onNext,
   onReplay,
 }: Props) {
@@ -69,10 +63,6 @@ export default function ResultModal({
     if (!canRank || !won) return;
     fetchDayStanding(SPORT.sport, state.day, score).then(setStanding);
   }, [canRank, won, state.day, score]);
-
-  useEffect(() => {
-    if (!signedIn && canRank) trackAccountCta({ source: "result", action: "viewed" });
-  }, [signedIn, canRank]);
 
   const beatenPct =
     standing && standing.others >= MIN_CROWD
@@ -207,51 +197,6 @@ export default function ResultModal({
           <p className="mt-2 text-sm font-bold text-[#2e7d43]">
             Better than {beatenPct}% of today's players.
           </p>
-        )}
-
-        {!signedIn && canRank && (
-          <section className="account-save-card mt-3" aria-labelledby="save-game-title">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <p className="account-save-eyebrow">Your stats preview</p>
-                <h3 id="save-game-title" className="font-display mt-0.5 text-xl tracking-wide">
-                  KEEP THIS GAME
-                </h3>
-              </div>
-              <span className="account-save-badge">FREE</span>
-            </div>
-
-            <div className="account-preview-grid mt-3" aria-label="Stats this game will add">
-              <span>
-                <strong>{score}</strong>
-                <small>Score</small>
-              </span>
-              <span>
-                <strong>{won ? "W" : "DNF"}</strong>
-                <small>Result</small>
-              </span>
-              <span>
-                <strong>{streak}</strong>
-                <small>Streak</small>
-              </span>
-            </div>
-
-            <p className="mt-3 text-[0.78rem] leading-relaxed text-ink-soft">
-              Create a free account to add this game—and the games already on
-              this device—to your lifetime stats. You’ll also unlock every
-              previous NBA, NFL, and MLB puzzle.
-            </p>
-            <button
-              type="button"
-              className="btn btn-primary mt-3 w-full py-3 text-sm"
-              onClick={onSignUp}
-            >
-              Save this game to my stats
-            </button>
-            <p className="mt-2 text-center text-[0.65rem] font-semibold text-ink-soft">
-              Free forever · Your existing games come with you
-            </p>
-          </section>
         )}
 
         {/* full career, chronological, team names finally shown */}

@@ -4,6 +4,7 @@ import JerseyCard, { DeckCard, GhostCard, type CardRect } from "./components/Jer
 import HintTray from "./components/HintTray";
 import GuessInput from "./components/GuessInput";
 import ResultModal from "./components/ResultModal";
+import AccountSavePrompt from "./components/AccountSavePrompt";
 import HelpModal from "./components/HelpModal";
 import StartScreen from "./components/StartScreen";
 import Confetti from "./components/Confetti";
@@ -212,6 +213,8 @@ export default function App() {
     testIndex === null && archiveDay === null && !AUTO_PLAY
   );
   const [showResult, setShowResult] = useState(false);
+  const [offerAccountAfterResult, setOfferAccountAfterResult] = useState(false);
+  const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
   const [celebrate, setCelebrate] = useState(false);
   const [justLost, setJustLost] = useState(false);
@@ -282,12 +285,21 @@ export default function App() {
         hard,
         isArchive: archiveDay !== null,
       });
+      if (!session && archiveDay === null) setOfferAccountAfterResult(true);
     }
     const t = setTimeout(() => setShowResult(true), state.status === "won" ? 1100 : 1400);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- fires once via the
     // `recorded` ref the moment `over` flips; state is frozen from then on
   }, [over, day, state.status, state.revealed, testIndex, archiveDay, hard]);
+
+  // Let the result card land first, then place the account ask over it as a
+  // distinct second step. Recaps do not re-trigger an offer dismissed earlier.
+  useEffect(() => {
+    if (!showResult || !offerAccountAfterResult || session) return;
+    const t = window.setTimeout(() => setShowSavePrompt(true), 650);
+    return () => window.clearTimeout(t);
+  }, [showResult, offerAccountAfterResult, session]);
 
   const DECK_KEY = -1;
   const cardEls = useRef(new Map<number, HTMLElement>());
@@ -778,11 +790,9 @@ export default function App() {
           streak={profile.streak}
           hard={hard}
           canRank={testIndex === null && archiveDay === null}
-          signedIn={!!session}
           onClose={() => setShowResult(false)}
           onStats={() => openAccount(SPORT.sport)}
           onArchive={() => setShowArchive(true)}
-          onSignUp={() => openAccount(SPORT.sport, null, "result")}
           onNext={
             testIndex !== null
               ? () => {
@@ -800,6 +810,22 @@ export default function App() {
                 }
               : undefined
           }
+        />
+      )}
+      {showSavePrompt && (
+        <AccountSavePrompt
+          score={computeScore(state, hard)}
+          won={state.status === "won"}
+          streak={profile.streak}
+          onClose={() => {
+            setShowSavePrompt(false);
+            setOfferAccountAfterResult(false);
+          }}
+          onSignUp={() => {
+            setShowSavePrompt(false);
+            setOfferAccountAfterResult(false);
+            openAccount(SPORT.sport, null, "result");
+          }}
         />
       )}
       {/* archive and locker render after the result card so the buttons on
