@@ -52,7 +52,7 @@ export default function StartScreen({
       {/* stats + how-to-play + settings, tucked into the hamburger */}
       <HomeMenu onStats={onStats} onRules={onRules} onSettings={onSettings} />
 
-      <div className="flex w-full max-w-sm flex-col items-center px-6 text-center">
+      <div className="my-auto flex w-full max-w-sm flex-col items-center px-6 py-6 text-center">
         {/* the jersey that started it all, still swaying */}
         <div className="start-jersey" aria-hidden="true">
           <NbaJersey size={88} />

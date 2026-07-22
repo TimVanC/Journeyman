@@ -700,8 +700,12 @@ select {
   inset: 0;
   z-index: 45;
   display: flex;
-  align-items: center;
   justify-content: center;
+  /* NO align-items: center — a flex-centered overlay clips both ends the
+     moment content outgrows the viewport, and Chrome's mobile toolbars leave
+     less height than Safari's. The child carries margin-block auto instead:
+     centered when it fits, scrollable from the top when it doesn't. */
+  overflow-y: auto;
   background-color: var(--color-paper);
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.22 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }

@@ -470,7 +470,7 @@ export default function App() {
   if (archiveDay !== null && !session) {
     return (
       <div className="start-screen" role="dialog" aria-label="Archive — members only">
-        <div className="flex w-full max-w-sm flex-col items-center px-6 text-center">
+        <div className="my-auto flex w-full max-w-sm flex-col items-center px-6 py-6 text-center">
           <LockIcon size={34} className="text-wood-deep" />
           <h1 className="font-display mt-4 text-3xl tracking-wide">THE ARCHIVE</h1>
           {session === undefined ? (
