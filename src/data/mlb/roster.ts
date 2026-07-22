@@ -55,4 +55,9 @@ export const MLB_ROSTER: string[] = [
   "Jake Peavy",
   "Cole Hamels",
   "Johnny Cueto",
+  // ---- the pre-war set: puzzles 6-9, already authored & verified ----
+  "Sam Jethroe", // Negro Leagues → oldest ROY ever, at 33
+  "Babe Ruth",
+  "Monte Irvin", // Newark Eagles → '54 champion Giants
+  "Jimmie Foxx",
 ];

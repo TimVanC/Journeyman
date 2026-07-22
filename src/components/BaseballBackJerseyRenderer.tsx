@@ -36,7 +36,9 @@ export interface BaseballBackJerseyProps {
   primary: string;
   secondary: string;
   trim: string;
-  number: number | null;
+  /** null = genuinely numberless (pre-1929, most Negro League clubs) —
+   *  renders a blank back. The face-down deck passes "??" explicitly. */
+  number: number | "??" | null;
   eraStyle: BaseballEraStyle;
   pinstripe?: boolean;
   size?: number;
@@ -67,10 +69,10 @@ export default function BaseballBackJerseyRenderer({
 }: BaseballBackJerseyProps) {
   const uid = useId();
   const e = ERA[eraStyle];
-  const numText = number === null ? "??" : String(number);
+  const numText = number === null ? "" : String(number);
   // the torso panel runs y 510-652, so a baseline of 600 sits the number's
   // visual mass on the middle of the back rather than low on it
-  const numFontSize = number === null ? 40 : numText.length > 1 ? 38 : 42;
+  const numFontSize = number === "??" ? 40 : numText.length > 1 ? 38 : 42;
   // two-letter codes (SD, KC, SF…) get extra size — they have the room
   const labelFontSize = (label?.length ?? 3) <= 2 ? 32 : 26;
   const shadeId = `bbksh-${uid}`;
@@ -86,7 +88,11 @@ export default function BaseballBackJerseyRenderer({
       width={size}
       height={size * (VB.h / VB.w)}
       role="img"
-      aria-label={`${eraStyle} era baseball jersey back, number ${numText}`}
+      aria-label={
+        number === null
+          ? `${eraStyle} era baseball jersey back, no number`
+          : `${eraStyle} era baseball jersey back, number ${numText}`
+      }
     >
       <defs>
         <linearGradient id={shadeId} x1="0" y1="0" x2="0" y2="1">

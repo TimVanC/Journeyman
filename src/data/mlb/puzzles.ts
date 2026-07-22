@@ -588,4 +588,331 @@ export const mlbPuzzles: Puzzle[] = [
       born: "Ponce, Puerto Rico",
     },
   },
+
+  /* ------------------------------------------------------------------
+     Puzzles 6-9 — the pre-war set (2026-07-22). Unlike 1-5, these are
+     NOT best-effort recall: every stat line is machine-summed from the
+     official MLB StatsAPI year-by-year rows (which since 2024 include
+     the recognized Negro Leagues), and every season W-L in
+     teamSeasons.json comes from the same API's standings endpoint.
+     jerseyNumber null = the uniform genuinely had no number (pre-1929,
+     and most Negro League clubs) OR the number isn't reliably
+     documented — we render a blank back rather than invent one.
+  ------------------------------------------------------------------ */
+  {
+    // Puzzle 6 — Babe Ruth: the game's whole premise in one card — most
+    // people forget both the pitching years AND the 1935 Braves farewell.
+    id: 6,
+    pathType: "team",
+    answer: "Babe Ruth",
+    accolades: ["7× World Series champion", "1923 AL MVP", "714 career HR", "94-46, 2.28 as a pitcher"],
+    stints: [
+      {
+        franchise: "BOS",
+        displayTeam: "Boston Red Sox",
+        startYear: 1914,
+        endYear: 1919,
+        jerseyNumber: null, // numbers didn't exist until 1929
+        accolades: [{ type: "champion", count: 3 }],
+        // the pitching line IS the clue — a dead-ball ace who also hit
+        // .308/49 HR. G here = games pitched.
+        statLine: [
+          { label: "G", value: 158 },
+          { label: "W-L", value: "89-46" },
+          { label: "ERA", value: "2.19" },
+          { label: "SO", value: 483 },
+          { label: "WHIP", value: "1.14" },
+        ],
+      },
+      {
+        franchise: "NYY",
+        displayTeam: "New York Yankees",
+        startYear: 1920,
+        endYear: 1934,
+        jerseyNumber: 3, // from 1929, when numbers arrived (batting-order 3)
+        accolades: [
+          { type: "champion", count: 4 },
+          { type: "mvp", count: 1 },
+          { type: "all_star", count: 2 }, // the game only existed from 1933
+          { type: "batting_title", count: 1 }, // 1924, .378
+        ],
+        statLine: [
+          { label: "G", value: 2084 },
+          { label: "AVG", value: ".349" },
+          { label: "HR", value: 659 },
+          { label: "RBI", value: 1971 },
+          { label: "SB", value: 110 },
+        ],
+      },
+      {
+        franchise: "ATL",
+        displayTeam: "Boston Braves",
+        startYear: 1935,
+        endYear: 1935,
+        jerseyNumber: 3,
+        statLine: [
+          { label: "G", value: 28 },
+          { label: "AVG", value: ".181" },
+          { label: "HR", value: 6 }, // three of them in his final great game
+          { label: "RBI", value: 12 },
+          { label: "SB", value: 0 },
+        ],
+      },
+    ],
+    revealOrder: [2, 0, 1],
+    hints: {
+      position: "RF / P",
+      batsThrows: "L / L",
+      height: "6'2\"",
+      debutYear: "1914",
+      born: "Baltimore, Maryland",
+    },
+  },
+  {
+    // Puzzle 7 — Jimmie Foxx: the Beast's forgotten tail — wartime Cubs
+    // cameo and a last year pitching-and-pinch-hitting for the Phillies.
+    id: 7,
+    pathType: "team",
+    answer: "Jimmie Foxx",
+    accolades: ["3× AL MVP", "2× World Series champion", "9× All-Star", "1933 Triple Crown"],
+    stints: [
+      {
+        franchise: "OAK",
+        displayTeam: "Philadelphia Athletics",
+        startYear: 1925,
+        endYear: 1935,
+        jerseyNumber: 3,
+        accolades: [
+          { type: "champion", count: 2 },
+          { type: "mvp", count: 2 },
+          { type: "all_star", count: 3 },
+          { type: "batting_title", count: 1 }, // 1933, .356 — Triple Crown year
+        ],
+        statLine: [
+          { label: "G", value: 1256 },
+          { label: "AVG", value: ".339" },
+          { label: "HR", value: 302 },
+          { label: "RBI", value: 1075 },
+          { label: "SB", value: 48 },
+        ],
+      },
+      {
+        franchise: "BOS",
+        displayTeam: "Boston Red Sox",
+        startYear: 1936,
+        endYear: 1942,
+        jerseyNumber: 3,
+        accolades: [
+          { type: "mvp", count: 1 }, // 1938
+          { type: "all_star", count: 6 },
+          { type: "batting_title", count: 1 }, // 1938, .349
+        ],
+        statLine: [
+          { label: "G", value: 887 },
+          { label: "AVG", value: ".320" },
+          { label: "HR", value: 222 },
+          { label: "RBI", value: 788 },
+          { label: "SB", value: 38 },
+        ],
+      },
+      {
+        // waived mid-1942, sat out 1943, briefly back in 1944 — one stint,
+        // and the card back simply has no 1943 row
+        franchise: "CHC",
+        displayTeam: "Chicago Cubs",
+        startYear: 1942,
+        endYear: 1944,
+        jerseyNumber: null, // number not reliably documented
+        statLine: [
+          { label: "G", value: 85 },
+          { label: "AVG", value: ".191" },
+          { label: "HR", value: 3 },
+          { label: "RBI", value: 21 },
+          { label: "SB", value: 1 },
+        ],
+      },
+      {
+        franchise: "PHI",
+        displayTeam: "Philadelphia Phillies",
+        startYear: 1945,
+        endYear: 1945,
+        jerseyNumber: null, // number not reliably documented
+        statLine: [
+          { label: "G", value: 89 },
+          { label: "AVG", value: ".268" },
+          { label: "HR", value: 7 },
+          { label: "RBI", value: 38 },
+          { label: "SB", value: 0 },
+        ],
+      },
+    ],
+    revealOrder: [3, 2, 1, 0],
+    hints: {
+      position: "1B",
+      batsThrows: "R / R",
+      height: "6'0\"",
+      debutYear: "1925",
+      born: "Sudlersville, Maryland",
+    },
+  },
+  {
+    // Puzzle 8 — Sam Jethroe: Negro League star to NL Rookie of the Year
+    // at 33 — the oldest ROY ever. Opens on a one-game 1938 cup of coffee.
+    id: 8,
+    pathType: "team",
+    answer: "Sam Jethroe",
+    accolades: [
+      "1950 NL Rookie of the Year",
+      "2× NAL batting champion",
+      "1945 Negro World Series champion",
+      "2× NL stolen-base leader",
+    ],
+    stints: [
+      {
+        franchise: "IND",
+        displayTeam: "Indianapolis ABCs",
+        startYear: 1938,
+        endYear: 1938,
+        jerseyNumber: null,
+        statLine: [
+          { label: "G", value: 1 },
+          { label: "AVG", value: ".333" },
+          { label: "HR", value: 0 },
+          { label: "RBI", value: 0 },
+          { label: "SB", value: 0 },
+        ],
+      },
+      {
+        // 1942 in Cincinnati, Cleveland from 1943 — the Buckeyes moved with
+        // him on the roster; one identity keeps it to one jersey
+        franchise: "CLB",
+        displayTeam: "Cleveland Buckeyes",
+        startYear: 1942,
+        endYear: 1948,
+        jerseyNumber: null,
+        accolades: [
+          { type: "champion", count: 1 }, // 1945 Negro World Series, swept the Grays
+          { type: "batting_title", count: 2 }, // 1944, 1945 NAL
+        ],
+        statLine: [
+          { label: "G", value: 182 },
+          { label: "AVG", value: ".315" },
+          { label: "HR", value: 10 },
+          { label: "RBI", value: 101 },
+          { label: "SB", value: 37 },
+        ],
+      },
+      {
+        franchise: "ATL",
+        displayTeam: "Boston Braves",
+        startYear: 1950,
+        endYear: 1952,
+        jerseyNumber: 5,
+        accolades: [{ type: "roy", count: 1 }],
+        statLine: [
+          { label: "G", value: 440 },
+          { label: "AVG", value: ".261" },
+          { label: "HR", value: 49 },
+          { label: "RBI", value: 181 },
+          { label: "SB", value: 98 },
+        ],
+      },
+      {
+        franchise: "PIT",
+        displayTeam: "Pittsburgh Pirates",
+        startYear: 1954,
+        endYear: 1954,
+        jerseyNumber: null, // number not reliably documented
+        statLine: [
+          { label: "G", value: 2 },
+          { label: "AVG", value: ".000" },
+          { label: "HR", value: 0 },
+          { label: "RBI", value: 0 },
+          { label: "SB", value: 0 },
+        ],
+      },
+    ],
+    revealOrder: [0, 3, 1, 2],
+    hints: {
+      position: "CF",
+      batsThrows: "S / R",
+      height: "6'1\"",
+      debutYear: "1950",
+      born: "Lowndes County, Mississippi",
+    },
+  },
+  {
+    // Puzzle 9 — Monte Irvin: a decade with the Eagles (Army years leave
+    // the 1944 gap on the card back), the Giants' pennant runs, one final
+    // Cubs season. Hall of Fame 1973.
+    id: 9,
+    pathType: "team",
+    answer: "Monte Irvin",
+    accolades: [
+      "1954 World Series champion",
+      "1946 Negro World Series champion",
+      "1951 NL RBI leader",
+      "All-Star (1952)",
+    ],
+    stints: [
+      {
+        franchise: "NWE",
+        displayTeam: "Newark Eagles",
+        startYear: 1938,
+        endYear: 1948,
+        jerseyNumber: null,
+        accolades: [
+          { type: "champion", count: 1 }, // 1946 Negro World Series — hit .462
+          { type: "batting_title", count: 1 }, // 1941 NNL
+        ],
+        statLine: [
+          { label: "G", value: 310 },
+          { label: "AVG", value: ".336" },
+          { label: "HR", value: 41 },
+          { label: "RBI", value: 250 },
+          { label: "SB", value: 26 },
+        ],
+      },
+      {
+        franchise: "SF",
+        displayTeam: "New York Giants",
+        startYear: 1949,
+        endYear: 1955,
+        jerseyNumber: 20, // retired by the Giants in 2010
+        accolades: [
+          { type: "champion", count: 1 },
+          { type: "all_star", count: 1 },
+        ],
+        statLine: [
+          { label: "G", value: 653 },
+          { label: "AVG", value: ".296" },
+          { label: "HR", value: 84 },
+          { label: "RBI", value: 393 },
+          { label: "SB", value: 27 },
+        ],
+      },
+      {
+        franchise: "CHC",
+        displayTeam: "Chicago Cubs",
+        startYear: 1956,
+        endYear: 1956,
+        jerseyNumber: null, // number not reliably documented
+        statLine: [
+          { label: "G", value: 111 },
+          { label: "AVG", value: ".271" },
+          { label: "HR", value: 15 },
+          { label: "RBI", value: 50 },
+          { label: "SB", value: 1 },
+        ],
+      },
+    ],
+    revealOrder: [2, 0, 1],
+    hints: {
+      position: "LF",
+      batsThrows: "R / R",
+      height: "6'1\"",
+      debutYear: "1949",
+      born: "Haleburg, Alabama",
+    },
+  },
 ];

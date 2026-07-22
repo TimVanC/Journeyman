@@ -40,7 +40,8 @@ export const mlb: SportConfig = {
   tagline: "A mystery MLB journeyman, one jersey at a time.",
 
   puzzles: mlbPuzzles,
-  dailyPool: 5,
+  // 1-5 modern + 6-9 pre-war/Negro League set, all StatsAPI-verified
+  dailyPool: 9,
   roster: MLB_ROSTER,
   searchPlayers: createPlayerSearch(
     () => import("../data/mlb/playerIndex.json").then((m) => m.default as [string, string][])
@@ -66,7 +67,7 @@ export const mlb: SportConfig = {
       primary="#e8d3ad"
       secondary="#9c6b3a"
       trim="#5b3f27"
-      number={null}
+      number="??" // the mystery mark; null now means "genuinely numberless"
       eraStyle="buttoned"
       size={size}
     />

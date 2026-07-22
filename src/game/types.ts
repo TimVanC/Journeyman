@@ -48,7 +48,10 @@ export interface Stint {
   /** Season START years (2016 = the 2016-17 season; NFL/MLB = calendar season year) */
   startYear: number;
   endYear: number;
-  jerseyNumber: number;
+  /** null = the uniform had no number (pre-1929 MLB, most Negro League
+   *  clubs) or it isn't reliably documented — the card renders a blank
+   *  back rather than inventing one */
+  jerseyNumber: number | null;
   /** hardware earned at this stop (icons on the card front, text on the back) */
   accolades?: StintAccolade[];
 
