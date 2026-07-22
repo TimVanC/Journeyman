@@ -30,6 +30,9 @@ export function initAnalytics(): void {
     // switching sports is a real navigation, so default pageview capture
     // already breaks traffic down by sport via the ?s= URL
     capture_pageview: true,
+    // session replay records full sessions and eats the free tier fast on a
+    // public game — we only want events + pageviews, not recordings
+    disable_session_recording: true,
   });
   // every event from this page-load carries which game it was
   posthog.register({ sport: SPORT.sport });
