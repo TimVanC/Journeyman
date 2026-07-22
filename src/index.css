@@ -1070,7 +1070,10 @@ select {
   background: #9a693b;
   transform: scaleX(var(--preview-fill));
   transform-origin: left;
-  animation: preview-bar-fill 900ms cubic-bezier(0.22, 1, 0.36, 1) 220ms both;
+}
+
+.account-locker-preview.is-stats-active .account-preview-bar-fill {
+  animation: preview-bar-fill 900ms cubic-bezier(0.22, 1, 0.36, 1) 160ms both;
 }
 
 .account-preview-bar-fill.is-dnf {
@@ -1280,7 +1283,7 @@ select {
   .confetti i {
     animation: none;
   }
-  .account-preview-bar-fill {
+  .account-locker-preview.is-stats-active .account-preview-bar-fill {
     animation: none;
   }
   .account-preview-carousel,

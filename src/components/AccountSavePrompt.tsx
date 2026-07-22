@@ -48,14 +48,11 @@ function loadLocalPreview() {
 
 const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
 
-function shiftDate(date: string, days: number) {
-  const stamp = Date.parse(`${date}T12:00:00Z`) + days * 86_400_000;
-  return new Date(stamp).toISOString().slice(0, 10);
-}
-
 function loadArchivePreview() {
   const today = todayET();
-  const selected = shiftDate(today, -5);
+  // Today's slate is the first date where all three launch-day leagues are
+  // guaranteed to exist, so the preview never demonstrates locked rows.
+  const selected = today;
   const selectedDate = new Date(`${selected}T12:00:00Z`);
   const year = selectedDate.getUTCFullYear();
   const month = selectedDate.getUTCMonth();
@@ -134,6 +131,12 @@ export default function AccountSavePrompt({ onSignUp, onClose }: Props) {
   const maxBar = Math.max(1, ...preview.distribution.map((row) => row.count));
   const [phase, setPhase] = useState<"stats" | "calendar" | "day">("stats");
   const [autoPlay, setAutoPlay] = useState(true);
+  const [animatedMetrics, setAnimatedMetrics] = useState({
+    played: 0,
+    winPct: 0,
+    perfect: 0,
+    avgScore: preview.avgScore === null ? null : 0,
+  });
 
   useEffect(() => {
     trackAccountCta({ source: "result", action: "viewed" });
@@ -151,6 +154,47 @@ export default function AccountSavePrompt({ onSignUp, onClose }: Props) {
     );
     return () => window.clearTimeout(timer);
   }, [phase, autoPlay]);
+
+  useEffect(() => {
+    const targets = {
+      played: preview.played,
+      winPct: preview.winPct,
+      perfect: preview.perfect,
+      avgScore: preview.avgScore,
+    };
+    const zero = {
+      played: 0,
+      winPct: 0,
+      perfect: 0,
+      avgScore: preview.avgScore === null ? null : 0,
+    };
+
+    if (phase !== "stats") {
+      setAnimatedMetrics(zero);
+      return;
+    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setAnimatedMetrics(targets);
+      return;
+    }
+
+    setAnimatedMetrics(zero);
+    const started = performance.now();
+    let frame = 0;
+    const tick = (now: number) => {
+      const progress = Math.min(1, (now - started) / 900);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setAnimatedMetrics({
+        played: Math.round(targets.played * eased),
+        winPct: Math.round(targets.winPct * eased),
+        perfect: Math.round(targets.perfect * eased),
+        avgScore: targets.avgScore === null ? null : Math.round(targets.avgScore * eased),
+      });
+      if (progress < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [phase, preview.avgScore, preview.perfect, preview.played, preview.winPct]);
 
   const pickSlide = (next: "stats" | "calendar") => {
     setAutoPlay(false);
@@ -183,7 +227,7 @@ export default function AccountSavePrompt({ onSignUp, onClose }: Props) {
         <div className="account-preview-stage mt-4">
           <div className={`account-preview-carousel${phase === "stats" ? "" : " is-archive"}`}>
             <article
-              className="account-preview-face account-locker-preview"
+              className={`account-preview-face account-locker-preview${phase === "stats" ? " is-stats-active" : ""}`}
               aria-hidden={phase !== "stats"}
             >
               <div className="flex items-center justify-between">
@@ -198,10 +242,10 @@ export default function AccountSavePrompt({ onSignUp, onClose }: Props) {
               </div>
 
               <div className="account-preview-metrics mt-3">
-                <span><strong>{preview.played}</strong><small>Played</small></span>
-                <span><strong>{preview.winPct}</strong><small>Win %</small></span>
-                <span><strong>{preview.perfect}</strong><small>Perfect</small></span>
-                <span><strong>{preview.avgScore ?? "—"}</strong><small>Avg score</small></span>
+                <span><strong>{animatedMetrics.played}</strong><small>Played</small></span>
+                <span><strong>{animatedMetrics.winPct}</strong><small>Win %</small></span>
+                <span><strong>{animatedMetrics.perfect}</strong><small>Perfect</small></span>
+                <span><strong>{animatedMetrics.avgScore ?? "—"}</strong><small>Avg score</small></span>
               </div>
 
               <p className="account-preview-heading mt-3">Score distribution</p>
