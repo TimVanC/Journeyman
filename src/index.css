@@ -498,6 +498,17 @@ select {
   grid-column: 2;
 }
 
+/* Small phones (375px and under) only have ~113px per card at the default
+   gutters. Tightening the outer padding and the column gap buys each card
+   back a few px, which is the difference between the stat row breathing
+   and looking crammed. */
+@media (max-width: 400px) {
+  .card-row {
+    gap: 0.8rem 0.3rem;
+    padding: 0.8rem 0.3rem 1.2rem;
+  }
+}
+
 @media (min-width: 768px) {
   .card-row {
     display: flex;
@@ -708,14 +719,18 @@ select {
   transform: translateY(1px);
   box-shadow: 0 1px 0 0 var(--color-wood);
 }
+/* the UI face, not the condensed display one — "Recap" in Anton reads
+   squished and over-heavy at button size */
 .home-card-cta {
-  font-family: var(--font-display);
-  letter-spacing: 0.03em;
-  font-size: 0.9rem;
-  padding: 0.25rem 0.7rem;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  font-size: 0.8rem;
+  padding: 0.4rem 0.95rem;
   border-radius: 999px;
   background: var(--color-ink);
   color: var(--color-card);
+  white-space: nowrap;
 }
 
 /* ------------------------------------------------------------------

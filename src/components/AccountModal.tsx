@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { SPORTS, SPORT_ORDER } from "../sports";
 import type { Sport } from "../sports/types";
@@ -12,10 +12,24 @@ interface Props {
   /** which league's stats to show first: the current game, or "all" */
   defaultScope?: StatScope;
   onClose: () => void;
+  /** fired when someone who opened this SIGNED OUT becomes signed in —
+   *  the caller decides where they land (back to the archive, or just the
+   *  page they came from). Signing up should never dump you into stats. */
+  onAuthed?: () => void;
 }
 
 /** Sign-up / sign-in when logged out; profile + lifetime stats when in. */
-export default function AccountModal({ session, defaultScope = "all", onClose }: Props) {
+export default function AccountModal({
+  session,
+  defaultScope = "all",
+  onClose,
+  onAuthed,
+}: Props) {
+  // did this modal open on the auth form rather than the locker?
+  const openedSignedOut = useRef(!session);
+  useEffect(() => {
+    if (openedSignedOut.current && session) onAuthed?.();
+  }, [session, onAuthed]);
   const [view, setView] = useState<"signup" | "signin">("signup");
 
   useEffect(() => {

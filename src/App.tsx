@@ -135,14 +135,17 @@ const AUTO_PLAY = new URLSearchParams(location.search).has("play");
 export default function App() {
   const { day, puzzle, testIndex, archiveDay } = resolveGame();
   const total = puzzle.stints.length;
-  const realToday = storage.currentDayNumber();
   const session = useSession(); // undefined = loading, null = signed out
   const [showAccount, setShowAccount] = useState(false);
   // which league's stats to open the locker on: the current game, or "all"
   // when opened from the multi-sport home screen
   const [accountScope, setAccountScope] = useState<Sport | "all">(SPORT.sport);
-  const openAccount = (scope: Sport | "all") => {
+  // where to send someone once they finish signing up/in — the archive if
+  // that's what they were reaching for, otherwise just back to the page
+  const [afterAuth, setAfterAuth] = useState<"archive" | null>(null);
+  const openAccount = (scope: Sport | "all", next: "archive" | null = null) => {
     setAccountScope(scope);
+    setAfterAuth(next);
     setShowAccount(true);
   };
   const [showArchive, setShowArchive] = useState(false);
@@ -442,7 +445,6 @@ export default function App() {
   }, [state.revealed, newestIdx, over]);
 
   const remaining = total - state.revealed;
-  const streak = storage.displayStreak(profile, realToday);
 
   // player profile: full reveal once the game ends; on mobile it fills the
   // leftover columns of the spread's last row when the count isn't a
@@ -496,6 +498,9 @@ export default function App() {
             session={session ?? null}
             defaultScope={accountScope}
             onClose={() => setShowAccount(false)}
+            // signing up here unlocks the archive replay behind this gate —
+            // drop the form and let the board show, no stats detour
+            onAuthed={() => setShowAccount(false)}
           />
         )}
       </div>
@@ -506,7 +511,6 @@ export default function App() {
     <div className="relative min-h-dvh pb-40">
       <div className="court-arc" aria-hidden="true" />
       <Header
-        streak={streak}
         onHelp={() => setShowHelp(true)}
         onStats={() => openAccount(SPORT.sport)}
         onArchive={() => setShowArchive(true)}
@@ -749,7 +753,7 @@ export default function App() {
           onClose={() => setShowArchive(false)}
           onSignUp={() => {
             setShowArchive(false);
-            openAccount("all");
+            openAccount("all", "archive"); // come back here once they're in
           }}
         />
       )}
@@ -758,6 +762,12 @@ export default function App() {
           session={session ?? null}
           defaultScope={accountScope}
           onClose={() => setShowAccount(false)}
+          onAuthed={() => {
+            // finishing sign-up drops the form, never the stats panel
+            setShowAccount(false);
+            if (afterAuth === "archive") setShowArchive(true);
+            setAfterAuth(null);
+          }}
         />
       )}
     </div>

@@ -21,7 +21,7 @@ export const ROSTER: string[] = [
   "Antawn Jamison",
   "Vince Carter",
   "Manu Ginóbili",
-  "Rick Barry", // swapped with LeBron (day 95) — LeBron was not wanted here
+  "Robert Horry", // day 8 — seven rings, never an All-Star
   "Kobe Bryant",
   // ---- days 10+: queued, need stint data authored ----
   "Shaquille O'Neal",
@@ -115,6 +115,7 @@ export const ROSTER: string[] = [
   "Earl Monroe",
   "Connie Hawkins",
   "Robert Parish",
+  "Rick Barry", // displaced from day 8 by Horry
 ];
 
 /** case/accent-insensitive comparison key */

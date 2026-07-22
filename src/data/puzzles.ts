@@ -2477,4 +2477,78 @@ export const puzzles: Puzzle[] = [
       college: "Miami (FL)",
     },
   },
+  {
+    // Puzzle 25 — Robert Horry: seven rings across three franchises and not
+    // one All-Star nod. Verified against Basketball-Reference (per-game
+    // tables + BR's "Uniforms" list, 2026-07-22); per-stint GP/MPG/PPG/RPG/
+    // APG are GP-weighted. The 1996-97 season splits across Phoenix and the
+    // Lakers (traded that January), so those two stints share a start year.
+    id: 25,
+    pathType: "team",
+    answer: "Robert Horry",
+    accolades: ["7× NBA champion", "2 Houston · 3 Lakers · 2 San Antonio", "Never an All-Star"],
+    stints: [
+      {
+        franchise: "HOU",
+        displayTeam: "Houston Rockets",
+        startYear: 1992,
+        endYear: 1995,
+        gp: 295,
+        mpg: 31.9,
+        ppg: 10.5,
+        rpg: 5.3,
+        apg: 3.1,
+        jerseyNumber: 25,
+        accolades: [{ type: "champion", count: 2 }],
+      },
+      {
+        franchise: "PHX",
+        displayTeam: "Phoenix Suns",
+        startYear: 1996,
+        endYear: 1996,
+        gp: 32,
+        mpg: 22.5,
+        ppg: 6.9,
+        rpg: 3.7,
+        apg: 1.7,
+        jerseyNumber: 25,
+      },
+      {
+        franchise: "LAL",
+        displayTeam: "Los Angeles Lakers",
+        startYear: 1996,
+        endYear: 2002,
+        gp: 448,
+        mpg: 25.4,
+        ppg: 6.3,
+        rpg: 5.5,
+        apg: 2.2,
+        jerseyNumber: 5,
+        accolades: [{ type: "champion", count: 3 }],
+      },
+      {
+        franchise: "SAS",
+        displayTeam: "San Antonio Spurs",
+        startYear: 2003,
+        endYear: 2007,
+        gp: 332,
+        mpg: 16.8,
+        ppg: 4.6,
+        rpg: 3.4,
+        apg: 1.1,
+        jerseyNumber: 5,
+        accolades: [{ type: "champion", count: 2 }],
+      },
+    ],
+    // the ringless 32-game Phoenix cameo first, then the quiet Spurs years;
+    // the draft-team Rockets card — his best statistical run — closes it
+    revealOrder: [1, 3, 2, 0],
+    hints: {
+      position: "PF/SF",
+      height: "6'10\"",
+      draftYear: "1992",
+      draftPick: "Round 1, Pick 11",
+      college: "Alabama",
+    },
+  },
 ];

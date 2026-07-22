@@ -66,7 +66,7 @@ export default function JerseyRenderer({
   const numText = number === null ? "??" : String(number);
   const numFontSize = number === null ? 92 : numText.length > 1 ? 60 : 70;
   // two-letter codes (NJ, SEA…) get extra size — they have the room
-  const labelFontSize = (label?.length ?? 3) <= 2 ? 64 : 54;
+  const labelFontSize = (label?.length ?? 3) <= 2 ? 52 : 44;
   const clipId = `jbody-${uid}`;
   const shadeId = `jshade-${uid}`;
 

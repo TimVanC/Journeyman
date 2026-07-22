@@ -61,6 +61,21 @@ export default function CardPreview() {
   // a second card with a single-count accolade set, since "×2" is suppressed
   const singles: Stint = { ...stint, jerseyNumber: 8, accolades: every.map((type) => ({ type, count: 1 })) };
 
+  // first colorway found for each era treatment this league defines
+  const eraSamples: Array<{ eraStyle: string; franchise: string; identity: string; year: number }> = [];
+  for (const [franchise, eras] of Object.entries(SPORT.colorways.franchises)) {
+    for (const era of eras) {
+      if (eraSamples.some((e) => e.eraStyle === era.eraStyle)) continue;
+      eraSamples.push({
+        eraStyle: era.eraStyle,
+        franchise,
+        identity: era.identity,
+        // sit safely inside the era so resolveColorway picks this entry
+        year: Math.min(era.years[0] + 1, era.years[1] - 1),
+      });
+    }
+  }
+
   return (
     <div className="min-h-dvh p-6">
       <h1 className="font-display text-2xl">Card preview — {SPORT.league}</h1>
@@ -94,6 +109,35 @@ export default function CardPreview() {
         <div className="card-row">
           <JerseyCard stint={stint} spreadIndex={0} isNewest={false} showLabel hard={hard} />
           <JerseyCard stint={singles} spreadIndex={1} isNewest={false} showLabel hard={hard} />
+        </div>
+      </div>
+
+      {/* one real card per era treatment the league defines — vintage through
+          current — each using a franchise/year range that actually resolves
+          to that era, so the colours are the real ones */}
+      <h2 className="font-display mt-6 text-lg">Era variations</h2>
+      <div className="card-spread">
+        <div className="card-row">
+          {eraSamples.map(({ eraStyle, franchise, identity, year }) => (
+            <div key={eraStyle + franchise} className="text-center">
+              <JerseyCard
+                stint={{
+                  ...stint,
+                  franchise,
+                  displayTeam: identity,
+                  startYear: year,
+                  endYear: year + 1,
+                  accolades: [],
+                }}
+                spreadIndex={0}
+                isNewest={false}
+                showLabel
+                hard={hard}
+              />
+              <p className="mt-1 text-[0.6rem] font-bold uppercase">{eraStyle}</p>
+              <p className="text-[0.55rem] text-ink-soft">{identity}</p>
+            </div>
+          ))}
         </div>
       </div>
 
