@@ -22,9 +22,8 @@ export const ROSTER: string[] = [
   "Vince Carter",
   "Manu Ginóbili",
   "Robert Horry", // day 8 — seven rings, never an All-Star
-  "Kobe Bryant",
-  // ---- days 10+: queued, need stint data authored ----
-  "Shaquille O'Neal",
+  "Jim Jackson", // day 9 — 12 franchises (swapped up from day 19)
+  "Tony Massenburg", // day 10 — 15 franchises (swapped up from day 22)
   "Chauncey Billups",
   "Jamal Crawford",
   "Ish Smith", // 13 franchises on day 13
@@ -33,10 +32,10 @@ export const ROSTER: string[] = [
   "Chucky Brown",
   "Tracy McGrady",
   "Shawn Marion",
-  "Jim Jackson",
+  "Kobe Bryant", // day 19 — swapped down from day 9 (a two-team star, not a journeyman)
   "Allen Iverson",
   "Rasheed Wallace",
-  "Tony Massenburg",
+  "Shaquille O'Neal", // day 22 — swapped down from day 10
   "Gary Payton",
   "Baron Davis",
   "Joe Smith",
