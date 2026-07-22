@@ -7,6 +7,7 @@ import { buildShareText, copyToClipboard } from "../game/share";
 import { trackShare } from "../lib/analytics";
 import { computeGrade } from "../game/grade";
 import { computeScore } from "../game/score";
+import { todayET } from "../game/storage";
 import { fetchDayStanding, type DayStanding } from "../lib/cloud";
 import type { GameState, Puzzle } from "../game/types";
 import { ArchiveIcon, FlameIcon } from "./Icons";
@@ -73,6 +74,12 @@ export default function ResultModal({
    *  not today's. Leagues that hadn't launched yet are shown disabled. */
   const isTestSlot = state.day >= 9000;
   const playedDate = isTestSlot ? null : SPORT.storage.dateForDay(state.day);
+  /** Only an archive replay spells the date out; today's puzzle just reads
+   *  "Play NBA", since there's nothing to disambiguate. */
+  const dateLabel =
+    playedDate && playedDate !== todayET()
+      ? `${Number(playedDate.slice(5, 7))}/${Number(playedDate.slice(8, 10))}`
+      : null;
   const alsoPlayable = otherSports(SPORT.sport).map((s) => {
     const cfg = SPORTS[s];
     if (!playedDate) {
@@ -80,17 +87,15 @@ export default function ResultModal({
     }
     const theirDay = cfg.storage.dayNumberForDate(playedDate);
     const theirToday = cfg.storage.currentDayNumber();
-    const [, m, d] = playedDate.split("-");
-    const label = `${Number(m)}/${Number(d)}`;
     if (theirDay < 1 || theirDay > theirToday) {
-      return { sport: s, href: null, label }; // that league wasn't running yet
+      return { sport: s, href: null, label: dateLabel }; // wasn't running yet
     }
     // the same date's puzzle: today's daily, or its archive entry
     const href =
       theirDay === theirToday
         ? sportHref(s, { play: 1 })
         : sportHref(s, { d: theirDay });
-    return { sport: s, href, label };
+    return { sport: s, href, label: dateLabel };
   });
 
   const share = async () => {
