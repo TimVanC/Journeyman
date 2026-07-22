@@ -165,12 +165,25 @@ export default function App() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only
   }, []);
 
+  const puzzleKey = rosterKey(puzzle.answer);
   const [state, dispatch] = useReducer(reducer, day, (d) => {
     const saved = storage.loadGameState(d);
+    const fresh = () => initialState(d, puzzleKey);
+    if (!saved) return fresh();
+    // the slot is keyed by day, but the day's ANSWER can be hot-swapped
+    // (an easy pick replaced mid-day) — a save stamped for a different
+    // answer belongs to a game that no longer exists on this day
+    if (saved.puzzleId !== undefined && saved.puzzleId !== puzzleKey) return fresh();
+    // amnesty for the one swap that predates the stamp: NBA day 8 went
+    // LeBron → Horry mid-day on 2026-07-22, so an unstamped save in that
+    // slot can't prove which game it was — discard it. (History/streak
+    // entries are untouched; recordResult keeps the first result.)
+    // Safe to delete once day 8 is deep in the archive.
+    if (saved.puzzleId === undefined && SPORT.sport === "nba" && d === 8) return fresh();
     // test puzzles replay forever: resume mid-game, but a finished
     // slot starts fresh on the next visit
-    if (testIndex !== null && saved?.status !== "playing") return initialState(d);
-    return saved ?? initialState(d);
+    if (testIndex !== null && saved.status !== "playing") return fresh();
+    return saved;
   });
   const [profile, setProfile] = useState(storage.loadProfile);
   // difficulty: hard = no card backs, no accolade hardware anywhere

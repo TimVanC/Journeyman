@@ -3,9 +3,10 @@ import type { GamePhase, GameState, Puzzle } from "./types";
 
 export const HINT_COUNT = 5;
 
-export function initialState(day: number): GameState {
+export function initialState(day: number, puzzleId?: string): GameState {
   return {
     day,
+    puzzleId,
     revealed: 1, // the least-identifying jersey is on the table at load
     hintsRevealed: 0,
     wrongGuesses: [],

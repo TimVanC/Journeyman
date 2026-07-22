@@ -99,6 +99,12 @@ export type GamePhase = "jerseys" | "hints" | "final" | "over";
 export interface GameState {
   /** daily puzzle number (#1 = launch day) */
   day: number;
+  /** which answer this save belongs to (rosterKey of the puzzle's answer).
+   *  The slot is keyed by day, but a day's answer can be hot-swapped mid-day
+   *  (2026-07-22: LeBron → Horry) — a save from the old answer must not mark
+   *  the new one finished. Optional because saves predating 2026-07-22 never
+   *  carried it. */
+  puzzleId?: string;
   revealed: number;
   hintsRevealed: number;
   wrongGuesses: string[];
