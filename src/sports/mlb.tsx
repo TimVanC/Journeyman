@@ -40,8 +40,12 @@ export const mlb: SportConfig = {
   tagline: "A mystery MLB journeyman, one jersey at a time.",
 
   puzzles: mlbPuzzles,
-  // 1-5 modern + 6-9 pre-war/Negro League set, all StatsAPI-verified
-  dailyPool: 9,
+  /** Fallback-rotation pool for roster days with no authored puzzle yet.
+   *  Deliberately NOT 9: puzzles 6-9 (the pre-war set) are roster-scheduled
+   *  for days 47-50 — putting them in the fallback pool would air them
+   *  early on days 6-9 and then AGAIN on their scheduled days. The
+   *  fallback only recycles days 1-5, which players have already seen. */
+  dailyPool: 5,
   roster: MLB_ROSTER,
   searchPlayers: createPlayerSearch(
     () => import("../data/mlb/playerIndex.json").then((m) => m.default as [string, string][])
