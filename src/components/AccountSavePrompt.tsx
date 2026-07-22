@@ -1,7 +1,8 @@
-import { useEffect, useMemo, type CSSProperties } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
 import { trackAccountCta } from "../lib/analytics";
 import { SCORE_BUCKETS } from "../lib/cloud";
 import { SPORTS, SPORT_ORDER } from "../sports";
+import { todayET } from "../game/storage";
 
 interface Props {
   onSignUp: () => void;
@@ -45,11 +46,94 @@ function loadLocalPreview() {
   };
 }
 
+const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"];
+
+function shiftDate(date: string, days: number) {
+  const stamp = Date.parse(`${date}T12:00:00Z`) + days * 86_400_000;
+  return new Date(stamp).toISOString().slice(0, 10);
+}
+
+function loadArchivePreview() {
+  const today = todayET();
+  const selected = shiftDate(today, -5);
+  const selectedDate = new Date(`${selected}T12:00:00Z`);
+  const year = selectedDate.getUTCFullYear();
+  const month = selectedDate.getUTCMonth();
+  const daysInMonth = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  const leading = new Date(Date.UTC(year, month, 1)).getUTCDay();
+  const monthLabel = selectedDate.toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  const selectedLabel = selectedDate.toLocaleDateString("en-US", {
+    weekday: "long",
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+    timeZone: "UTC",
+  });
+  const dateString = (day: number) =>
+    `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+
+  const slateFor = (date: string) => {
+    let available = 0;
+    let played = 0;
+    let wins = 0;
+    for (const sport of SPORT_ORDER) {
+      const storage = SPORTS[sport].storage;
+      const day = storage.dayNumberForDate(date);
+      if (day < 1) continue;
+      available++;
+      const result = storage.loadProfile().history[day];
+      if (result !== undefined) {
+        played++;
+        if (result !== "DNF") wins++;
+      }
+    }
+    if (available === 0 || played === 0) return "none";
+    if (played < available) return "partial";
+    if (wins === played) return "all-won";
+    if (wins === 0) return "all-lost";
+    return "mixed";
+  };
+
+  const days = Array.from({ length: daysInMonth }, (_, i) => {
+    const day = i + 1;
+    const date = dateString(day);
+    return {
+      day,
+      isToday: date === today,
+      isSelected: date === selected,
+      isFuture: date > today,
+      state: slateFor(date),
+    };
+  });
+
+  const leagues = SPORT_ORDER.map((sport) => {
+    const storage = SPORTS[sport].storage;
+    const day = storage.dayNumberForDate(selected);
+    if (day < 1) return { sport, day, status: "Not launched yet", playable: false };
+    const result = storage.loadProfile().history[day];
+    return {
+      sport,
+      day,
+      status: result === undefined ? "Not played" : result === "DNF" ? "Missed" : "Solved",
+      playable: true,
+    };
+  });
+
+  return { selected, selectedDate, selectedLabel, monthLabel, leading, days, leagues };
+}
+
 /** A focused second step over the result card: show the value of an account
  *  while the completed game remains visible underneath. */
 export default function AccountSavePrompt({ onSignUp, onClose }: Props) {
   const preview = useMemo(loadLocalPreview, []);
+  const archive = useMemo(loadArchivePreview, []);
   const maxBar = Math.max(1, ...preview.distribution.map((row) => row.count));
+  const [phase, setPhase] = useState<"stats" | "calendar" | "day">("stats");
+  const [autoPlay, setAutoPlay] = useState(true);
 
   useEffect(() => {
     trackAccountCta({ source: "result", action: "viewed" });
@@ -57,6 +141,21 @@ export default function AccountSavePrompt({ onSignUp, onClose }: Props) {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [onClose]);
+
+  useEffect(() => {
+    if (!autoPlay || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const delay = phase === "stats" ? 1600 : phase === "calendar" ? 1900 : 2600;
+    const timer = window.setTimeout(
+      () => setPhase(phase === "stats" ? "calendar" : phase === "calendar" ? "day" : "stats"),
+      delay
+    );
+    return () => window.clearTimeout(timer);
+  }, [phase, autoPlay]);
+
+  const pickSlide = (next: "stats" | "calendar") => {
+    setAutoPlay(false);
+    setPhase(next === "stats" ? "stats" : phase === "calendar" ? "day" : "calendar");
+  };
 
   return (
     <div
@@ -71,9 +170,9 @@ export default function AccountSavePrompt({ onSignUp, onClose }: Props) {
       >
         <div className="flex items-start justify-between gap-3">
           <div>
-            <p className="account-save-eyebrow">Your stats preview</p>
+            <p className="account-save-eyebrow">Free account preview</p>
             <h2 id="save-game-title" className="font-display mt-0.5 text-2xl tracking-wide">
-              KEEP THIS GAME
+              KEEP YOUR GAMES
             </h2>
           </div>
           <button type="button" className="chip cursor-pointer" onClick={onClose} aria-label="Not now">
@@ -81,46 +180,128 @@ export default function AccountSavePrompt({ onSignUp, onClose }: Props) {
           </button>
         </div>
 
-        <div className="account-locker-preview mt-4" aria-label="Preview of your stats locker">
-          <div className="flex items-center justify-between">
-            <p className="font-display text-lg tracking-wide">YOUR LOCKER</p>
-            <span className="account-save-badge">PREVIEW</span>
-          </div>
+        <div className="account-preview-stage mt-4">
+          <div className={`account-preview-carousel${phase === "stats" ? "" : " is-archive"}`}>
+            <article
+              className="account-preview-face account-locker-preview"
+              aria-hidden={phase !== "stats"}
+            >
+              <div className="flex items-center justify-between">
+                <p className="font-display text-lg tracking-wide">YOUR LOCKER</p>
+                <span className="account-save-badge">LIVE STATS</span>
+              </div>
 
-          <div className="account-preview-tabs mt-2" aria-hidden="true">
-            {['All', 'NBA', 'NFL', 'MLB'].map((label, i) => (
-              <span key={label} className={i === 0 ? "is-active" : ""}>{label}</span>
-            ))}
-          </div>
+              <div className="account-preview-tabs mt-2" aria-hidden="true">
+                {["All", "NBA", "NFL", "MLB"].map((label, i) => (
+                  <span key={label} className={i === 0 ? "is-active" : ""}>{label}</span>
+                ))}
+              </div>
 
-          <div className="account-preview-metrics mt-3">
-            <span><strong>{preview.played}</strong><small>Played</small></span>
-            <span><strong>{preview.winPct}</strong><small>Win %</small></span>
-            <span><strong>{preview.perfect}</strong><small>Perfect</small></span>
-            <span><strong>{preview.avgScore ?? "—"}</strong><small>Avg score</small></span>
-          </div>
+              <div className="account-preview-metrics mt-3">
+                <span><strong>{preview.played}</strong><small>Played</small></span>
+                <span><strong>{preview.winPct}</strong><small>Win %</small></span>
+                <span><strong>{preview.perfect}</strong><small>Perfect</small></span>
+                <span><strong>{preview.avgScore ?? "—"}</strong><small>Avg score</small></span>
+              </div>
 
-          <p className="account-preview-heading mt-3">Score distribution</p>
-          <div className="mt-1.5 space-y-1">
-            {preview.distribution.map((row, i) => (
-              <div className="account-preview-bar-row" key={row.label}>
-                <span>{row.label}</span>
-                <div className="account-preview-bar-track">
-                  <i
-                    className={`account-preview-bar-fill${i === preview.distribution.length - 1 ? " is-dnf" : ""}`}
-                    style={{ "--preview-fill": row.count / maxBar } as CSSProperties}
-                  />
-                  <b>{row.count}</b>
+              <p className="account-preview-heading mt-3">Score distribution</p>
+              <div className="mt-1.5 space-y-1">
+                {preview.distribution.map((row, i) => (
+                  <div className="account-preview-bar-row" key={row.label}>
+                    <span>{row.label}</span>
+                    <div className="account-preview-bar-track">
+                      <i
+                        className={`account-preview-bar-fill${i === preview.distribution.length - 1 ? " is-dnf" : ""}`}
+                        style={{ "--preview-fill": row.count / maxBar } as CSSProperties}
+                      />
+                      <b>{row.count}</b>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </article>
+
+            <article
+              className={`account-preview-face account-preview-archive${phase === "calendar" ? " is-calendar-active" : ""}`}
+              aria-hidden={phase === "stats"}
+            >
+              <div className={`account-archive-view${phase === "calendar" ? " is-active" : ""}`}>
+                <div className="flex items-center justify-between">
+                  <p className="font-display text-lg tracking-wide">ARCHIVE</p>
+                  <span className="account-save-badge">EVERY GAME</span>
+                </div>
+                <p className="account-archive-month">{archive.monthLabel}</p>
+                <div className="account-calendar-grid mt-1">
+                  {WEEKDAYS.map((weekday, i) => <b key={`${weekday}${i}`}>{weekday}</b>)}
+                  {Array.from({ length: archive.leading }, (_, i) => <span key={`blank${i}`} />)}
+                  {archive.days.map((day) => (
+                    <span
+                      key={day.day}
+                      className={[
+                        day.state !== "none" ? `is-${day.state}` : "",
+                        day.isToday ? "is-today" : "",
+                        day.isSelected ? "is-selected" : "",
+                        day.isFuture ? "is-future" : "",
+                      ].filter(Boolean).join(" ")}
+                    >
+                      {day.day}
+                    </span>
+                  ))}
+                </div>
+                <div className="account-calendar-key mt-2">
+                  <span><i className="is-all-won" /> Solved all</span>
+                  <span><i className="is-partial" /> Played some</span>
+                  <span><i className="is-all-lost" /> Missed</span>
                 </div>
               </div>
-            ))}
+
+              <div className={`account-archive-view account-archive-day${phase === "day" ? " is-active" : ""}`}>
+                <p className="text-[0.58rem] font-bold text-wood-deep underline">‹ Back to archive</p>
+                <h3 className="font-display mt-1 text-lg leading-none">{archive.selectedLabel}</h3>
+                <div className="mt-3 space-y-1.5">
+                  {archive.leagues.map((league) => (
+                    <div
+                      key={league.sport}
+                      className={`account-archive-league${league.playable ? " is-playable" : ""}`}
+                    >
+                      <span>
+                        <strong>{SPORTS[league.sport].league}</strong>
+                        <small>{league.playable ? `No. ${league.day} · ${league.status}` : league.status}</small>
+                      </span>
+                      {league.playable && <b>{league.status === "Not played" ? "Play" : "Replay"}</b>}
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-2 text-[0.55rem] leading-relaxed text-ink-soft">
+                  Archive games count in your stats but not your daily streak.
+                </p>
+              </div>
+            </article>
           </div>
         </div>
 
+        <div className="account-preview-dots mt-2" role="tablist" aria-label="Account benefit preview">
+          <button
+            type="button"
+            className={phase === "stats" ? "is-active" : ""}
+            aria-label="Show stats preview"
+            aria-selected={phase === "stats"}
+            role="tab"
+            onClick={() => pickSlide("stats")}
+          />
+          <button
+            type="button"
+            className={phase !== "stats" ? "is-active" : ""}
+            aria-label={phase === "calendar" ? "Expand the highlighted archive day" : "Show archive preview"}
+            aria-selected={phase !== "stats"}
+            role="tab"
+            onClick={() => pickSlide("calendar")}
+          />
+        </div>
+
         <p className="mt-4 text-sm leading-relaxed text-ink-soft">
-          These are your real stats from the games already on this device.
-          Create a free account to keep building them, sync across devices, and
-          unlock every previous NBA, NFL, and MLB puzzle.
+          Keep building your real stats, sync them across devices, and open any
+          day in the NBA, NFL, and MLB archive.
         </p>
 
         <button type="button" className="btn btn-primary mt-4 w-full py-3 text-sm" onClick={onSignUp}>
