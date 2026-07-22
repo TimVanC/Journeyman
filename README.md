@@ -40,6 +40,7 @@ npm run dev
 | `src/data/{nfl,mlb}/teamSeasons.json` | Per-season W-L + playoff results for the card backs |
 | `src/game/` | Shared engine: reducer, scoring, grading, share, colorway resolution, per-sport storage factory |
 | `supabase/multisport-migration.sql` | **Already applied.** Creates `results_v2` / `plays_v2` / `day_score_stats_v2` alongside the originals so the live NBA-only client keeps working; see the file for the merge-day top-up |
+| `_brief/jersey-graphics-backlog.md` | Deferred: patterns/graphics on the jerseys (side panels, yokes, the Suns comet). Plan, tiers, and where the `pattern` hook already lives |
 
 ## Before this branch ships
 
