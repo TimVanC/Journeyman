@@ -26,7 +26,7 @@ import { warnPuzzleData, warnRosterGaps } from "./data/validatePuzzles";
 import { eggFor } from "./game/easterEggs";
 import { getPhase, initialState, reducer, HINT_COUNT } from "./game/state";
 import type { Stint } from "./game/types";
-import { loadMode, saveMode, type GameMode } from "./game/storage";
+import { loadMode, saveMode, hasSeenHelp, markSeenHelp, type GameMode } from "./game/storage";
 
 const storage = SPORT.storage;
 const puzzles = SPORT.puzzles;
@@ -216,8 +216,11 @@ export default function App() {
   const [offerAccountAfterResult, setOfferAccountAfterResult] = useState(false);
   const [showSavePrompt, setShowSavePrompt] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
+  const [seenHelp, setSeenHelp] = useState(hasSeenHelp);
   const [celebrate, setCelebrate] = useState(false);
   const [justLost, setJustLost] = useState(false);
+  // a non-fatal wrong guess shakes the whole spread "no" (fatal ones use justLost)
+  const [justMissed, setJustMissed] = useState(false);
   // "flip all" broadcast — `n` bumps per press so every revealed card obeys
   // even if it drifted out of sync from an individual tap
   const [flipAll, setFlipAll] = useState({ back: false, n: 0 });
@@ -235,6 +238,25 @@ export default function App() {
     if (prevStatus.current === "playing" && state.status === "lost") setJustLost(true);
     prevStatus.current = state.status;
   }, [state.status]);
+
+  // a wrong guess that doesn't end the game shakes the spread "no" — the
+  // fatal one is already covered by justLost, so this only fires while playing
+  const prevWrong = useRef(state.wrongGuesses.length);
+  useEffect(() => {
+    const grew = state.wrongGuesses.length > prevWrong.current;
+    prevWrong.current = state.wrongGuesses.length;
+    if (!grew || state.status !== "playing") return;
+    setJustMissed(true);
+    const t = setTimeout(() => setJustMissed(false), 600);
+    return () => clearTimeout(t);
+  }, [state.wrongGuesses.length, state.status]);
+
+  // first-timers get the rules the moment they hit the board — once. After
+  // the first dismissal (here or from the menu) it never auto-opens again.
+  useEffect(() => {
+    if (showStart || over || seenHelp) return;
+    setShowHelp(true);
+  }, [showStart, over, seenHelp]);
 
   // record win/loss exactly once, then pop the result card.
   // test games never touch the real streak/history; archive replays record
@@ -634,7 +656,7 @@ export default function App() {
 
         {/* the collector spread — always in career order */}
         <div className="card-spread">
-          <div className={`card-row ${justLost ? "shake" : ""}`}>
+          <div className={`card-row ${justLost || justMissed ? "shake" : ""}`}>
             {revealedChrono.map(({ stintIdx, stint }, i) => (
               <JerseyCard
                 key={stintIdx}
@@ -763,7 +785,18 @@ export default function App() {
           signedIn={!!session}
         />
       )}
-      {showHelp && <HelpModal home={showStart} onClose={() => setShowHelp(false)} />}
+      {showHelp && (
+        <HelpModal
+          home={showStart}
+          onClose={() => {
+            setShowHelp(false);
+            if (!seenHelp) {
+              markSeenHelp();
+              setSeenHelp(true);
+            }
+          }}
+        />
+      )}
       {showSettings && (
         <SettingsModal
           mode={mode}

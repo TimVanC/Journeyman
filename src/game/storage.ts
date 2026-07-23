@@ -51,6 +51,18 @@ export function saveMode(mode: GameMode) {
   write(MODE_KEY, mode);
 }
 
+/* Whether the player has seen the how-to-play modal. GLOBAL across sports:
+   once they've learned the game on any league, we never auto-pop it again. */
+const SEEN_HELP_KEY = "journeyman:seenHelp:v1";
+
+export function hasSeenHelp(): boolean {
+  return read<boolean>(SEEN_HELP_KEY) === true;
+}
+
+export function markSeenHelp() {
+  write(SEEN_HELP_KEY, true);
+}
+
 /* ------------------------------------------------------------------
    Per-sport storage. Each sport is its own game: own launch date, own
    day numbering, own saves/streak/scores/archive. The NBA prefix is the

@@ -57,26 +57,26 @@ export default function StartScreen({
         signedIn={signedIn}
       />
 
-      <div className="my-auto flex w-full max-w-sm flex-col items-center px-6 py-6 text-center">
+      <div className="my-auto flex w-full max-w-sm flex-col items-center px-6 py-4 text-center">
         {/* three journeymen fanned out, gently floating — the game's own cards */}
         <HeroCards />
 
-        <h1 className="font-display mt-3 text-[3.4rem] leading-none tracking-wide">
+        <h1 className="font-display mt-1 text-[2.7rem] leading-none tracking-wide">
           JOURNEYMAN
         </h1>
-        <p className="mt-1.5 text-sm font-medium text-ink-soft">
+        <p className="mt-1 text-sm font-medium text-ink-soft">
           A mystery journeyman's career, one jersey at a time.
         </p>
 
         {/* the rules are also in the menu, but a first-time visitor shouldn't
             have to go looking — this is the one thing they might need before
             picking a league */}
-        <button type="button" className="btn btn-sm mt-3" onClick={onRules}>
+        <button type="button" className="btn btn-sm mt-2.5" onClick={onRules}>
           How to play
         </button>
 
         {/* the three daily games — one tap each, straight into play */}
-        <div className="mt-5 w-full space-y-2.5">
+        <div className="mt-3.5 w-full space-y-2">
           {SPORT_ORDER.map((s) => {
             const info = homeStatus(s);
             const isCurrent = s === SPORT.sport;
@@ -125,14 +125,14 @@ export default function StartScreen({
           })}
         </div>
 
-        <button type="button" className="btn mt-3.5 w-full py-2.5" onClick={onArchive}>
+        <button type="button" className="btn mt-2.5 w-full py-2" onClick={onArchive}>
           Archive
         </button>
 
         {!signedIn && (
           <button
             type="button"
-            className="account-home-card mt-3.5 w-full text-left"
+            className="account-home-card mt-2.5 w-full text-left"
             onClick={onAccount}
           >
             <span className="flex items-center gap-2">
@@ -140,17 +140,17 @@ export default function StartScreen({
               <span className="font-display text-lg tracking-wide">KEEP EVERY RESULT</span>
               <span className="account-save-badge ml-auto">FREE</span>
             </span>
-            <span className="mt-1.5 block text-xs leading-relaxed text-ink-soft">
+            <span className="mt-1 block text-xs leading-snug text-ink-soft">
               Build your lifetime stats, sync your streaks, and replay every
               missed puzzle in the archive.
             </span>
-            <span className="mt-2 flex items-center gap-1.5 text-xs font-bold text-wood-deep">
+            <span className="mt-1.5 flex items-center gap-1.5 text-xs font-bold text-wood-deep">
               <LockIcon size={13} /> Create account to unlock →
             </span>
           </button>
         )}
 
-        <p className="mt-6 text-[0.65rem] text-ink-soft">
+        <p className="mt-3 text-[0.65rem] text-ink-soft">
           New puzzles at midnight ET · Not affiliated with the NBA/NFL/MLB
         </p>
       </div>

@@ -12,7 +12,7 @@ import type { Sport } from "../sports/types";
 
 /** target jersey HEIGHT in px; per-card width derives from each sport's
  *  aspect so all three read at the same height despite different cuts */
-const JERSEY_H = 84;
+const JERSEY_H = 62;
 
 type HeroCard = {
   sport: Sport;

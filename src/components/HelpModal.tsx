@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { SPORT } from "../sports/active";
-import { CheckIcon, FlameIcon, GraveIcon, JerseyIcon, XIcon } from "./Icons";
+import { FlameIcon } from "./Icons";
 
 // "position → height → draft year → draft pick → college", per sport
 const ladderLine = SPORT.hintLadder.map((h) => h.label.toLowerCase()).join(" → ");
@@ -39,54 +39,44 @@ export default function HelpModal({ home = false, onClose }: Props) {
 
         <div className="mt-3 space-y-3 text-sm leading-relaxed">
           <p>
-            A mystery {home ? "NBA, NFL, or MLB" : SPORT.league} player is
-            hidden behind his jerseys — usually a <strong>journeyman</strong>{" "}
-            who bounced around the league, sometimes a star with more stops
-            than you'd remember. No logos, no names: just era-accurate{" "}
-            <strong>colorways</strong>, the <strong>city</strong> he wore them
-            in, his <strong>number</strong>, and{" "}
-            <strong>his stats with that team</strong>.
+            Guess <strong>one mystery {home ? "NBA, NFL, or MLB" : SPORT.league}{" "}
+            player</strong> from the teams he played for. Every jersey is the{" "}
+            <strong>same player</strong> — just a different stop in his career.
           </p>
-          {home && (
-            <p>
-              Three puzzles a day — <strong>one per league</strong>, each with
-              its own streak. Play whichever you know best, or all three.
-            </p>
-          )}
-          <p>
-            You start with his <em>least</em> famous stop. Guess the player, or
-            flip the next jersey from the deck. Solve him in as few jerseys as
-            possible — golf rules, lower is better.
-          </p>
-          <ul className="list-disc space-y-1 pl-5">
+          <ul className="list-disc space-y-1.5 pl-5">
             <li>
-              Flipping a jersey is free — the cost is your score.
+              No logos or names — just each team's <strong>colors</strong>,{" "}
+              <strong>city</strong>, his <strong>number</strong>, and his{" "}
+              <strong>stats there</strong>.
             </li>
             <li>
-              A <strong>wrong guess is never free</strong>: it flips the next
-              jersey for you.
+              You start at his <em>least</em> famous stop. Name the player, or{" "}
+              flip the next jersey for another clue.
             </li>
             <li>
-              Tap any jersey to turn it over: the awards he won at that stop,
-              plus how his teams fared season by season.
+              <strong>Fewer jerseys = better score</strong> — golf rules, lower
+              wins.
             </li>
             <li>
-              Out of jerseys? Wrong guesses open his player profile line by
-              line{home ? " — position, height, and the rest" : `: ${ladderLine}`}.
-              Then one last guess.
+              A wrong guess flips the next jersey for you (never free).
+            </li>
+            <li>
+              Tap a jersey to flip it: awards and season records at that stop.
+            </li>
+            <li>
+              Out of jerseys? Guesses reveal his profile{" "}
+              {home ? "— position, height, and more" : `(${ladderLine})`}, then
+              one last guess.
             </li>
           </ul>
-          <p className="flex flex-wrap items-center gap-x-2 gap-y-1 border-t border-line pt-3 text-xs text-ink-soft">
-            <span className="flex items-center gap-1"><JerseyIcon size={14} /> jersey flipped</span>·
-            <span className="flex items-center gap-1"><XIcon size={14} className="text-[#b3362a]" /> wrong guess</span>·
-            <span className="flex items-center gap-1"><CheckIcon size={14} className="text-[#2e7d43]" /> solved</span>·
-            <span className="flex items-center gap-1"><GraveIcon size={14} /> DNF</span>
-          </p>
-          <p className="text-xs text-ink-soft">
-            Solve daily to build your <FlameIcon size={13} className="text-wood-deep" /> streak.
-            New puzzles at midnight ET.
-            <br />
-            Not affiliated with the NBA/NFL/MLB.
+          {home && (
+            <p className="text-ink-soft">
+              Three puzzles a day, one per league — each with its own{" "}
+              <FlameIcon size={13} className="text-wood-deep" /> streak.
+            </p>
+          )}
+          <p className="border-t border-line pt-3 text-xs text-ink-soft">
+            New puzzles at midnight ET. Not affiliated with the NBA/NFL/MLB.
           </p>
         </div>
       </div>
