@@ -3,6 +3,7 @@ import { SPORTS, SPORT_ORDER, sportHref } from "../sports";
 import type { Sport } from "../sports/types";
 import { ChartIcon, FlameIcon, LockIcon } from "./Icons";
 import HomeMenu from "./HomeMenu";
+import HeroCards from "./HeroCards";
 
 interface Props {
   /** enter the current league's board (or its recap if already done) */
@@ -45,8 +46,6 @@ export default function StartScreen({
   onAccount,
   signedIn,
 }: Props) {
-  const NbaJersey = SPORTS.nba.DeckJersey;
-
   return (
     <div className="start-screen" role="dialog" aria-label="Journeyman — pick a league">
       {/* stats + how-to-play + settings, tucked into the hamburger */}
@@ -59,10 +58,8 @@ export default function StartScreen({
       />
 
       <div className="my-auto flex w-full max-w-sm flex-col items-center px-6 py-6 text-center">
-        {/* the jersey that started it all, still swaying */}
-        <div className="start-jersey" aria-hidden="true">
-          <NbaJersey size={88} />
-        </div>
+        {/* three journeymen fanned out, gently floating — the game's own cards */}
+        <HeroCards />
 
         <h1 className="font-display mt-3 text-[3.4rem] leading-none tracking-wide">
           JOURNEYMAN

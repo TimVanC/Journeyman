@@ -53,7 +53,7 @@ export const nba: SportConfig = {
   league: "NBA",
   ballIcon: BasketballIcon,
   brandTag: null, // the original — no suffix on the wordmark
-  shareTag: "Journeyman",
+  shareTag: "Journeyman NBA",
   shareEmoji: "🎽",
   tagline: "A mystery NBA journeyman, one jersey at a time.",
 

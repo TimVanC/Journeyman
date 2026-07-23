@@ -710,19 +710,77 @@ select {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0.35 0 0 0 0 0.3 0 0 0 0 0.22 0 0 0 0.05 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
-@keyframes start-jersey-sway {
-  0%,
-  100% {
-    transform: rotate(-3deg) translateY(0);
-  }
-  50% {
-    transform: rotate(3deg) translateY(-5px);
-  }
+/* ---- home hero: three journeyman cards fanned out, gently floating ---- */
+.hero-fan {
+  position: relative;
+  width: 100%;
+  height: 168px;
+  margin-bottom: 2px;
 }
 
-.start-jersey {
-  animation: start-jersey-sway 4.5s ease-in-out infinite;
-  filter: drop-shadow(0 10px 14px rgba(60, 45, 20, 0.3));
+/* each card sits in a slot that holds its static place in the fan; the card
+   inside floats independently, so the bob never fights the fan angle */
+.hero-slot {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform-origin: bottom center;
+}
+.hero-slot-center {
+  transform: translateX(-50%) translateY(-10px) rotate(0deg);
+  z-index: 3;
+}
+.hero-slot-left {
+  transform: translateX(-50%) translate(-70px, 10px) rotate(-13deg);
+  z-index: 1;
+}
+.hero-slot-right {
+  transform: translateX(-50%) translate(70px, 10px) rotate(13deg);
+  z-index: 2;
+}
+
+.hero-card {
+  width: 104px;
+  padding: 6px 6px 9px;
+  background:
+    linear-gradient(168deg, #fdfaf3 0%, var(--color-card) 55%, #f1ead9 100%);
+  border: 1px solid var(--color-line);
+  border-radius: 10px;
+  box-shadow:
+    0 1px 2px rgba(60, 45, 20, 0.18),
+    0 10px 22px -8px rgba(60, 45, 20, 0.42);
+  animation: hero-float 4.8s ease-in-out infinite;
+}
+/* stagger the float so the three don't bob in lockstep */
+.hero-slot-left .hero-card {
+  animation-delay: -1.6s;
+}
+.hero-slot-right .hero-card {
+  animation-delay: -3.1s;
+}
+
+.hero-card-year {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.64rem;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  margin-bottom: 4px;
+  color: var(--color-ink);
+}
+.hero-card svg {
+  display: block;
+  margin: 0 auto;
+}
+
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(1.4deg);
+  }
 }
 
 /* ---- home screen hamburger drawer ---- */
@@ -1301,7 +1359,7 @@ select {
   .menu-drawer,
   .chip-in,
   .shake,
-  .start-jersey,
+  .hero-card,
   .confetti i {
     animation: none;
   }
