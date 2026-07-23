@@ -348,7 +348,7 @@ export default function AccountSavePrompt({ onSignUp, onClose }: Props) {
           day in the NBA, NFL, and MLB archive.
         </p>
 
-        <button type="button" className="btn btn-primary mt-4 w-full py-3 text-sm" onClick={onSignUp}>
+        <button type="button" className="btn account-cta mt-4 w-full py-3.5 text-sm" onClick={onSignUp}>
           Save this game to my stats
         </button>
         <button type="button" className="mt-3 w-full text-center text-xs font-bold text-ink-soft underline underline-offset-2" onClick={onClose}>
