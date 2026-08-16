@@ -153,4 +153,22 @@ export const MLB_ROSTER: string[] = [
   "Huston Street",
   // ---- duplicate-screened, randomized and authored 2026-08-03 ----
   "Sammy Sosa",
+  // ---- duplicate-screened, randomized and authored 2026-08-03 ----
+  "Bobby Abreu",
+  "A.J. Pierzynski",
+  "Derek Lowe",
+  "Marco Scutaro",
+  "Raúl Ibañez",
+  "José Reyes",
+  "Brandon Phillips",
+  "Alex Rios",
+  "John Lackey",
+  "Aubrey Huff",
+  "Jason Heyward",
+  "Rafael Furcal",
+  "Michael Bourn",
+  "Neil Walker",
+  "Johnny Damon",
+  // ---- duplicate-screened, randomized and authored 2026-08-03 ----
+
 ];

@@ -1,0 +1,35 @@
+{
+  "startId": 128,
+  "outputBase": "nfl-batch-2026-08-16",
+  "firstSeason": 2005,
+  "players": [
+    "Jadeveon Clowney",
+    "Calais Campbell",
+    "Jason Pierre-Paul",
+    "Robert Quinn",
+    "Stephon Gilmore",
+    "Michael Bennett",
+    "Andy Dalton",
+    "Matt Cassel",
+    "Jacoby Brissett",
+    "Michael Crabtree",
+    "Braylon Edwards",
+    "Robert Woods",
+    "Brian Hoyer",
+    "Dion Lewis",
+    "Von Miller"
+  ],
+  "defensive": [
+    "Jadeveon Clowney",
+    "Calais Campbell",
+    "Jason Pierre-Paul",
+    "Robert Quinn",
+    "Stephon Gilmore",
+    "Michael Bennett",
+    "Von Miller"
+  ],
+  "passing": ["Andy Dalton", "Matt Cassel", "Jacoby Brissett", "Brian Hoyer"],
+  "rushing": ["Dion Lewis"],
+  "gsisIds": { "Michael Bennett": "00-0026618" },
+  "bios": { "Braylon Edwards": { "college": "Michigan" } }
+}

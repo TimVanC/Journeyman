@@ -1,0 +1,42 @@
+{
+  "startId": 128,
+  "outputBase": "mlb-batch-2026-08-16",
+  "players": [
+    "Bobby Abreu",
+    "A. J. Pierzynski",
+    "Derek Lowe",
+    "Marco Scutaro",
+    "Raúl Ibañez",
+    "José Reyes",
+    "Brandon Phillips",
+    "Alex Rios",
+    "John Lackey",
+    "Aubrey Huff",
+    "Jason Heyward",
+    "Rafael Furcal",
+    "Michael Bourn",
+    "Neil Walker",
+    "Johnny Damon"
+  ],
+  "positions": {
+    "Bobby Abreu": "RF",
+    "A. J. Pierzynski": "C",
+    "Derek Lowe": "RHP",
+    "Marco Scutaro": "2B / SS",
+    "Raúl Ibañez": "LF / DH",
+    "José Reyes": "SS",
+    "Brandon Phillips": "2B",
+    "Alex Rios": "RF",
+    "John Lackey": "RHP",
+    "Aubrey Huff": "1B / 3B",
+    "Jason Heyward": "RF",
+    "Rafael Furcal": "SS",
+    "Michael Bourn": "CF",
+    "Neil Walker": "2B",
+    "Johnny Damon": "CF / LF"
+  },
+  "jerseyOverrides": {
+    "Bobby Abreu|117|1996|1997": 53,
+    "Derek Lowe|136|1997|1997": 36
+  }
+}

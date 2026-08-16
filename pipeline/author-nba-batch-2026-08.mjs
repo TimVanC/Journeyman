@@ -55,7 +55,11 @@ const TEAM_NAMES = {
   TOR: "Toronto Raptors", UTA: "Utah Jazz", WAS: "Washington Wizards", WSB: "Washington Bullets",
 };
 
-const TEAM_NAME_TO_ABBR = Object.fromEntries(Object.entries(TEAM_NAMES).map(([abbr, name]) => [name, abbr]));
+const TEAM_NAME_TO_ABBR = {
+  ...Object.fromEntries(Object.entries(TEAM_NAMES).map(([abbr, name]) => [name, abbr])),
+  // BR's uniform block uses the relocation-era compound name for 2005-07.
+  "New Orleans/Oklahoma City Hornets": "NOK",
+};
 const HINT_OVERRIDES = {
   "Mike Muscala": { position: "C/PF", height: "6'11\"", draftYear: "2013", draftPick: "Round 2, #44", college: "Bucknell" },
   "Reggie Evans": { position: "PF", height: "6'8\"", draftYear: "2002", draftPick: "Undrafted", college: "Iowa" },

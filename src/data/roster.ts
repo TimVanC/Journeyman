@@ -135,6 +135,22 @@ export const ROSTER: string[] = [
   "Carmelo Anthony",
   "Dwyane Wade",
   "Dennis Rodman",
+  // ---- duplicate-screened, randomized and authored 2026-08-03 ----
+  "Kyle Korver",
+  "Jason Terry",
+  "Thaddeus Young",
+  "Marcus Morris Sr.",
+  "Andre Miller",
+  "Nick Young",
+  "Jason Richardson",
+  "Danny Green",
+  "Devin Harris",
+  "Kris Humphries",
+  "Al Jefferson",
+  "Mike Dunleavy Jr.",
+  "DeMarre Carroll",
+  "Brandon Bass",
+  "Rajon Rondo",
 ];
 
 // rosterKey lives in its own module so the build-time aired-roster swap

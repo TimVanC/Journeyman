@@ -1,0 +1,21 @@
+{
+  "startId": 137,
+  "outputBase": "nba-batch-2026-08-16",
+  "players": [
+    { "answer": "Kyle Korver", "brId": "korveky01" },
+    { "answer": "Jason Terry", "brId": "terryja01" },
+    { "answer": "Thaddeus Young", "brId": "youngth01" },
+    { "answer": "Marcus Morris Sr.", "brId": "morrima03" },
+    { "answer": "Andre Miller", "brId": "millean02" },
+    { "answer": "Nick Young", "brId": "youngni01" },
+    { "answer": "Jason Richardson", "brId": "richaja01" },
+    { "answer": "Danny Green", "brId": "greenda02" },
+    { "answer": "Devin Harris", "brId": "harride01" },
+    { "answer": "Kris Humphries", "brId": "humphkr01" },
+    { "answer": "Al Jefferson", "brId": "jeffeal01" },
+    { "answer": "Mike Dunleavy Jr.", "brId": "dunlemi02" },
+    { "answer": "DeMarre Carroll", "brId": "carrode01" },
+    { "answer": "Brandon Bass", "brId": "bassbr01" },
+    { "answer": "Rajon Rondo", "brId": "rondora01" }
+  ]
+}

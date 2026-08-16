@@ -154,4 +154,22 @@ export const NFL_ROSTER: string[] = [
   // ---- duplicate-screened, randomized and authored 2026-08-03 ----
   "Jake Plummer",
   "Adam Vinatieri",
+  // ---- duplicate-screened, randomized and authored 2026-08-03 ----
+  "Jadeveon Clowney",
+  "Calais Campbell",
+  "Jason Pierre-Paul",
+  "Robert Quinn",
+  "Stephon Gilmore",
+  "Michael Bennett",
+  "Andy Dalton",
+  "Matt Cassel",
+  "Jacoby Brissett",
+  "Michael Crabtree",
+  "Braylon Edwards",
+  "Robert Woods",
+  "Brian Hoyer",
+  "Dion Lewis",
+  "Von Miller",
+  // ---- duplicate-screened, randomized and authored 2026-08-03 ----
+
 ];
