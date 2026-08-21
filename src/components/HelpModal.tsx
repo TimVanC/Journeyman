@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { SPORT } from "../sports/active";
 import { FlameIcon } from "./Icons";
 
-// "position → height → draft year → draft pick → college", per sport
+// "position → height → initials → draft pick → college", per sport
 const ladderLine = SPORT.hintLadder.map((h) => h.label.toLowerCase()).join(" → ");
 
 interface Props {

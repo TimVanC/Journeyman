@@ -31,6 +31,7 @@ import { getPhase, initialState, reducer, HINT_COUNT } from "./game/state";
 import type { Stint } from "./game/types";
 import { loadMode, saveMode, hasSeenHelp, markSeenHelp, type GameMode } from "./game/storage";
 import { getDbPuzzle } from "./lib/puzzleService";
+import { withInitials } from "./game/initials";
 
 const storage = SPORT.storage;
 const puzzles = SPORT.puzzles;
@@ -71,6 +72,13 @@ function docRect(el: HTMLElement): CardRect {
  *  verified pool, so a daily never 404s — authoring a puzzle with a
  *  matching `answer` flips its day live, no other wiring needed. */
 function puzzleForDay(day: number): (typeof puzzles)[number] {
+  // puzzles that aired before the initials hint existed (2026-08-21) get
+  // theirs derived from the answer, so the archive ladder never shows a
+  // blank row
+  return withInitials(puzzleForDayRaw(day));
+}
+
+function puzzleForDayRaw(day: number): (typeof puzzles)[number] {
   // Session 6: a DB-served puzzle (prefetched in main.tsx behind
   // VITE_SERVE_FROM_DB) wins for its exact day; everything else — flag off,
   // RPC miss, timeout, day mismatch — falls through to the bundled arrays.
@@ -105,7 +113,7 @@ function resolveGame(): {
     let forced = Number(params.get("p"));
     if (!forced && params.has("test")) forced = 1;
     if (forced >= 1 && forced <= puzzles.length) {
-      return { day: 9000 + forced, puzzle: puzzles[forced - 1], testIndex: forced, archiveDay: null };
+      return { day: 9000 + forced, puzzle: withInitials(puzzles[forced - 1]), testIndex: forced, archiveDay: null };
     }
   }
   const archive = Number(params.get("d"));

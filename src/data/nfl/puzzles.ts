@@ -2234,7 +2234,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DE / OLB",
       height: "6'3\"",
-      draftYear: "2003",
+      initials: "C.C.",
       draftPick: "Undrafted",
       college: "Georgia",
     },
@@ -2420,7 +2420,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'2\"",
-      draftYear: "2014",
+      initials: "D.M.",
       draftPick: "Round 3, #90",
       college: "Mississippi",
     },
@@ -2480,7 +2480,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "5'9\"",
-      draftYear: "2014",
+      initials: "J.M.",
       draftPick: "Round 3, #96",
       college: "Georgia Southern",
     },
@@ -2642,7 +2642,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "5'11\"",
-      draftYear: "2010",
+      initials: "E.S.",
       draftPick: "Round 3, #82",
       college: "Southern Methodist",
     },
@@ -2762,7 +2762,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "TE",
       height: "6'2\"",
-      draftYear: "2006",
+      initials: "D.W.",
       draftPick: "Round 6, #175",
       college: "Central Missouri State",
     },
@@ -2865,7 +2865,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "6'0\"",
-      draftYear: "2010",
+      initials: "L.B.",
       draftPick: "Undrafted",
       college: "Oregon",
     },
@@ -3083,7 +3083,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "TE",
       height: "6'3\"",
-      draftYear: "2004",
+      initials: "B.W.",
       draftPick: "Round 1, #32",
       college: "Georgia",
     },
@@ -3158,7 +3158,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "5'11\"",
-      draftYear: "2010",
+      initials: "G.T.",
       draftPick: "Round 2, #60",
       college: "Notre Dame",
     },
@@ -3232,7 +3232,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "OLB / DE",
       height: "6'3\"",
-      draftYear: "2004",
+      initials: "S.P.",
       draftPick: "Round 4, #98",
       college: "Purdue",
     },
@@ -3304,7 +3304,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'1\"",
-      draftYear: "2013",
+      initials: "K.S.",
       draftPick: "Round 5, #144",
       college: "Oklahoma",
     },
@@ -3404,7 +3404,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'2\"",
-      draftYear: "2012",
+      initials: "M.S.",
       draftPick: "Round 3, #83",
       college: "Rutgers",
     },
@@ -3462,7 +3462,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'3\"",
-      draftYear: "2010",
+      initials: "E.D.",
       draftPick: "Round 3, #87",
       college: "Minnesota",
     },
@@ -3565,7 +3565,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "TE",
       height: "6'6\"",
-      draftYear: "2008",
+      initials: "M.B.",
       draftPick: "Round 2, #61",
       college: "Texas A&M",
     },
@@ -3669,7 +3669,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB / WR / KR",
       height: "6'2\"",
-      draftYear: "2013",
+      initials: "C.P.",
       draftPick: "Round 1, #29",
       college: "Tennessee",
     },
@@ -3772,7 +3772,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "TE",
       height: "6'5\"",
-      draftYear: "2009",
+      initials: "J.C.",
       draftPick: "Round 3, #89",
       college: "South Carolina",
     },
@@ -3872,7 +3872,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "6'0\"",
-      draftYear: "2014",
+      initials: "C.H.",
       draftPick: "Round 2, #57",
       college: "Ohio State",
     },
@@ -3932,7 +3932,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "TE",
       height: "6'6\"",
-      draftYear: "2011",
+      initials: "K.R.",
       draftPick: "Round 2, #43",
       college: "Notre Dame",
     },
@@ -4020,7 +4020,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "5'11\"",
-      draftYear: "2008",
+      initials: "D.A.",
       draftPick: "Undrafted",
       college: "Texas Tech",
     },
@@ -4094,7 +4094,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "6'0\"",
-      draftYear: "2010",
+      initials: "C.I.",
       draftPick: "Undrafted",
       college: "Tiffin University",
     },
@@ -4182,7 +4182,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "CB",
       height: "5'11\"",
-      draftYear: "2008",
+      initials: "T.P.",
       draftPick: "Round 2, #40",
       college: "Indiana",
     },
@@ -4268,7 +4268,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "TE",
       height: "6'4\"",
-      draftYear: "2006",
+      initials: "A.F.",
       draftPick: "Round 2, #53",
       college: "Notre Dame",
     },
@@ -4326,7 +4326,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "CB",
       height: "5'9\"",
-      draftYear: "2009",
+      initials: "C.M.",
       draftPick: "Round 7, #216",
       college: "South Carolina",
     },
@@ -4386,7 +4386,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'1\"",
-      draftYear: "2005",
+      initials: "N.W.",
       draftPick: "Undrafted",
       college: "Tiffin",
     },
@@ -4474,7 +4474,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "5'10\"",
-      draftYear: "2012",
+      initials: "A.M.",
       draftPick: "Round 6, #173",
       college: "Florida Atlantic",
     },
@@ -4534,7 +4534,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "FB / RB",
       height: "5'9\"",
-      draftYear: "2008",
+      initials: "M.T.",
       draftPick: "Undrafted",
       college: "Coastal Carolina",
     },
@@ -4578,7 +4578,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'0\"",
-      draftYear: "2008",
+      initials: "H.D.",
       draftPick: "Round 3, #84",
       college: "Louisville",
     },
@@ -4636,7 +4636,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "5'10\"",
-      draftYear: "2008",
+      initials: "E.R.",
       draftPick: "Round 2, #42",
       college: "Virginia Tech",
     },
@@ -4708,7 +4708,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "5'11\"",
-      draftYear: "2002",
+      initials: "C.T.",
       draftPick: "Round 6, #207",
       college: "Toledo",
     },
@@ -4824,7 +4824,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "5'8\"",
-      draftYear: "2008",
+      initials: "J.F.",
       draftPick: "Round 7, #233",
       college: "California",
     },
@@ -4882,7 +4882,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'1\"",
-      draftYear: "2004",
+      initials: "J.C.",
       draftPick: "Round 4, #108",
       college: "North Carolina State",
     },
@@ -4942,7 +4942,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB / KR",
       height: "5'6\"",
-      draftYear: "2005",
+      initials: "D.S.",
       draftPick: "Round 4, #130",
       college: "Kansas State",
     },
@@ -4988,7 +4988,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "TE",
       height: "6'5\"",
-      draftYear: "2010",
+      initials: "J.G.",
       draftPick: "Round 1, #21",
       college: "Oklahoma",
     },
@@ -5078,7 +5078,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DT",
       height: "6'4\"",
-      draftYear: "2010",
+      initials: "N.S.",
       draftPick: "Round 1, #2",
       college: "Nebraska",
     },
@@ -5223,7 +5223,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "5'11\"",
-      draftYear: "2010",
+      initials: "A.R.",
       draftPick: "Round 3, #88",
       college: "Citadel",
     },
@@ -5311,7 +5311,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "6'0\"",
-      draftYear: "2005",
+      initials: "R.B.",
       draftPick: "Round 1, #2",
       college: "Auburn",
     },
@@ -5369,7 +5369,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "TE",
       height: "6'3\"",
-      draftYear: "2008",
+      initials: "J.T.",
       draftPick: "Round 4, #127",
       college: "Kentucky",
     },
@@ -5443,7 +5443,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "CB",
       height: "5'10\"",
-      draftYear: "2006",
+      initials: "C.F.",
       draftPick: "Round 7, #215",
       college: "Samford",
     },
@@ -5557,7 +5557,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'0\"",
-      draftYear: "2002",
+      initials: "D.S.",
       draftPick: "Round 1, #13",
       college: "Tennessee",
     },
@@ -5615,7 +5615,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "6'0\"",
-      draftYear: "2008",
+      initials: "T.H.",
       draftPick: "Round 5, #149",
       college: "Richmond",
     },
@@ -5717,7 +5717,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "S",
       height: "5'11\"",
-      draftYear: "2004",
+      initials: "M.A.",
       draftPick: "Undrafted",
       college: "Delaware",
     },
@@ -5833,7 +5833,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'0\"",
-      draftYear: "2003",
+      initials: "B.L.",
       draftPick: "Round 4, #124",
       college: "Illinois",
     },
@@ -5908,7 +5908,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "6'0\"",
-      draftYear: "2003",
+      initials: "W.M.",
       draftPick: "Round 1, #23",
       college: "Miami (FL)",
     },
@@ -5996,7 +5996,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'1\"",
-      draftYear: "2011",
+      initials: "C.H.",
       draftPick: "Undrafted",
       college: "Monmouth, N.J.",
     },
@@ -6040,7 +6040,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "6'1\"",
-      draftYear: "2007",
+      initials: "M.B.",
       draftPick: "Round 4, #100",
       college: "Louisville",
     },
@@ -6101,7 +6101,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "TE",
       height: "6'3\"",
-      draftYear: "2006",
+      initials: "O.D.",
       draftPick: "Round 4, #98",
       college: "Wisconsin",
     },
@@ -6176,7 +6176,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'0\"",
-      draftYear: "2011",
+      initials: "T.S.",
       draftPick: "Round 2, #58",
       college: "Maryland",
     },
@@ -6236,7 +6236,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "5'9\"",
-      draftYear: "2005",
+      initials: "L.M.",
       draftPick: "Undrafted",
       college: "Toledo",
     },
@@ -6296,7 +6296,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR / KR",
       height: "6'2\"",
-      draftYear: "2006",
+      initials: "D.H.",
       draftPick: "Round 4, #130",
       college: "Akron",
     },
@@ -6368,7 +6368,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'4\"",
-      draftYear: "2005",
+      initials: "A.S.",
       draftPick: "Round 1, #1",
       college: "Utah",
     },
@@ -6482,7 +6482,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'2\"",
-      draftYear: "2014",
+      initials: "T.B.",
       draftPick: "Round 1, #32",
       college: "Louisville",
     },
@@ -6526,7 +6526,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'4\"",
-      draftYear: "2012",
+      initials: "R.T.",
       draftPick: "Round 1, #8",
       college: "Texas A&amp;M",
     },
@@ -6640,7 +6640,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'1\"",
-      draftYear: "2011",
+      initials: "T.T.",
       draftPick: "Round 6, #180",
       college: "Virginia Tech",
     },
@@ -6754,7 +6754,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'6\"",
-      draftYear: "2012",
+      initials: "N.F.",
       draftPick: "Round 3, #88",
       college: "Arizona",
     },
@@ -6826,7 +6826,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'4\"",
-      draftYear: "2015",
+      initials: "J.W.",
       draftPick: "Round 1, #1",
       college: "Florida State",
     },
@@ -6912,7 +6912,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'4\"",
-      draftYear: "2015",
+      initials: "M.M.",
       draftPick: "Round 1, #2",
       college: "Oregon",
     },
@@ -6984,7 +6984,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'2\"",
-      draftYear: "2009",
+      initials: "M.S.",
       draftPick: "Round 1, #5",
       college: "USC",
     },
@@ -7084,7 +7084,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'1\"",
-      draftYear: "1999",
+      initials: "J.G.",
       draftPick: "Undrafted",
       college: "San Jose State",
     },
@@ -7156,7 +7156,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'4\"",
-      draftYear: "1998",
+      initials: "M.H.",
       draftPick: "Round 6, #187",
       college: "Boston College",
     },
@@ -7214,7 +7214,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "6'2\"",
-      draftYear: "2004",
+      initials: "S.J.",
       draftPick: "Round 1, #24",
       college: "Oregon State",
     },
@@ -7272,7 +7272,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "6'1\"",
-      draftYear: "2011",
+      initials: "D.M.",
       draftPick: "Round 3, #71",
       college: "Oklahoma",
     },
@@ -7330,7 +7330,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "5'11\"",
-      draftYear: "2008",
+      initials: "J.C.",
       draftPick: "Round 3, #73",
       college: "Texas",
     },
@@ -7416,7 +7416,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "6'1\"",
-      draftYear: "2013",
+      initials: "L.B.",
       draftPick: "Round 2, #48",
       college: "Michigan State",
     },
@@ -7474,7 +7474,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "6'1\"",
-      draftYear: "2015",
+      initials: "T.G.",
       draftPick: "Round 1, #10",
       college: "Georgia",
     },
@@ -7546,7 +7546,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "6'1\"",
-      draftYear: "2015",
+      initials: "M.G.",
       draftPick: "Round 1, #15",
       college: "Wisconsin",
     },
@@ -7618,7 +7618,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "5'9\"",
-      draftYear: "2011",
+      initials: "M.I.",
       draftPick: "Round 1, #28",
       college: "Alabama",
     },
@@ -7676,7 +7676,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "5'10\"",
-      draftYear: "1999",
+      initials: "R.W.",
       draftPick: "Round 1, #5",
       college: "Texas",
     },
@@ -7734,7 +7734,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "5'11\"",
-      draftYear: "2008",
+      initials: "C.J.",
       draftPick: "Round 1, #24",
       college: "East Carolina",
     },
@@ -7778,7 +7778,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "5'9\"",
-      draftYear: "0",
+      initials: "S.S.",
       draftPick: "Round 3, #74",
       college: "Utah",
     },
@@ -7864,7 +7864,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "5'9\"",
-      draftYear: "2004",
+      initials: "W.W.",
       draftPick: "Undrafted",
       college: "Texas Tech",
     },
@@ -7922,7 +7922,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'3\"",
-      draftYear: "2003",
+      initials: "A.J.",
       draftPick: "Round 1, #3",
       college: "Miami (FL)",
     },
@@ -8008,7 +8008,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'0\"",
-      draftYear: "2009",
+      initials: "M.W.",
       draftPick: "Round 3, #84",
       college: "Mississippi",
     },
@@ -8052,7 +8052,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'5\"",
-      draftYear: "2005",
+      initials: "V.J.",
       draftPick: "Round 2, #61",
       college: "Northern Colorado",
     },
@@ -8124,7 +8124,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "5'11\"",
-      draftYear: "2009",
+      initials: "P.H.",
       draftPick: "Round 1, #22",
       college: "Florida",
     },
@@ -8224,7 +8224,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'1\"",
-      draftYear: "2014",
+      initials: "S.W.",
       draftPick: "Round 1, #4",
       college: "Clemson",
     },
@@ -8310,7 +8310,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "TE",
       height: "6'7\"",
-      draftYear: "2010",
+      initials: "J.G.",
       draftPick: "Round 3, #95",
       college: "Miami",
     },
@@ -8368,7 +8368,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "TE",
       height: "6'5\"",
-      draftYear: "2007",
+      initials: "G.O.",
       draftPick: "Round 1, #31",
       college: "Miami",
     },
@@ -8426,7 +8426,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "TE",
       height: "6'3\"",
-      draftYear: "2006",
+      initials: "V.D.",
       draftPick: "Round 1, #6",
       college: "Maryland",
     },
@@ -8484,7 +8484,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "TE",
       height: "6'5\"",
-      draftYear: "2013",
+      initials: "Z.E.",
       draftPick: "Round 2, #35",
       college: "Stanford",
     },
@@ -8542,7 +8542,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DB",
       height: "6'3\"",
-      draftYear: "2011",
+      initials: "R.S.",
       draftPick: "Round 5, #154",
       college: "Stanford",
     },
@@ -8628,7 +8628,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DB",
       height: "5'11\"",
-      draftYear: "2007",
+      initials: "D.R.",
       draftPick: "Undrafted",
       college: "Pittsburgh",
     },
@@ -8700,7 +8700,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DB",
       height: "6'1\"",
-      draftYear: "2008",
+      initials: "A.T.",
       draftPick: "Round 1, #20",
       college: "Kansas",
     },
@@ -8786,7 +8786,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DB",
       height: "6'2\"",
-      draftYear: "0",
+      initials: "A.C.",
       draftPick: "Undrafted",
       college: "Florida State",
     },
@@ -8830,7 +8830,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "CB",
       height: "6'0\"",
-      draftYear: "1999",
+      initials: "C.B.",
       draftPick: "Undrafted",
       college: "Georgia",
     },
@@ -8916,7 +8916,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DL",
       height: "6'1\"",
-      draftYear: "2002",
+      initials: "D.F.",
       draftPick: "Undrafted",
       college: "Syracuse",
     },
@@ -8988,7 +8988,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DL",
       height: "6'7\"",
-      draftYear: "2002",
+      initials: "J.P.",
       draftPick: "Round 1, #2",
       college: "North Carolina",
     },
@@ -9060,7 +9060,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "OLB",
       height: "6'6\"",
-      draftYear: "2004",
+      initials: "J.A.",
       draftPick: "Undrafted",
       college: "Idaho State",
     },
@@ -9104,7 +9104,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "LB",
       height: "6'4\"",
-      draftYear: "2005",
+      initials: "D.W.",
       draftPick: "Undrafted",
       college: "Troy",
     },
@@ -9162,7 +9162,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "LB",
       height: "6'3\"",
-      draftYear: "2003",
+      initials: "T.S.",
       draftPick: "Round 1, #10",
       college: "Arizona State",
     },
@@ -9220,7 +9220,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DL",
       height: "6'6\"",
-      draftYear: "0",
+      initials: "M.W.",
       draftPick: "Undrafted",
       college: "North Carolina State",
     },
@@ -9292,7 +9292,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DB",
       height: "5'9\"",
-      draftYear: "2013",
+      initials: "T.M.",
       draftPick: "Round 3, #69",
       college: "LSU",
     },
@@ -9375,7 +9375,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "5'11\"",
-      draftYear: "2007",
+      initials: "M.L.",
       draftPick: "Round 1, #12",
       college: "California",
     },
@@ -9497,7 +9497,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'6\"",
-      draftYear: "2008",
+      initials: "J.F.",
       draftPick: "Round 1, #18",
       college: "Delaware",
     },
@@ -9555,7 +9555,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'5\"",
-      draftYear: "2011",
+      initials: "C.N.",
       draftPick: "Round 1, #1",
       college: "Auburn",
     },
@@ -9613,7 +9613,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "5'10\"",
-      draftYear: "2010",
+      initials: "A.B.",
       draftPick: "Round 6, #195",
       college: "Central Michigan",
     },
@@ -9699,7 +9699,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "5'11\"",
-      draftYear: "2014",
+      initials: "O.B.",
       draftPick: "Round 1, #12",
       college: "Louisiana State",
     },
@@ -9781,7 +9781,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'0\"",
-      draftYear: "2001",
+      initials: "M.V.",
       draftPick: "Round 1, #1",
       college: "Virginia Tech",
     },
@@ -9841,7 +9841,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'2\"",
-      draftYear: "1994",
+      initials: "K.W.",
       draftPick: "Undrafted",
       college: "Northern Iowa",
     },
@@ -9901,7 +9901,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'5\"",
-      draftYear: "1993",
+      initials: "D.B.",
       draftPick: "Round 1, #1",
       college: "Washington State",
     },
@@ -9973,7 +9973,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'4\"",
-      draftYear: "1985",
+      initials: "R.C.",
       draftPick: "Round 2, #37",
       college: "UNLV",
     },
@@ -10059,7 +10059,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'4\"",
-      draftYear: "1990",
+      initials: "J.G.",
       draftPick: "Round 1, #1",
       college: "Illinois",
     },
@@ -10133,7 +10133,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "6'3\"",
-      draftYear: "1996",
+      initials: "E.G.",
       draftPick: "Round 1, #14",
       college: "Ohio State",
     },
@@ -10177,7 +10177,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'2\"",
-      draftYear: "1997",
+      initials: "J.P.",
       draftPick: "Round 2, #42",
       college: "Arizona State",
     },
@@ -10224,7 +10224,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "K",
       height: "6'0\"",
-      draftYear: "1996",
+      initials: "A.V.",
       draftPick: "Undrafted",
       college: "South Dakota State",
     },
@@ -10338,7 +10338,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DL",
       height: "6'5\"",
-      draftYear: "2014",
+      initials: "J.C.",
       draftPick: "Round 1, #1",
       college: "South Carolina",
     },
@@ -10438,7 +10438,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DL",
       height: "6'8\"",
-      draftYear: "2008",
+      initials: "C.C.",
       draftPick: "Round 2, #50",
       college: "Miami",
     },
@@ -10524,7 +10524,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DL",
       height: "6'5\"",
-      draftYear: "2010",
+      initials: "J.P.P.",
       draftPick: "Round 1, #15",
       college: "University of South Florida; Fort Scott CC; College of the Canyons",
     },
@@ -10624,7 +10624,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "LB",
       height: "6'4\"",
-      draftYear: "2011",
+      initials: "R.Q.",
       draftPick: "Round 1, #14",
       college: "North Carolina",
     },
@@ -10724,7 +10724,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DB",
       height: "6'0\"",
-      draftYear: "2012",
+      initials: "S.G.",
       draftPick: "Round 1, #10",
       college: "South Carolina",
     },
@@ -10810,7 +10810,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "DL",
       height: "6'4\"",
-      draftYear: "2009",
+      initials: "M.B.",
       draftPick: "Undrafted",
       college: "Texas A&M",
     },
@@ -10896,7 +10896,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'2\"",
-      draftYear: "2011",
+      initials: "A.D.",
       draftPick: "Round 2, #35",
       college: "TCU",
     },
@@ -10996,7 +10996,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'4\"",
-      draftYear: "2005",
+      initials: "M.C.",
       draftPick: "Round 7, #230",
       college: "USC",
     },
@@ -11110,7 +11110,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'4\"",
-      draftYear: "2016",
+      initials: "J.B.",
       draftPick: "Round 3, #91",
       college: "N.C. State; Florida",
     },
@@ -11182,7 +11182,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'1\"",
-      draftYear: "2009",
+      initials: "M.C.",
       draftPick: "Round 1, #10",
       college: "Texas Tech",
     },
@@ -11268,7 +11268,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'3\"",
-      draftYear: "2005",
+      initials: "B.E.",
       draftPick: "Round 1, #3",
       college: "Michigan",
     },
@@ -11340,7 +11340,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "WR",
       height: "6'0\"",
-      draftYear: "2013",
+      initials: "R.W.",
       draftPick: "Round 2, #41",
       college: "USC",
     },
@@ -11496,7 +11496,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "QB",
       height: "6'2\"",
-      draftYear: "2009",
+      initials: "B.H.",
       draftPick: "Undrafted",
       college: "Michigan State",
     },
@@ -11568,7 +11568,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "RB",
       height: "5'8\"",
-      draftYear: "2011",
+      initials: "D.L.",
       draftPick: "Round 5, #149",
       college: "Pittsburgh",
     },
@@ -11640,7 +11640,7 @@ export const nflPuzzles: Puzzle[] = [
     hints: {
       position: "LB",
       height: "6'3\"",
-      draftYear: "2011",
+      initials: "V.M.",
       draftPick: "Round 1, #2",
       college: "Texas A&M",
     },

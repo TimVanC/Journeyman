@@ -2101,7 +2101,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'6\"",
-      draftYear: "1992",
+      initials: "J.J.",
       draftPick: "Round 1, Pick 4",
       college: "Ohio State",
     },
@@ -2283,7 +2283,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF",
       height: "6'11\"",
-      draftYear: "1995",
+      initials: "R.W.",
       draftPick: "Round 1, Pick 4",
       college: "UNC",
     },
@@ -2482,7 +2482,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF",
       height: "6'9\"",
-      draftYear: "1990",
+      initials: "T.M.",
       draftPick: "Round 2, Pick 43",
       college: "Maryland",
     },
@@ -3646,7 +3646,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "C/PF",
       height: "6'11\"",
-      draftYear: "2013",
+      initials: "M.M.",
       draftPick: "Round 2, #44",
       college: "Bucknell",
     },
@@ -3758,7 +3758,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF",
       height: "6'8\"",
-      draftYear: "2002",
+      initials: "R.E.",
       draftPick: "Undrafted",
       college: "Iowa",
     },
@@ -3918,7 +3918,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG",
       height: "6'4\"",
-      draftYear: "2009",
+      initials: "W.E.",
       draftPick: "Round 1, #28",
       college: "North Carolina",
     },
@@ -4066,7 +4066,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "C",
       height: "7'1\"",
-      draftYear: "2008",
+      initials: "R.L.",
       draftPick: "Round 1, #15",
       college: "Stanford",
     },
@@ -4486,7 +4486,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF",
       height: "6'8\"",
-      draftYear: "2007",
+      initials: "A.T.",
       draftPick: "Undrafted",
       college: "Creighton",
     },
@@ -4748,7 +4748,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "C/PF",
       height: "7'0\"",
-      draftYear: "2005",
+      initials: "C.F.",
       draftPick: "Round 1, #8",
       college: "Arizona",
     },
@@ -5033,7 +5033,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'7\"",
-      draftYear: "2002",
+      initials: "R.B.",
       draftPick: "Round 2, #53",
       college: "La Salle",
     },
@@ -5219,7 +5219,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF/C",
       height: "6'8\"",
-      draftYear: "2007",
+      initials: "J.G.",
       draftPick: "Round 1, #5",
       college: "Georgetown",
     },
@@ -5331,7 +5331,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'1\"",
-      draftYear: "1996",
+      initials: "T.D.",
       draftPick: "Round 1, #16",
       college: "Kentucky",
     },
@@ -5433,7 +5433,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG",
       height: "6'4\"",
-      draftYear: "2009",
+      initials: "J.M.",
       draftPick: "Round 2, #41",
       college: "Kentucky",
     },
@@ -5533,7 +5533,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'3\"",
-      draftYear: "2000",
+      initials: "K.D.",
       draftPick: "Round 1, #10",
       college: "Missouri",
     },
@@ -5707,7 +5707,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'8\"",
-      draftYear: "2004",
+      initials: "T.A.",
       draftPick: "Round 2, #43",
       college: "UCLA",
     },
@@ -5807,7 +5807,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF",
       height: "6'7\"",
-      draftYear: "2012",
+      initials: "Q.A.",
       draftPick: "Round 2, #37",
       college: "Baylor",
     },
@@ -5871,7 +5871,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG",
       height: "6'1\"",
-      draftYear: "2004",
+      initials: "C.D.",
       draftPick: "Round 2, #38",
       college: "Duke",
     },
@@ -6009,7 +6009,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF/PF",
       height: "6'9\"",
-      draftYear: "2007",
+      initials: "C.B.",
       draftPick: "Round 1, #7",
       college: "Florida",
     },
@@ -6061,7 +6061,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'7\"",
-      draftYear: "2003",
+      initials: "J.H.",
       draftPick: "Round 1, #10",
       college: "Western Carolina University, Georgia",
     },
@@ -6197,7 +6197,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG",
       height: "6'3\"",
-      draftYear: "2003",
+      initials: "S.B.",
       draftPick: "Round 2, #38",
       college: "Maryland",
     },
@@ -6297,7 +6297,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'6\"",
-      draftYear: "2013",
+      initials: "R.B.",
       draftPick: "Round 1, #25",
       college: "UNC",
     },
@@ -6387,7 +6387,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "C",
       height: "6'11\"",
-      draftYear: "1998",
+      initials: "M.D.",
       draftPick: "Round 1, #12",
       college: "Utah",
     },
@@ -6523,7 +6523,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'6\"",
-      draftYear: "2005",
+      initials: "G.G.",
       draftPick: "Round 1, #18",
       college: "Preps-to-pros / international",
     },
@@ -6601,7 +6601,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'6\"",
-      draftYear: "2008",
+      initials: "B.R.",
       draftPick: "Round 1, #13",
       college: "Kansas",
     },
@@ -6701,7 +6701,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'2\"",
-      draftYear: "Undrafted",
+      initials: "C.A.",
       draftPick: "Undrafted",
       college: "Florida International University",
     },
@@ -6815,7 +6815,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF/PF",
       height: "6'6\"",
-      draftYear: "2007",
+      initials: "J.D.",
       draftPick: "Round 1, #22",
       college: "Boston College",
     },
@@ -6915,7 +6915,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'7\"",
-      draftYear: "2006",
+      initials: "R.B.",
       draftPick: "Round 1, #14",
       college: "Arkansas",
     },
@@ -7053,7 +7053,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'1\"",
-      draftYear: "2000",
+      initials: "E.H.",
       draftPick: "Round 2, #37",
       college: "Arizona State",
     },
@@ -7177,7 +7177,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF/C",
       height: "7'0\"",
-      draftYear: "2007",
+      initials: "J.S.",
       draftPick: "Round 1, #20",
       college: "Colorado State",
     },
@@ -7325,7 +7325,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG",
       height: "5'11\"",
-      draftYear: "2008",
+      initials: "D.J.A.",
       draftPick: "Round 1, #9",
       college: "Texas",
     },
@@ -7389,7 +7389,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'6\"",
-      draftYear: "1997",
+      initials: "A.P.",
       draftPick: "Round 1, #21",
       college: "Bradley",
     },
@@ -7453,7 +7453,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF",
       height: "6'10\"",
-      draftYear: "1996",
+      initials: "W.M.",
       draftPick: "Round 1, #19",
       college: "Kentucky",
     },
@@ -7529,7 +7529,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'6\"",
-      draftYear: "Undrafted",
+      initials: "A.A.",
       draftPick: "Undrafted",
       college: "Michigan State",
     },
@@ -7619,7 +7619,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'8\"",
-      draftYear: "2003",
+      initials: "J.K.",
       draftPick: "Round 2, #31",
       college: "UCLA",
     },
@@ -7683,7 +7683,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'3\"",
-      draftYear: "2005",
+      initials: "L.H.",
       draftPick: "Round 1, #24",
       college: "Illinois",
     },
@@ -7759,7 +7759,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG",
       height: "6'4\"",
-      draftYear: "2003",
+      initials: "W.G.",
       draftPick: "Round 2, #41",
       college: "Detroit Mercy",
     },
@@ -7799,7 +7799,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'7\"",
-      draftYear: "2005",
+      initials: "F.G.",
       draftPick: "Round 1, #23",
       college: "Louisville",
     },
@@ -7913,7 +7913,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'6\"",
-      draftYear: "2003",
+      initials: "D.J.",
       draftPick: "Round 1, #20",
       college: "Rutgers University, Duke",
     },
@@ -8001,7 +8001,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'6\"",
-      draftYear: "Undrafted",
+      initials: "M.D.",
       draftPick: "Undrafted",
       college: "Auburn",
     },
@@ -8101,7 +8101,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'2\"",
-      draftYear: "2005",
+      initials: "R.P.",
       draftPick: "Undrafted",
       college: "Utah Valley",
     },
@@ -8201,7 +8201,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'3\"",
-      draftYear: "2011",
+      initials: "S.M.",
       draftPick: "Round 2, #34",
       college: "Butler",
     },
@@ -8289,7 +8289,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'6\"",
-      draftYear: "2010",
+      initials: "G.V.",
       draftPick: "Round 1, #28",
       college: "Maryland",
     },
@@ -8403,7 +8403,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'3\"",
-      draftYear: "2004",
+      initials: "B.U.",
       draftPick: "Round 1, #28",
       college: "Maccabi Tel Aviv (Israel)",
     },
@@ -8491,7 +8491,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'2\"",
-      draftYear: "2003",
+      initials: "L.R.",
       draftPick: "Round 1, #14",
       college: "Oregon",
     },
@@ -8591,7 +8591,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'5\"",
-      draftYear: "2001",
+      initials: "M.E.",
       draftPick: "Undrafted",
       college: "Texas",
     },
@@ -8655,7 +8655,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "C/PF",
       height: "6'6\"",
-      draftYear: "2005",
+      initials: "C.H.",
       draftPick: "Undrafted",
       college: "Kentucky",
     },
@@ -8769,7 +8769,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG",
       height: "6'5\"",
-      draftYear: "1999",
+      initials: "R.B.",
       draftPick: "Undrafted",
       college: "Florida International",
     },
@@ -8905,7 +8905,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'3\"",
-      draftYear: "2005",
+      initials: "J.J.",
       draftPick: "Round 1, #22",
       college: "Georgia Tech",
     },
@@ -9007,7 +9007,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF/SF",
       height: "6'10\"",
-      draftYear: "2001",
+      initials: "V.R.",
       draftPick: "Round 1, #12",
       college: "FMP Železnik (Serbia)",
     },
@@ -9146,7 +9146,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG",
       height: "5'9\"",
-      draftYear: "2005",
+      initials: "N.R.",
       draftPick: "Round 1, #21",
       college: "Washington",
     },
@@ -9188,7 +9188,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF/C",
       height: "6'10\"",
-      draftYear: "2003",
+      initials: "M.B.",
       draftPick: "Round 2, #45",
       college: "Florida",
     },
@@ -9336,7 +9336,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF/C",
       height: "6'10\"",
-      draftYear: "2002",
+      initials: "D.G.",
       draftPick: "Round 1, #4",
       college: "Kansas",
     },
@@ -9472,7 +9472,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'4\"",
-      draftYear: "2008",
+      initials: "G.H.",
       draftPick: "Round 1, #26",
       college: "IUPUI",
     },
@@ -9596,7 +9596,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF",
       height: "6'6\"",
-      draftYear: "2012",
+      initials: "J.C.",
       draftPick: "Round 2, #34",
       college: "Marquette",
     },
@@ -9720,7 +9720,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'5\"",
-      draftYear: "Undrafted",
+      initials: "W.M.",
       draftPick: "Undrafted",
       college: "Marquette",
     },
@@ -9820,7 +9820,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'2\"",
-      draftYear: "2011",
+      initials: "C.J.",
       draftPick: "Round 1, #29",
       college: "Texas",
     },
@@ -9956,7 +9956,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'5\"",
-      draftYear: "2011",
+      initials: "A.B.",
       draftPick: "Round 1, #12",
       college: "Colorado",
     },
@@ -10068,7 +10068,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF/C",
       height: "7'0\"",
-      draftYear: "2013",
+      initials: "K.O.",
       draftPick: "Round 1, #13",
       college: "Gonzaga",
     },
@@ -10168,7 +10168,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'4\"",
-      draftYear: "Undrafted",
+      initials: "K.B.",
       draftPick: "Undrafted",
       college: "Old Dominion",
     },
@@ -10304,7 +10304,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'5\"",
-      draftYear: "2007",
+      initials: "M.B.",
       draftPick: "Round 1, #18",
       college: "Preps-to-pros / international",
     },
@@ -10404,7 +10404,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF",
       height: "6'9\"",
-      draftYear: "2010",
+      initials: "A.F.A.",
       draftPick: "Round 1, #8",
       college: "Wake Forest",
     },
@@ -10504,7 +10504,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'5\"",
-      draftYear: "2015",
+      initials: "J.R.",
       draftPick: "Round 2, #40",
       college: "Tennessee",
     },
@@ -10664,7 +10664,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'1\"",
-      draftYear: "2013",
+      initials: "D.S.",
       draftPick: "Round 1, #17",
       college: "Preps-to-pros / international",
     },
@@ -10776,7 +10776,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'3\"",
-      draftYear: "2010",
+      initials: "A.B.",
       draftPick: "Round 1, #19",
       college: "Texas",
     },
@@ -10864,7 +10864,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG",
       height: "6'3\"",
-      draftYear: "2009",
+      initials: "J.T.",
       draftPick: "Round 1, #19",
       college: "Wake Forest",
     },
@@ -10952,7 +10952,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF/PF",
       height: "6'8\"",
-      draftYear: "2014",
+      initials: "R.H.",
       draftPick: "Round 1, #23",
       college: "Mississippi State, Duke",
     },
@@ -11064,7 +11064,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'5\"",
-      draftYear: "2007",
+      initials: "A.A.",
       draftPick: "Round 1, #27",
       college: "UCLA",
     },
@@ -11164,7 +11164,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG/SF",
       height: "6'6\"",
-      draftYear: "2005",
+      initials: "C.J.M.",
       draftPick: "Round 2, #34",
       college: "Preps-to-pros / international",
     },
@@ -11276,7 +11276,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'3\"",
-      draftYear: "2008",
+      initials: "J.B.",
       draftPick: "Round 1, #11",
       college: "Arizona",
     },
@@ -11424,7 +11424,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'3\"",
-      draftYear: "2007",
+      initials: "R.S.",
       draftPick: "Round 2, #56",
       college: "Nevada",
     },
@@ -11524,7 +11524,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG/SF",
       height: "6'6\"",
-      draftYear: "2002",
+      initials: "J.S.",
       draftPick: "Round 1, #26",
       college: "Miami (FL)",
     },
@@ -11660,7 +11660,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "5'11\"",
-      draftYear: "Undrafted",
+      initials: "C.A.",
       draftPick: "Undrafted",
       college: "South Florida",
     },
@@ -11784,7 +11784,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF",
       height: "6'10\"",
-      draftYear: "1997",
+      initials: "T.T.",
       draftPick: "Round 1, #7",
       college: "Villanova",
     },
@@ -11884,7 +11884,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'6\"",
-      draftYear: "1998",
+      initials: "R.D.",
       draftPick: "Round 1, #21",
       college: "Iowa",
     },
@@ -12008,7 +12008,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'4\"",
-      draftYear: "2002",
+      initials: "F.M.",
       draftPick: "Round 2, #42",
       college: "Meridian Community College, Shaw",
     },
@@ -12192,7 +12192,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG",
       height: "6'2\"",
-      draftYear: "Undrafted",
+      initials: "M.J.",
       draftPick: "Undrafted",
       college: "Duquesne",
     },
@@ -12352,7 +12352,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'3\"",
-      draftYear: "1997",
+      initials: "A.J.",
       draftPick: "Round 2, #40",
       college: "College of Charleston",
     },
@@ -12476,7 +12476,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF/C",
       height: "6'9\"",
-      draftYear: "1998",
+      initials: "A.H.",
       draftPick: "Round 1, #25",
       college: "Preps-to-pros / international",
     },
@@ -12600,7 +12600,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF/PF",
       height: "6'8\"",
-      draftYear: "1997",
+      initials: "S.J.",
       draftPick: "Round 2, #43",
       college: "Butler County Community College",
     },
@@ -12724,7 +12724,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'7\"",
-      draftYear: "2002",
+      initials: "C.B.",
       draftPick: "Round 1, #10",
       college: "UConn",
     },
@@ -12812,7 +12812,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF",
       height: "6'9\"",
-      draftYear: "2004",
+      initials: "J.S.",
       draftPick: "Round 1, #17",
       college: "Preps-to-pros / international",
     },
@@ -12900,7 +12900,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF/C",
       height: "6'9\"",
-      draftYear: "2003",
+      initials: "D.W.",
       draftPick: "Round 1, #18",
       college: "Xavier",
     },
@@ -12976,7 +12976,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF",
       height: "6'9\"",
-      draftYear: "2004",
+      initials: "L.D.",
       draftPick: "Round 1, #7",
       college: "Duke",
     },
@@ -13040,7 +13040,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG",
       height: "6'3\"",
-      draftYear: "2005",
+      initials: "M.E.",
       draftPick: "Round 2, #40",
       college: "Preps-to-pros / international",
     },
@@ -13140,7 +13140,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'6\"",
-      draftYear: "2004",
+      initials: "J.R.S.",
       draftPick: "Round 1, #18",
       college: "North Carolina A&T - attended but did not play",
     },
@@ -13228,7 +13228,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'3\"",
-      draftYear: "2006",
+      initials: "J.J.R.",
       draftPick: "Round 1, #11",
       college: "Duke",
     },
@@ -13364,7 +13364,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF/C",
       height: "7'0\"",
-      draftYear: "2001",
+      initials: "T.C.",
       draftPick: "Round 1, #2",
       college: "Preps-to-pros / international",
     },
@@ -13452,7 +13452,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/PF",
       height: "6'8\"",
-      draftYear: "2003",
+      initials: "B.D.",
       draftPick: "Round 1, #21",
       college: "Preps-to-pros / international",
     },
@@ -13588,7 +13588,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'7\"",
-      draftYear: "2004",
+      initials: "S.L.",
       draftPick: "Round 1, #4",
       college: "Preps-to-pros / international",
     },
@@ -13712,7 +13712,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'1\"",
-      draftYear: "2003",
+      initials: "M.W.",
       draftPick: "Round 2, #47",
       college: "Alabama",
     },
@@ -13800,7 +13800,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF",
       height: "6'8\"",
-      draftYear: "2006",
+      initials: "R.G.",
       draftPick: "Round 1, #8",
       college: "UConn",
     },
@@ -13960,7 +13960,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "5'9\"",
-      draftYear: "2011",
+      initials: "I.T.",
       draftPick: "Round 2, #60",
       college: "Washington",
     },
@@ -14072,7 +14072,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'4\"",
-      draftYear: "2008",
+      initials: "G.D.",
       draftPick: "Round 2, #45",
       college: "Preps-to-pros / international",
     },
@@ -14160,7 +14160,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF/C",
       height: "6'9\"",
-      draftYear: "2000",
+      initials: "K.M.",
       draftPick: "Round 1, #1",
       college: "Cincinnati",
     },
@@ -14284,7 +14284,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF",
       height: "6'9\"",
-      draftYear: "2008",
+      initials: "M.B.",
       draftPick: "Round 1, #2",
       college: "Kansas State",
     },
@@ -14360,7 +14360,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG/SF",
       height: "6'6\"",
-      draftYear: "2009",
+      initials: "T.E.",
       draftPick: "Round 1, #4",
       college: "Memphis",
     },
@@ -14448,7 +14448,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF/PF",
       height: "6'6\"",
-      draftYear: "1999",
+      initials: "C.M.",
       draftPick: "Round 1, #13",
       college: "Duke",
     },
@@ -14536,7 +14536,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF",
       height: "6'9\"",
-      draftYear: "1996",
+      initials: "A.W.",
       draftPick: "Round 1, #6",
       college: "Kentucky",
     },
@@ -14660,7 +14660,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF/C",
       height: "6'10\"",
-      draftYear: "2004",
+      initials: "D.H.",
       draftPick: "Round 1, #1",
       college: "Preps-to-pros / international",
     },
@@ -14748,7 +14748,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF",
       height: "6'7\"",
-      draftYear: "2003",
+      initials: "C.A.",
       draftPick: "Round 1, #3",
       college: "Syracuse",
     },
@@ -14812,7 +14812,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'4\"",
-      draftYear: "2003",
+      initials: "D.W.",
       draftPick: "Round 1, #5",
       college: "Marquette",
     },
@@ -14888,7 +14888,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF",
       height: "6'7\"",
-      draftYear: "1986",
+      initials: "D.R.",
       draftPick: "Round 2, #27",
       college: "North Central Texas College, Southeastern Oklahoma State University",
     },
@@ -14988,7 +14988,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF/PF",
       height: "6'7\"",
-      draftYear: "2003",
+      initials: "K.K.",
       draftPick: "Round 2, #51",
       college: "Creighton",
     },
@@ -15076,7 +15076,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'2\"",
-      draftYear: "1999",
+      initials: "J.T.",
       draftPick: "Round 1, #10",
       college: "Arizona",
     },
@@ -15188,7 +15188,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF",
       height: "6'8\"",
-      draftYear: "2007",
+      initials: "T.Y.",
       draftPick: "Round 1, #12",
       college: "Georgia Tech",
     },
@@ -15312,7 +15312,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF",
       height: "6'8\"",
-      draftYear: "2011",
+      initials: "M.M.",
       draftPick: "Round 1, #14",
       college: "Kansas",
     },
@@ -15448,7 +15448,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'3\"",
-      draftYear: "1999",
+      initials: "A.M.",
       draftPick: "Round 1, #8",
       college: "Utah",
     },
@@ -15536,7 +15536,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG",
       height: "6'7\"",
-      draftYear: "2007",
+      initials: "N.Y.",
       draftPick: "Round 1, #16",
       college: "USC",
     },
@@ -15624,7 +15624,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'6\"",
-      draftYear: "2001",
+      initials: "J.R.",
       draftPick: "Round 1, #5",
       college: "Michigan State",
     },
@@ -15748,7 +15748,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF",
       height: "6'6\"",
-      draftYear: "2009",
+      initials: "D.G.",
       draftPick: "Round 2, #46",
       college: "UNC",
     },
@@ -15860,7 +15860,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG/SG",
       height: "6'3\"",
-      draftYear: "2004",
+      initials: "D.H.",
       draftPick: "Round 1, #5",
       college: "Wisconsin",
     },
@@ -15984,7 +15984,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF",
       height: "6'9\"",
-      draftYear: "2004",
+      initials: "K.H.",
       draftPick: "Round 1, #14",
       college: "Minnesota",
     },
@@ -16096,7 +16096,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF/C",
       height: "6'10\"",
-      draftYear: "2004",
+      initials: "A.J.",
       draftPick: "Round 1, #15",
       college: "Preps-to-pros / international",
     },
@@ -16196,7 +16196,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SG/SF/PF",
       height: "6'9\"",
-      draftYear: "2002",
+      initials: "M.D.",
       draftPick: "Round 1, #3",
       college: "Duke",
     },
@@ -16320,7 +16320,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "SF/PF/C",
       height: "6'6\"",
-      draftYear: "2009",
+      initials: "D.C.",
       draftPick: "Round 1, #27",
       college: "Vanderbilt, Missouri",
     },
@@ -16408,7 +16408,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PF/C",
       height: "6'8\"",
-      draftYear: "2005",
+      initials: "B.B.",
       draftPick: "Round 2, #33",
       college: "LSU",
     },
@@ -16544,7 +16544,7 @@ export const puzzles: Puzzle[] = [
     hints: {
       position: "PG",
       height: "6'1\"",
-      draftYear: "2006",
+      initials: "R.R.",
       draftPick: "Round 1, #21",
       college: "Kentucky",
     },

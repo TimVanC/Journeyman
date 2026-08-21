@@ -110,7 +110,7 @@ export const nfl: SportConfig = {
   hintLadder: [
     { key: "position", label: "Position" },
     { key: "height", label: "Height" },
-    { key: "draftYear", label: "Draft year" },
+    { key: "initials", label: "Initials" },
     { key: "draftPick", label: "Draft pick" },
     { key: "college", label: "College" },
   ],

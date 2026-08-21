@@ -22,12 +22,16 @@
  * deliberate) are downgraded to WARN via the allowlist below.
  */
 import { readFileSync } from "node:fs";
+import { initialsOf } from "../pipeline/lib/initials.mjs";
 
 const ALLOW_MISSING_SEASONS = new Set(["mlb|CHC|1943", "mlb|NWE|1944"]);
+// "initials" replaced draftYear / debutYear on 2026-08-21. Puzzles that had
+// already aired keep the retired key (the game derives their initials at load
+// time — src/game/initials.ts), so either key satisfies that ladder slot.
 const HINT_KEYS = {
-  nba: ["position", "height", "draftYear", "draftPick", "college"],
-  nfl: ["position", "height", "draftYear", "draftPick", "college"],
-  mlb: ["position", "batsThrows", "height", "debutYear", "born"],
+  nba: ["position", "height", ["initials", "draftYear"], "draftPick", "college"],
+  nfl: ["position", "height", ["initials", "draftYear"], "draftPick", "college"],
+  mlb: ["position", "batsThrows", "height", ["initials", "debutYear"], "born"],
 };
 const SPORTS = {
   nba: { puzzles: ["src/data/puzzles.ts", "puzzles"], colorways: "src/data/colorways.json", seasons: "src/data/teamSeasons.json", index: "src/data/playerIndex.json", statCells: false },
@@ -51,6 +55,17 @@ function loadArray(path, name) {
 
 let errors = 0, warns = 0;
 const err = (m) => { console.error("ERROR " + m); errors++; };
+
+// pins the initials rules — a drift between src/game/initials.ts and
+// pipeline/lib/initials.mjs would otherwise only surface as a wrong hint
+const INITIALS_FIXTURES = {
+  "Shareef Abdur-Rahim": "S.A.R.", "J.R. Smith": "J.R.S.", "B. J. Upton": "B.J.U.", "CC Sabathia": "C.C.S.",
+  "Marcus Morris Sr.": "M.M.", "Odell Beckham Jr.": "O.B.", "Le'Veon Bell": "L.B.", "Manu Ginóbili": "M.G.",
+  "Jason Pierre-Paul": "J.P.P.", "Shaquille O'Neal": "S.O.",
+};
+for (const [name, want] of Object.entries(INITIALS_FIXTURES)) {
+  if (initialsOf(name) !== want) err(`initialsOf("${name}") = "${initialsOf(name)}", expected "${want}" — pipeline/lib/initials.mjs rules changed`);
+}
 const warn = (m) => { console.error("warn  " + m); warns++; };
 
 for (const [sport, cfg] of Object.entries(SPORTS)) {
@@ -69,9 +84,11 @@ for (const [sport, cfg] of Object.entries(SPORTS)) {
     const ro = p.revealOrder || [];
     const ok = ro.length === p.stints.length && new Set(ro).size === ro.length && Math.min(...ro) === 0 && Math.max(...ro) === ro.length - 1;
     if (!ok) err(`${tag} "${p.answer}" revealOrder is not a permutation of ${p.stints.length} stints`);
-    for (const k of HINT_KEYS[sport]) {
-      if (!p.hints || p.hints[k] == null || p.hints[k] === "") err(`${tag} "${p.answer}" hint "${k}" missing — hint ladder breaks mid-puzzle`);
+    for (const spec of HINT_KEYS[sport]) {
+      const keys = Array.isArray(spec) ? spec : [spec];
+      if (!keys.some((k) => p.hints && p.hints[k] != null && p.hints[k] !== "")) err(`${tag} "${p.answer}" hint "${keys[0]}" missing — hint ladder breaks mid-puzzle`);
     }
+    if (p.hints?.initials && p.hints.initials !== initialsOf(p.answer)) err(`${tag} "${p.answer}" initials "${p.hints.initials}" ≠ derived "${initialsOf(p.answer)}" — src/game/initials.ts and pipeline/lib/initials.mjs must agree`);
     for (const s of p.stints) {
       const eras = cw[s.franchise];
       if (!eras) { err(`${tag} "${p.answer}": no colorways for franchise "${s.franchise}"`); continue; }

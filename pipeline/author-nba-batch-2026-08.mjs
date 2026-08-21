@@ -8,6 +8,7 @@
  * the bio block provides position, height, college, and draft information.
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { initialsOf } from "./lib/initials.mjs";
 
 const CACHE = "pipeline/.cache/nba-br";
 const ESPN_CACHE = "pipeline/.cache/nba-espn";
@@ -200,7 +201,6 @@ function bioHints(html) {
   return {
     position,
     height: heightRaw ? `${heightRaw[0]}'${heightRaw[1]}\"` : "",
-    draftYear,
     draftPick: draftYear === "Undrafted" ? "Undrafted" : `Round ${round?.[1] ?? "?"}, #${overall?.[1] ?? "?"}`,
     college: college || "Preps-to-pros / international",
   };
@@ -232,7 +232,11 @@ function renderPuzzle(player, id) {
   const draftFranchise = player.stints[0].franchise;
   const draftIndex = order.findIndex((i) => player.stints[i].franchise === draftFranchise);
   if (draftIndex >= 0) order.push(...order.splice(draftIndex, 1));
-  lines.push("    ],", `    revealOrder: [${order.join(", ")}],`, "    hints: {", ...Object.entries(player.hints).map(([k, v]) => `      ${k}: ${JSON.stringify(v)},`), "    },", "  },");
+  // ladder order; initials replaced draftYear on 2026-08-21 (config files
+  // and HINT_OVERRIDES may still carry the retired key — it is dropped here)
+  const { draftYear: _retired, ...rest } = player.hints;
+  const hints = { position: rest.position, height: rest.height, initials: initialsOf(player.answer), draftPick: rest.draftPick, college: rest.college, ...rest };
+  lines.push("    ],", `    revealOrder: [${order.join(", ")}],`, "    hints: {", ...Object.entries(hints).map(([k, v]) => `      ${k}: ${JSON.stringify(v)},`), "    },", "  },");
   return lines.join("\n");
 }
 

@@ -1,6 +1,7 @@
 import JerseyCard from "./JerseyCard";
 import { SPORT } from "../sports/active";
 import { sportHref } from "../sports";
+import { withInitials } from "../game/initials";
 
 /**
  * Dev/Vercel-preview-only real-puzzle inspector (`?inspect&p=N`). It keeps
@@ -10,7 +11,8 @@ import { sportHref } from "../sports";
 export default function PuzzleInspectPreview() {
   const requested = Number(new URLSearchParams(location.search).get("p"));
   const index = Number.isInteger(requested) && requested >= 1 ? requested - 1 : 0;
-  const puzzle = SPORT.puzzles[index];
+  const raw = SPORT.puzzles[index];
+  const puzzle = raw ? withInitials(raw) : raw;
 
   if (!puzzle) {
     return (

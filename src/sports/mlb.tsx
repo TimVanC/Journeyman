@@ -112,7 +112,7 @@ export const mlb: SportConfig = {
     { key: "position", label: "Position" },
     { key: "batsThrows", label: "Bats / Throws" },
     { key: "height", label: "Height" },
-    { key: "debutYear", label: "MLB debut" },
+    { key: "initials", label: "Initials" },
     { key: "born", label: "Born" },
   ],
 

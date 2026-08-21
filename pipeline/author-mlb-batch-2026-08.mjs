@@ -7,6 +7,7 @@
  * not modify src/data/mlb/puzzles.ts.
  */
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { initialsOf } from "./lib/initials.mjs";
 
 const config = process.argv[2]
   ? JSON.parse(readFileSync(process.argv[2], "utf8"))
@@ -254,7 +255,7 @@ for (const requestedName of PLAYERS) {
       position: POSITION[requestedName],
       batsThrows: `${detail.batSide.code} / ${detail.pitchHand.code}`,
       height: detail.height.replace("' ", "'"),
-      debutYear: String(year(detail.mlbDebutDate)), born: birthRegion,
+      initials: initialsOf(requestedName), born: birthRegion,
     },
   };
   const accoladeLabels = {

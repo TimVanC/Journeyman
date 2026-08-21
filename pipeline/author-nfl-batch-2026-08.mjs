@@ -5,6 +5,7 @@
  * season rosters for bio fields, and nfldata draft_picks.csv.
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { initialsOf } from "./lib/initials.mjs";
 
 const config = process.argv[2] ? JSON.parse(readFileSync(process.argv[2], "utf8")) : null;
 
@@ -309,18 +310,16 @@ for (const name of PLAYERS) {
   }
   if (stints.some((stint) => stint.jerseyNumber == null)) throw new Error(`${name}: missing jersey in ${JSON.stringify(stints)}`);
   const draft = draftRows.find((row) => row.pfr_id && row.pfr_id === lastBio.pfr_id);
-  const draftYear = num(lastBio.entry_year || lastBio.rookie_year);
   const revealOrder = stints.map((_, i) => i).sort((a, b) => num(stints[a].statLine[0].value) - num(stints[b].statLine[0].value) || b - a);
   const puzzle = {
     id: nextId++, answer: ANSWER_NAME[name] || name, checked: new Date().toISOString().slice(0, 10), stints, revealOrder,
     hints: {
       position: POSITION[name] || lastBio.position,
-      height: feet(lastBio.height), draftYear: String(draftYear),
+      height: feet(lastBio.height), initials: initialsOf(ANSWER_NAME[name] || name),
       draftPick: bioOverride.draftPick ?? (draft ? `Round ${draft.round}, #${draft.pick}` : "Undrafted"),
       college: bioOverride.college ?? lastBio.college,
     },
   };
-  puzzle.hints.draftYear = String(bioOverride.draftYear ?? draftYear);
   const accoladeLabels = {
     champion: "Super Bowl champion", pro_bowl: "Pro Bowl", all_pro: "First-Team All-Pro",
     sb_mvp: "Super Bowl MVP", opoy: "Offensive Player of the Year", comeback: "Comeback Player of the Year",

@@ -2,8 +2,8 @@ import { SPORT } from "../sports/active";
 import type { PuzzleHints } from "../game/types";
 import { LockIcon } from "./Icons";
 
-// per-sport ladder: NBA/NFL run position→height→draft→college; MLB swaps
-// in bats/throws, debut year, and birthplace
+// per-sport ladder: NBA/NFL run position→height→initials→draft pick→college;
+// MLB swaps in bats/throws, initials, and birthplace
 const LADDER = SPORT.hintLadder;
 
 /** Short coded values — "R / R", "2B / LF", "PF/SF", "6'11\"" — are ONE fact,

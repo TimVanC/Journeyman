@@ -73,8 +73,11 @@ export interface Stint {
 }
 
 /** Hint values keyed by the sport's hint ladder (see SportConfig.hintLadder).
- *  NBA/NFL: position → height → draft year → draft pick → college.
- *  MLB: position → bats/throws → height → debut year → born. */
+ *  NBA/NFL: position → height → initials → draft pick → college.
+ *  MLB: position → bats/throws → height → initials → born.
+ *  Puzzles that aired before 2026-08-21 still carry the retired draftYear /
+ *  debutYear key instead of initials; withInitials() (game/initials.ts)
+ *  derives theirs from the answer at load time. */
 export type PuzzleHints = Record<string, string>;
 
 /** Which dimension the jerseys are split on (addendum §4.5a).

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState, type DragEvent } from "react
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "../../src/lib/supabase";
 import { resolveColorway } from "../../src/game/colorways";
+import { withInitials } from "../../src/game/initials";
 import type { Puzzle, Stint } from "../../src/game/types";
 import { SPORTS, SPORT_ORDER } from "../../src/sports";
 import type { Sport, SportConfig } from "../../src/sports/types";
@@ -118,7 +119,12 @@ export default function AdminApp({ session }: { session: Session }) {
     SPORT_ORDER.forEach((sport, index) => {
       nextCurrent[sport] = Number(dayResults[index].data);
     });
-    const rows = (scheduleResult.data ?? []) as unknown as ScheduleRow[];
+    // aired rows predate the initials hint (2026-08-21); derive theirs so the
+    // profile check and hint grid stay complete
+    const rows = ((scheduleResult.data ?? []) as unknown as ScheduleRow[]).map((row) => ({
+      ...row,
+      puzzle: withInitials(row.puzzle),
+    }));
     const nextDrafts = emptyRows();
     const nextOriginal: SportMap<number[]> = { nba: [], nfl: [], mlb: [] };
     for (const sport of SPORT_ORDER) {
